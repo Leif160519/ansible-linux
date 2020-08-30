@@ -38,7 +38,7 @@ ansible-linux
 #ubuntu
 apt-get install ansible
 
-# centos
+#centos
 yum -y install ansible
 
 #macos
@@ -107,5 +107,16 @@ force_valid_group_names = ignore
 ansible-playbook -u root -i inventory/ playbooks/universal.yml
 ```
 
-## 写在最后
+## 三、特定情况
+- 1.安装某些软件
+```
+ansible-playbook -u root -i inventory/ playbooks/install.yml -t [ubuntu | base] 
+```
+
+- 2.在某些机器上指定playbook
+```
+ansible-playbook -u root -i inventory/ playbooks/install.yml -l 'k8s-node1 k8s-node2'
+```
+
+## 四、写在最后
 由于个人精力有限，项目并不会经常更新，若大家有兴趣，可以在项目中贡献自己的代码，一起将[ansible-linux](https://github.com/Leif160519/ansible-linux)发展壮大，感谢各位的理解与支持！
