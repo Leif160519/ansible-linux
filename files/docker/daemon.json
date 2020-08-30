@@ -1,9 +1,10 @@
 {
-"default-address-pools": [
-	{
-		"base": "198.18.0.0/16",
-		"size": 24
-		}
-	],
-  "registry-mirrors": ["https://b9pmyelo.mirror.aliyuncs.com"]
+    "default-address-pools":
+        [
+            {
+                "base": "{{ address }}",
+                "size": {{ size }}
+            }
+        ],
+    "registry-mirrors": ["{{ mirrors }}"]
 }

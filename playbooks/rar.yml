@@ -37,7 +37,6 @@
         - shell: |
             cd /tmp/rar/
             make
-          when: rar.stat.exists == true
 
         - file:
             path: /tmp/rar

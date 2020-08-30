@@ -14,9 +14,11 @@
       apt:
         name: ['docker.io','docker-compose']
         state: latest
+
     - name:  清理不再使用的依赖包
       apt:
         autoremove: yes
+
     - name: 清理下载的安装包缓存
       shell: apt clean && apt autoclean
       ignore_errors: yes
@@ -26,10 +28,17 @@
   hosts: dist.centos7
   tags: [centos, seven, docker]
   tasks:
+    - name: 配置Docker源
+      template:
+        src: files/docker/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+        mode: 0644
+
     - name: 安装Docker和Docker-compose
       yum:
         name: ['docker-ce','docker-compose']
         state: installed
+
     - name: 清理安装包
       shell: yum clean all
       ignore_errors: true
@@ -38,9 +47,15 @@
   hosts: all
   tasks:
     - name: 配置仓库源和Docker网段
+      vars:
+        address: 198.18.0.0/16
+        size: 24
+        mirrors: http://hub-mirror.c.163.com
       template:
         src: files/docker/daemon.json
         dest: /etc/docker/
+        mode: 0644
+
     - name: 启动Docker服务并设置开机自启
       service:
         name: docker

@@ -15,19 +15,14 @@
   tasks:
     - name: 下载gitlab安装包"{{ ansible_machine }}"
       block:
-        - stat:
-            path: /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
-          register: gitlab
-
         - get_url:
             url: https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
             dest: /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
             checksum: md5:{{ gitlab_md5sum }}
-          when: ansible_machine=="x86_64" and gitlab.stat.exists == false
+          when: ansible_machine=="x86_64"
       
         - shell: 
             rpm -i /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
-          when: gitlab.stat.exists == true
 
         - shell:
             ip a | grep inet | grep -v inet6 | grep -v 127. | sed 's/^[ \t]*//g' | cut -d ' ' -f2 | grep -v 172 | cut -d '/' -f1 | head -1
@@ -43,8 +38,4 @@
             crontab /etc/crontab
             sed -i "s/# gitlab_rails\['backup_keep_time'\] = 604800/gitlab_rails\['backup_keep_time'\] = 604800/g" /etc/gitlab/gitlab.rb
             gitlab-ctl reconfigure
-
-        - file:
-            path: /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
-            state: absent
-          when: gitlab.stat.exists == true
+            ignore_errors: true
