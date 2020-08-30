@@ -1,0 +1,46 @@
+##
+# 安装oh-my-zsh
+#
+#
+##
+# @leif160519 @2020.08.29
+####
+---
+- name: Ubuntu安装oh-my-zsh
+  hosts: dist.ubuntu.lts
+  tags: [zsh,ubuntu]
+  tasks:
+    - name: 安装zsh包
+      apt:
+        name: zsh
+        state: latest
+    - name: 清理下载的安装包缓存
+      shell: apt clean && apt autoclean
+      ignore_errors: yes
+
+- name: Centos安装oh-my-zsh
+  hosts: dist.centos7
+  tags: [zsh,centos]
+  tasks:
+    - name: 安装zsh包
+      yum:
+        name: zsh
+        state: installed
+    - name: 清理安装包
+      shell: yum clean all
+      ignore_errors: true
+
+- hosts: all
+  tasks:
+    - name: 切换默认shell为zsh
+      shell: chsh -s /bin/zsh
+      ignore_errors: yes
+    - name: 上传oh-my-zsh脚本
+      template:
+        src: files/oh-my-zsh/install.sh
+        dest: /tmp/
+    - name: 安装oh-my-zsh
+      shell: sh -c "$(curl -fsSL /tmp/install.sh)"
+      ignore_errors: yes
+    - name: 重启生效
+      shell: echo "重启生效"

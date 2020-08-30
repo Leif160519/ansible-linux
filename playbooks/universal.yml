@@ -1,0 +1,12 @@
+##
+# 通用的配置，集成在这个顶层剧本中
+##
+# @2020.08 @leif160519
+####
+---
+# 软件源仓库
+- import_playbook: repository.yml
+# 安装软件
+- import_playbook: install.yml
+# 系统配置
+- import_playbook: config.yml

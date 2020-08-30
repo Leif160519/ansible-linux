@@ -1,0 +1,50 @@
+##
+# 安装gitlab
+#
+#
+##
+# @leif160519 @2020.08.29
+####
+---
+- name: 安装gitlab
+  hosts: dist.centos7
+  tags: [gitlab,centos]
+  vars:
+    gitlab_version: 13.3.2
+    gitlab_md5sum: 56562145dcf67e5f242518b49a03adcd
+  tasks:
+    - name: 下载gitlab安装包"{{ ansible_machine }}"
+      block:
+        - stat:
+            path: /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
+          register: gitlab
+
+        - get_url:
+            url: https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
+            dest: /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
+            checksum: md5:{{ gitlab_md5sum }}
+          when: ansible_machine=="x86_64" and gitlab.stat.exists == false
+      
+        - shell: 
+            rpm -i /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
+          when: gitlab.stat.exists == true
+
+        - shell:
+            ip a | grep inet | grep -v inet6 | grep -v 127. | sed 's/^[ \t]*//g' | cut -d ' ' -f2 | grep -v 172 | cut -d '/' -f1 | head -1
+          register: ip_address
+
+        - lineinfile:
+            dest: /etc/gitlab/gitlab.rb
+            regexp: '^external_url'
+            line: "external_url 'http://{{ ip_address.stdout }}'"
+  
+        - shell: |
+            sed -i '$a\0  2    * * *   root    /opt/gitlab/bin/gitlab-rake gitlab:backup:create CRON=1' /etc/crontab
+            crontab /etc/crontab
+            sed -i "s/# gitlab_rails\['backup_keep_time'\] = 604800/gitlab_rails\['backup_keep_time'\] = 604800/g" /etc/gitlab/gitlab.rb
+            gitlab-ctl reconfigure
+
+        - file:
+            path: /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
+            state: absent
+          when: gitlab.stat.exists == true

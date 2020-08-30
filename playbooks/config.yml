@@ -1,0 +1,55 @@
+##
+# 安装基础软件
+#
+#
+##
+# @leif160519 @2020.08.29
+####
+---
+- name: 系统设置(通用)
+  hosts: all
+  tags: all
+  tasks:
+    - name: 关闭swap分区(重启后生效)
+      shell: sed  -i '/swap/s/^/#/' /etc/fstab
+      ignore_errors: true
+    - name: 配置SSH
+      shell: "{{ item }}"
+      ignore_errors: true
+      with_items:
+        - sed -i "s/#UseDNS no/UseDNS no/g" /etc/ssh/sshd_config
+        - sed -i "s/#GSSAPIAuthentication no/GSSAPIAuthentication no/g" /etc/ssh/sshd_config
+        - sed -i "s/#ClientAliveInterval 0/ClientAliveInterval 60/g" /etc/ssh/sshd_config
+        - sed -i "s/#ClientAliveCountMax 3/ClientAliveCountMax 60/g" /etc/ssh/sshd_config
+    - name: 重启SSH服务
+      service:
+        name: sshd
+        state: restarted
+    - name: 修改Hostname
+      shell: hostnamectl set-hostname {{ inventory_hostname }}
+
+# 由于系统差别而做特别处理
+- name: Ubuntu系统设置
+  hosts: dist.ubuntu.lts
+  tags: ubuntu
+  tasks:
+    - name: Ubuntu屏蔽系统错误报告
+      shell: rm -rf /var/crash/* && sed -i 's/enabled=1/enabled=0/g' /etc/default/apport
+      ignore_errors: true
+    - name: 设置所有sudo指令不需要密码
+      shell: sed -i "s/%sudo[[:space:]]*ALL=(ALL:ALL) ALL/%sudo    ALL=(ALL:ALL) NOPASSWD:ALL/g" /etc/sudoers
+      ignore_errors: true
+
+- name: Centos7系统设置
+  hosts: dist.centos7
+  tags: centos
+  tasks:
+    - name: Centos 7禁用selinux(重启后生效)
+      shell: sed -i "s/enforcing/disabled/g" /etc/selinux/config
+      ignore_errors: true
+    - name: Centos 7禁用防火墙
+      service:
+        name: firewalld
+        state: stopped
+        enabled: no
+   

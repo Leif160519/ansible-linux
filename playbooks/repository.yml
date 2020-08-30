@@ -1,0 +1,31 @@
+##
+# 设置软件包管理器的镜像源
+#
+#
+##
+# @leif160519 @2020.08.29
+####
+---
+- name: Ubuntu LTS
+  hosts: dist.ubuntu.lts
+  tags: [ubuntu, lts]
+  vars:
+    mirror: http://mirrors.aliyun.com/ubuntu/
+  tasks:
+    - template: 
+        src: files/repository/sources.list
+        dest: /etc/apt/sources.list
+    - apt: 
+        update_cache: yes
+
+- name: Centos 7 
+  hosts: dist.centos7
+  tags: [centos, seven]
+  vars:
+    version: RPM-GPG-KEY-CentOS-7
+  tasks:
+    - template: 
+        src: files/repository/CentOS-Base.repo
+        dest: /etc/yum.repos.d/CentOS-Base.repo
+    - yum: 
+        update_cache: yes

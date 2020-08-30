@@ -1,0 +1,27 @@
+##
+# ___________________________________________________________________________
+# {{ ansible_managed }}
+# ---------------------------------------------------------------------------
+#        \   ^__^
+#         \  (oo)\_______
+#            (__)\       )\/\
+#                ||----w |
+#                ||     ||
+##
+# Ubuntu Sources List Generator
+# https://repogen.simplylinux.ch/
+####
+
+###### Ubuntu Main Repos
+deb {{ mirror }} {{ ansible_distribution_release }} main restricted multiverse universe
+deb-src {{ mirror }} {{ ansible_distribution_release }} main restricted multiverse universe
+
+###### Ubuntu Update Repos
+deb {{ mirror }} {{ ansible_distribution_release }}-security main restricted multiverse universe
+deb {{ mirror }} {{ ansible_distribution_release }}-updates main restricted multiverse universe
+deb {{ mirror }} {{ ansible_distribution_release }}-proposed main restricted multiverse universe
+deb {{ mirror }} {{ ansible_distribution_release }}-backports main restricted multiverse universe
+deb-src {{ mirror }} {{ ansible_distribution_release }}-security main restricted multiverse universe
+deb-src {{ mirror }} {{ ansible_distribution_release }}-updates main restricted multiverse universe
+deb-src {{ mirror }} {{ ansible_distribution_release }}-proposed main restricted multiverse universe
+deb-src {{ mirror }} {{ ansible_distribution_release }}-backports main restricted multiverse universe

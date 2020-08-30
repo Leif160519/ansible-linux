@@ -1,0 +1,49 @@
+##
+# 安装rar
+#
+#
+##
+# @leif160519 @2020.08.29
+####
+---
+- name: 安装rar
+  hosts: all
+  tags: [rar]
+  vars:
+    rar_version: 5.7.1
+    rar_md5sum: a5a4e30aa7d3591e0b18835fff5906e5
+    os_version: x64
+  tasks:
+    - name: 下载rar安装包
+      block:
+        - stat:
+            path: /tmp/rar
+          register: rar
+
+        - get_url:
+            url: http://www.rarlab.com/rar/rarlinux-{{ os_version }}-{{ rar_version }}.tar.gz
+            dest: /tmp/rarlinux-{{ os_version }}-{{ rar_version }}.tar.gz
+            checksum: md5:{{ rar_md5sum }}
+          when: ansible_machine=="x86_64" and rar.stat.exists == false
+      
+        - unarchive: 
+            copy: false
+            src: /tmp/rarlinux-{{ os_version }}-{{ rar_version }}.tar.gz
+            dest: /tmp
+            owner: root
+            group: root
+          when: rar.stat.exists == false
+      
+        - shell: |
+            cd /tmp/rar/
+            make
+          when: rar.stat.exists == true
+
+        - file:
+            path: /tmp/rar
+            state: absent
+          when: rar.stat.exists == true
+
+        - file:
+            path: /tmp/rarlinux-{{ os_version }}-{{ rar_version }}.tar.gz
+            state: absent

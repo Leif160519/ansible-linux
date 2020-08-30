@@ -1,0 +1,78 @@
+##
+# 安装基础软件
+#
+#
+##
+# @leif160519 @2020.08.29
+####
+---
+- name: Ubuntu 安装基础软件
+  hosts: dist.ubuntu.lts
+  tags: [ubuntu, lts, base]
+  tasks:
+    - name: 安装文本编辑器
+      apt:
+        name: ['vim']
+        state: latest
+    - name: 安装开发软件
+      apt:
+        name: ['git','npm','nodejs','openjdk-8-jre-headless']
+        state: latest
+    - name: 安装工具软件
+      apt:
+        name: ['tree','curl','htop','ctop','iotop','iftop','nethogs','net-tools','sysstat','fio','fping','iperf','screenfetch','neofetch','expect','ntpdate','w3m','lynx','ansible','rar','pv','lrzsz','monit','dstat','cacti','tmux','figlet','lsof','nmap']
+        state: latest
+    - name: 启动相关服务
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      with_items:
+        - sysstat
+        - monit
+    - name: 清理无用的安装包缓存
+      apt:
+        autoclean: yes
+    - name:  清理不再使用的依赖包
+      apt:
+        autoremove: yes
+    - name: 清理下载的安装包缓存
+      shell: apt clean && apt autoclean
+      ignore_errors: yes
+    - name: 卸载snapd
+      shell: apt -y autoremove --purge snapd
+      ignore_errors: yes
+
+
+- name: Centos 7 安装基础软件
+  hosts: dist.centos7
+  tags: [centos, seven, base]
+  tasks:
+    - name: 安装文本编辑器
+      yum:
+        name: ['nano','vim']
+        state: installed
+    - name: 安装解压缩软件
+      yum:
+        name: ['zip','unzip']
+        state: installed
+    - name: 安装开发软件
+      yum:
+        name: ['git','java','npm','nodejs']
+        state: installed
+    - name: 安装工具软件
+      yum:
+        name: ['yum-utils','iftop','epel-release','htop','iotop','net-tools','nethogs','mrtg','nagios','cacti','pv','telnet','tree','tmux','iperf','figlet','lsof','dpkg','expect','hdparm','psmisc','fping','tcpdump','nmap','fio','nc','strace','perf','sysstat','ntp','bind-utils','lynx','w3m','lrzsz','monit','ansible']
+        state: installed
+    - name: 启动相关服务
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      with_items:
+        - sysstat
+        - monit
+        - ntpd
+    - name: 清理安装包
+      shell: yum clean all
+      ignore_errors: true
