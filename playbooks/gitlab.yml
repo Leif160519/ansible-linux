@@ -20,7 +20,7 @@
             dest: /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
             checksum: md5:{{ gitlab_md5sum }}
           when: ansible_machine=="x86_64"
-      
+
         - shell: 
             rpm -i /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
 

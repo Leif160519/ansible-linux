@@ -25,7 +25,7 @@
             dest: /tmp/rarlinux-{{ os_version }}-{{ rar_version }}.tar.gz
             checksum: md5:{{ rar_md5sum }}
           when: ansible_machine=="x86_64" and rar.stat.exists == false
-      
+
         - unarchive: 
             copy: false
             src: /tmp/rarlinux-{{ os_version }}-{{ rar_version }}.tar.gz
@@ -33,7 +33,7 @@
             owner: root
             group: root
           when: rar.stat.exists == false
-      
+
         - shell: |
             cd /tmp/rar/
             make

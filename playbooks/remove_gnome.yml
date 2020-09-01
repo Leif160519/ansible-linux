@@ -14,17 +14,22 @@
       apt:
         name: gnome-shell
         state: absent
+
     - name: 卸载gnome
       apt:
         name: gnome
         state: absent
+
     - name: 卸载不需要的依赖关系
       apt:
         autoremove: yes
+
     - name: 彻底删除gnome的相关配置文件
       shell: apt-get purge gnome
+
     - name: 清理安装gnome时留下的缓存程序软件包
       shell: apt clean && apt autoclean
       ignore_errors: yes
+
     - name: 重启生效
       shell: echo "重启生效"

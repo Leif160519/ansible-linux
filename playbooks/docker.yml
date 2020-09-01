@@ -23,7 +23,6 @@
       shell: apt clean && apt autoclean
       ignore_errors: yes
 
-
 - name: Centos 7 安装Docker
   hosts: dist.centos7
   tags: [centos, seven, docker]
