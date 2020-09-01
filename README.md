@@ -8,7 +8,8 @@
 ansible-linux
 ├── files
 │   ├── docker
-│   │   └── daemon.json
+│   │   ├── daemon.json
+│   │   └── docker-ce.repo
 │   ├── oh-my-zsh
 │   │   └── install.sh
 │   └── repository
