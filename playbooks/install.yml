@@ -12,7 +12,7 @@
   tasks:
     - name: 安装文本编辑器
       apt:
-        name: ['vim']
+        name: ['vim','emacs']
         state: latest
 
     - name: 安装开发软件
@@ -56,7 +56,7 @@
   tasks:
     - name: 安装文本编辑器
       yum:
-        name: ['nano','vim']
+        name: ['nano','vim','emacs']
         state: installed
 
     - name: 安装解压缩软件
