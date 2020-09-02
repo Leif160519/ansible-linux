@@ -38,15 +38,11 @@
       shell: chsh -s /bin/fish
       ignore_errors: yes
 
-    - name: 上传oh-my-fish脚本
-      template:
-        src: files/oh-my-fish/oh-my.fish
-        dest: /tmp/
-
       #git 版本需要在1.9.5以上，否则会报错        
       ignore_errors: yes
     - name: 安装oh-my-fish
-      shell: fish /tmp/oh-my.fish --path=~/.local/share/omf --config=~/.config/omf -y
+      shell: curl -L https://github.com/oh-my-fish/oh-my-fish/raw/master/bin/install | fish
+      ignore_errors: yes 
 
     - name: 安装主题agnoster
       shell: omf install agnoster
@@ -56,5 +52,5 @@
       shell: omf install autojump
       ignore_errors: yes
 
-    - name: 重启生效
-      shell: echo "重启生效"
+    - name: 重新登录shell生效
+      shell: echo "重新登录shel生效"
