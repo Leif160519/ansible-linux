@@ -18,8 +18,9 @@ dist.u2004
 k8s-node1
 k8s-node2
 k8s-node3
+centos-7
 
 [dist.u1804]
 
 [dist.u2004]
-ubuntu
+ubuntu2004
