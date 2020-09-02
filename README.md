@@ -61,7 +61,8 @@ git clone https://github.com/Leif160519/ansible-linux
 k8s-node1         ansible_host=192.168.0.8
 k8s-node2         ansible_host=192.168.0.9
 k8s-node3         ansible_host=192.168.0.10
-ubuntu            ansible_host=192.168.0.105
+ubuntu2004        ansible_host=192.168.0.105
+centos-7          ansible_host=10.1.26.172
 
 #dist
 [dist]
@@ -84,12 +85,12 @@ dist.u2004
 k8s-node1
 k8s-node2
 k8s-node3
-
+centos-7
 
 [dist.u1804]
 
 [dist.u2004]
-ubuntu
+ubuntu2004
 ```
 
 - 5.ansible配置文件配置忽略组语法错误
