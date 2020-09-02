@@ -34,6 +34,9 @@
 
 - hosts: all
   tasks:
+    - shell: echo ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins
+      register: plugins_path
+
     - name: 切换默认shell为zsh
       shell: chsh -s /bin/zsh
       ignore_errors: yes
@@ -43,20 +46,32 @@
       ignore_errors: yes
 
     - name: 安装zsh-syntax-highlighting:模仿fish命令行高亮的插件
-      shell: git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-      ignore_errors: yes
+      git:
+        repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+        dest: "{{ plugins_path.stdout }}/zsh-syntax-highlighting"
+        clone: yes
+        update: yes
 
     - name: 安装zsh-autosuggestions:根据命令历史记录自动推荐和提示的插件
-      shell: git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-      ignore_errors: yes
+      git:
+        repo: https://github.com/zsh-users/zsh-autosuggestions
+        dest: "{{ plugins_path.stdout }}/zsh-autosuggestions"
+        clone: yes
+        update: yes
 
     - name: 安装zsh-completions:自动命令补全，类似bash-completions功能的插件
-      shell: git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions
-      ignore_errors: yes
+      git:
+        repo: https://github.com/zsh-users/zsh-completions
+        dest: "{{ plugins_path.stdout }}/zsh-completions"
+        clone: yes
+        update: yes
 
     - name: history-substring-search:按住向上箭头可以搜索出现过该关键字的历史命令
-      shell: git clone https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search
-      ignore_errors: yes
+      git:
+        repo: https://github.com/zsh-users/zsh-history-substring-search
+        dest: "{{ plugins_path.stdout }}/zsh-history-substring-search"
+        clone: yes
+        update: yes
 
     - name: 修改zsh主题
       lineinfile:
