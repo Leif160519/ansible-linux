@@ -22,7 +22,7 @@
 
     - name: 安装工具软件
       apt:
-        name: ['bash-completion','tree','curl','htop','ctop','iotop','iftop','nethogs','net-tools','sysstat','fio','fping','iperf','screenfetch','neofetch','expect','ntpdate','w3m','lynx','ansible','rar','pv','lrzsz','monit','dstat','cacti','tmux','figlet','lsof','nmap','dosfstools','fish']
+        name: ['bash-completion','tree','curl','htop','ctop','iotop','iftop','nethogs','net-tools','sysstat','fio','fping','iperf','screenfetch','neofetch','expect','ntpdate','w3m','lynx','ansible','rar','pv','lrzsz','monit','dstat','cacti','tmux','figlet','lsof','nmap','dosfstools']
         state: latest
 
     - name: 启动相关服务
@@ -71,7 +71,7 @@
 
     - name: 安装工具软件
       yum:
-        name: ['bash-completion','wget','yum-utils','epel-release','iftop','htop','iotop','net-tools','nethogs','mrtg','nagios','cacti','pv','telnet','tree','tmux','iperf','figlet','lsof','dpkg','expect','hdparm','psmisc','fping','tcpdump','nmap','fio','nc','strace','perf','sysstat','ntp','bind-utils','lynx','w3m','lrzsz','monit','ansible','dosfstools','fish']
+        name: ['bash-completion','wget','yum-utils','epel-release','iftop','htop','iotop','net-tools','nethogs','mrtg','nagios','cacti','pv','telnet','tree','tmux','iperf','figlet','lsof','dpkg','expect','hdparm','psmisc','fping','tcpdump','nmap','fio','nc','strace','perf','sysstat','ntp','bind-utils','lynx','w3m','lrzsz','monit','ansible','dosfstools']
         state: installed
 
     - name: 启动相关服务

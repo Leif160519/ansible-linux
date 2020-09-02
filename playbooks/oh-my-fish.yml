@@ -1,0 +1,60 @@
+##
+# 安装oh-my-fish
+#
+#
+##
+# @leif160519 @2020.09.02
+####
+---
+- name: Ubuntu安装oh-my-fish
+  hosts: dist.ubuntu.lts
+  tags: [fish,ubuntu]
+  tasks:
+    - name: 安装fish包
+      apt:
+        name: fish
+        state: latest
+
+    - name: 清理下载的安装包缓存
+      shell: apt clean && apt autoclean
+      ignore_errors: yes
+
+- name: Centos安装oh-my-fish
+  hosts: dist.centos7
+  tags: [fish,centos]
+  tasks:
+    - name: 安装fish包
+      yum:
+        name: fish
+        state: installed
+
+    - name: 清理安装包
+      shell: yum clean all
+      ignore_errors: true
+
+- hosts: all
+  tasks:
+    - name: 切换默认shell为fish
+      shell: chsh -s /bin/fish
+      ignore_errors: yes
+
+    - name: 上传oh-my-fish脚本
+      template:
+        src: files/oh-my-fish/oh-my.fish
+        dest: /tmp/
+
+      #git 版本需要在1.9.5以上，否则会报错        
+      ignore_errors: yes
+    - name: 安装oh-my-fish
+      shell: fish /tmp/oh-my.fish --path=~/.local/share/omf --config=~/.config/omf -y
+
+    - name: 安装主题agnoster
+      shell: omf install agnoster
+      ignore_errors: yes
+
+    - name: 安装autojump插件
+      shell: omf install autojump
+      ignore_errors: yes
+
+    - name: 重启生效
+      shell: echo "重启生效"

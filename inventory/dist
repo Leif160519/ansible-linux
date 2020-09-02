@@ -19,7 +19,6 @@ k8s-node1
 k8s-node2
 k8s-node3
 
-
 [dist.u1804]
 
 [dist.u2004]
