@@ -67,7 +67,7 @@
     - name: 添加插件
       lineinfile:
         dest: ~/.zshrc
-        regexp: '^plugins=(git)'
+        regexp: '^plugins='
         line: 'plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-completions z history-substring-search command-not-found colored-man-pages extract)'
 
     - name: 重新登录shell生效
