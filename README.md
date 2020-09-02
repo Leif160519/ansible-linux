@@ -5,13 +5,10 @@
 
 项目目录结构
 ```
-ansible-linux
 ├── files
 │   ├── docker
 │   │   ├── daemon.json
 │   │   └── docker-ce.repo
-│   ├── oh-my-zsh
-│   │   └── install.sh
 │   └── repository
 │       ├── CentOS-Base.repo
 │       └── sources.list
@@ -24,6 +21,7 @@ ansible-linux
 │   ├── files -> ../files
 │   ├── gitlab.yml
 │   ├── install.yml
+│   ├── oh-my-fish.yml
 │   ├── oh-my-zsh.yml
 │   ├── rar.yml
 │   ├── remove_gnome.yml
