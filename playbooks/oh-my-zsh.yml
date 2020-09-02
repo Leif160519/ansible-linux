@@ -12,7 +12,7 @@
   tasks:
     - name: 安装zsh包
       apt:
-        name: zsh
+        name: [zsh,autojump]
         state: latest
 
     - name: 清理下载的安装包缓存
@@ -25,7 +25,7 @@
   tasks:
     - name: 安装zsh包
       yum:
-        name: zsh
+        name: [zsh,autojump]
         state: installed
 
     - name: 清理安装包
@@ -38,14 +38,37 @@
       shell: chsh -s /bin/zsh
       ignore_errors: yes
 
-    - name: 上传oh-my-zsh脚本
-      template:
-        src: files/oh-my-zsh/install.sh
-        dest: /tmp/
-
     - name: 安装oh-my-zsh
-      shell: sh -c "$(curl -fsSL /tmp/install.sh)"
+      shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
       ignore_errors: yes
 
-    - name: 重启生效
-      shell: echo "重启生效"
+    - name: 安装zsh-syntax-highlighting:模仿fish命令行高亮的插件
+      shell: git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+      ignore_errors: yes
+
+    - name: 安装zsh-autosuggestions:根据命令历史记录自动推荐和提示的插件
+      shell: git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+      ignore_errors: yes
+
+    - name: 安装zsh-completions:自动命令补全，类似bash-completions功能的插件
+      shell: git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions
+      ignore_errors: yes
+
+    - name: history-substring-search:按住向上箭头可以搜索出现过该关键字的历史命令
+      shell: git clone https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search
+      ignore_errors: yes
+
+    - name: 修改zsh主题
+      lineinfile:
+        dest: ~/.zshrc
+        regexp: '^ZSH_THEME='
+        line: 'ZSH_THEME="agnoster"'
+
+    - name: 添加插件
+      lineinfile:
+        dest: ~/.zshrc
+        regexp: '^plugins=(git)'
+        line: 'plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-completions z history-substring-search command-not-found colored-man-pages extract)'
+
+    - name: 重新登录shell生效
+      shell: echo "重新登录shell生效"
