@@ -61,7 +61,8 @@
         state: restarted
 
     - name: 修改Hostname
-      shell: hostnamectl set-hostname {{ inventory_hostname }}
+      hostname:
+        name: "{{ inventory_hostname }}"
 
     - name: 屏蔽系统错误报告(Debian)
       file:
