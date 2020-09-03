@@ -5,6 +5,7 @@
 
 项目目录结构
 ```
+ansible-linux
 ├── files
 │   ├── docker
 │   │   ├── daemon.json
@@ -26,6 +27,7 @@
 │   ├── rar.yml
 │   ├── remove_gnome.yml
 │   ├── repository.yml
+│   ├── ssh-key.yml
 │   └── universal.yml
 └── README.md
 ```
@@ -58,39 +60,44 @@ git clone https://github.com/Leif160519/ansible-linux
 ```
 # all
 [all]
-k8s-node1         ansible_host=192.168.0.8
-k8s-node2         ansible_host=192.168.0.9
-k8s-node3         ansible_host=192.168.0.10
-ubuntu2004        ansible_host=192.168.0.105
+ubuntu-2004       ansible_host=10.1.26.76
 centos-7          ansible_host=10.1.26.172
 
 #dist
 [dist]
-[dist:children]
+[dist:children]   
+dist.debian
+dist.redhat
+
+[dist.debian:children]         # debian子类
 dist.ubuntu
+
+[dist.redhat:children]         # redhat子类
 dist.centos
 
-[dist.centos:children]
-dist.centos7
-
-
-[dist.ubuntu:children]
+[dist.ubuntu:children]         # ubuntu子类
 dist.ubuntu.lts
 
-[dist.ubuntu.lts:children]
+[dist.centos:children]         # centos子类
+dist.centos6
+dist.centos7
+
+[dist.ubuntu.lts:children]     # ubuntu发行版子类
+dist.u1604
 dist.u1804
 dist.u2004
 
-[dist.centos7]
-k8s-node1
-k8s-node2
-k8s-node3
+[dist.centos6]                 # centos6机器列表
+
+[dist.centos7]                 # centos7机器列表
 centos-7
 
-[dist.u1804]
+[dist.u1604]                   # ubuntu16.04机器列表
 
-[dist.u2004]
-ubuntu2004
+[dist.u1804]                   # ubuntu18.04机器列表
+
+[dist.u2004]                   # ubuntu20.04机器列表
+ubuntu-2004
 ```
 
 - 5.ansible配置文件配置忽略组语法错误
