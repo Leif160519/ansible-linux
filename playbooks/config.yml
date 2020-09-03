@@ -8,20 +8,45 @@
 ---
 - name: 系统设置(通用)
   hosts: all
-  tags: all
+  tags: config
   tasks:
-    - name: 关闭swap分区(重启后生效)
-      shell: sed  -i '/swap/s/^/#/' /etc/fstab
-      ignore_errors: true
+    - name: 禁用swap分区(重启后生效)
+      replace:
+        path: /etc/fstab
+        regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+        replace: '# \1'
+      #mount: 仅对centos有效
+      #  name: swap
+      #  state: absent
+      #shell: sed  -i '/swap/s/^/#/' /etc/fstab
+
+    - shell: swapoff -a #临时关闭
+
+    #- name: 启用swap分区(重启后生效)
+    #  replace:
+    #    path: /etc/fstab
+    #    regexp: '^# (.+?\sswap\s+sw\s+.*)$'
+    #    replace: '\1'
+
+    #- shell: swapon -a #临时启用
 
     - name: 配置SSH
-      shell: "{{ item }}"
-      ignore_errors: true
-      with_items:
-        - sed -i "s/#UseDNS no/UseDNS no/g" /etc/ssh/sshd_config
-        - sed -i "s/#GSSAPIAuthentication no/GSSAPIAuthentication no/g" /etc/ssh/sshd_config
-        - sed -i "s/#ClientAliveInterval 0/ClientAliveInterval 60/g" /etc/ssh/sshd_config
-        - sed -i "s/#ClientAliveCountMax 3/ClientAliveCountMax 60/g" /etc/ssh/sshd_config
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^#UseDNS'
+        line: 'UseDNS no'
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^#GSSAPIAuthentication'
+        line: 'GSSAPIAuthentication no'
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^#ClientAliveInterval'
+        line: 'ClientAliveInterval 60'
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^#ClientAliveCountMax'
+        line: 'ClientAliveCountMax 60'  
 
     - name: 重启SSH服务
       service:
@@ -31,29 +56,35 @@
     - name: 修改Hostname
       shell: hostnamectl set-hostname {{ inventory_hostname }}
 
-# 由于系统差别而做特别处理
-- name: Ubuntu系统设置
-  hosts: dist.ubuntu.lts
-  tags: ubuntu
-  tasks:
-    - name: Ubuntu屏蔽系统错误报告
-      shell: rm -rf /var/crash/* && sed -i 's/enabled=1/enabled=0/g' /etc/default/apport
-      ignore_errors: true
+    - name: 屏蔽系统错误报告(Debian)
+      file:
+        path: /var/crash/
+        state: absent
+      when: ansible_os_family == "Debian"
 
-    - name: 设置所有sudo指令不需要密码
-      shell: sed -i "s/%sudo[[:space:]]*ALL=(ALL:ALL) ALL/%sudo    ALL=(ALL:ALL) NOPASSWD:ALL/g" /etc/sudoers
-      ignore_errors: true
+    - lineinfile:
+        dest: /etc/default/apport
+        regexp: '^enabled='
+        line: 'enabled=0'
+      when: ansible_os_family == "Debian"
 
-- name: Centos7系统设置
-  hosts: dist.centos7
-  tags: centos
-  tasks:
-    - name: Centos 7禁用selinux(重启后生效)
-      shell: sed -i "s/enforcing/disabled/g" /etc/selinux/config
-      ignore_errors: true
+    - name: 设置所有sudo指令不需要密码(Debian)
+      lineinfile:
+        dest: /etc/sudoers
+        regexp: '^%sudo'
+        line: '%sudo    ALL=(ALL:ALL) NOPASSWD:ALL'
+      when: ansible_os_family == "Debian"
 
-    - name: Centos 7禁用防火墙
+    - name: 禁用selinux(重启后生效)(RedHat)
+      lineinfile:
+        dest: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: 'SELINUX=disabled'
+      when: ansible_os_family == "RedHat"
+
+    - name: 禁用防火墙(RedHat)
       service:
         name: firewalld
         state: stopped
         enabled: no
+      when: ansible_os_family == "RedHat"

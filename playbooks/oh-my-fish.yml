@@ -6,31 +6,31 @@
 # @leif160519 @2020.09.02
 ####
 ---
-- name: Ubuntu安装oh-my-fish
-  hosts: dist.ubuntu.lts
-  tags: [fish,ubuntu]
+- name: 安装oh-my-fish
+  hosts: all
+  tags: [fish]
   tasks:
-    - name: 安装fish包
+    - name: 安装fish包(Debian)
       apt:
         name: fish
         state: latest
+      when: ansible_os_family == "Debian"
 
-    - name: 清理下载的安装包缓存
-      shell: apt clean && apt autoclean
-      ignore_errors: yes
-
-- name: Centos安装oh-my-fish
-  hosts: dist.centos7
-  tags: [fish,centos]
-  tasks:
-    - name: 安装fish包
+    - name: 安装fish包(RedHat)
       yum:
         name: fish
         state: installed
+      when: ansible_os_family == "RedHat"
 
-    - name: 清理安装包
+    - name: 清理下载的安装包缓存(Debian)
+      shell: apt clean && apt autoclean
+      ignore_errors: yes
+      when: ansible_os_family == "Debian"
+
+    - name: 清理下载的安装包缓存(RedHat)
       shell: yum clean all
       ignore_errors: true
+      when: ansible_os_family == "RedHat"
 
 - hosts: all
   tasks:

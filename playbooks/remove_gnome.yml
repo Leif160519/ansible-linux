@@ -8,7 +8,7 @@
 ---
 - name: 卸载gnome环境
   hosts: dist.ubuntu.lts
-  tags: [ubuntu, lts, gnome]
+  tags: [gnome]
   tasks:
     - name: 卸载gnome-shell主程序
       apt:

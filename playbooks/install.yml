@@ -7,72 +7,20 @@
 ####
 ---
 - name: Ubuntu 安装基础软件
-  hosts: dist.ubuntu.lts
-  tags: [ubuntu, lts, base]
+  hosts: all
+  tags: [install]
   tasks:
-    - name: 安装文本编辑器
+    - name: 安装常用软件(Debian)
       apt:
-        name: ['vim','emacs']
+        name: ['vim','emacs','git','bash-completion','tree','curl','htop','ctop','iotop','iftop','nethogs','net-tools','sysstat','fio','fping','iperf','screenfetch','neofetch','expect','ntpdate','ansible','rar','lrzsz','monit','dstat','cacti','tmux','figlet','lsof','nmap','dosfstools']
         state: latest
+      when: ansible_os_family == "Debian"
 
-    - name: 安装开发软件
-      apt:
-        name: ['git','npm','nodejs','openjdk-8-jre-headless']
-        state: latest
-
-    - name: 安装工具软件
-      apt:
-        name: ['bash-completion','tree','curl','htop','ctop','iotop','iftop','nethogs','net-tools','sysstat','fio','fping','iperf','screenfetch','neofetch','expect','ntpdate','w3m','lynx','ansible','rar','pv','lrzsz','monit','dstat','cacti','tmux','figlet','lsof','nmap','dosfstools']
-        state: latest
-
-    - name: 启动相关服务
-      service:
-        name: "{{ item }}"
-        state: started
-        enabled: yes
-      with_items:
-        - sysstat
-        - monit
-
-    - name: 清理无用的安装包缓存
-      apt:
-        autoclean: yes
-
-    - name:  清理不再使用的依赖包
-      apt:
-        autoremove: yes
-
-    - name: 清理下载的安装包缓存
-      shell: apt clean && apt autoclean
-      ignore_errors: yes
-
-    - name: 卸载snapd
-      shell: apt -y autoremove --purge snapd
-      ignore_errors: yes
-
-- name: Centos 7 安装基础软件
-  hosts: dist.centos7
-  tags: [centos, seven, base]
-  tasks:
-    - name: 安装文本编辑器
+    - name: 安装常用软件(Redhat)
       yum:
-        name: ['nano','vim','emacs']
+        name: ['nano','vim','emacs','zip','unzip','git','bash-completion','wget','yum-utils','epel-release','htop','iotop','net-tools','nethogs','mrtg','nagios','cacti','telnet','tree','tmux','iperf','figlet','lsof','dpkg','expect','hdparm','psmisc','fping','tcpdump','nmap','fio','nc','strace','perf','sysstat','ntp','bind-utils','lrzsz','monit','ansible','dosfstools','iftop']
         state: installed
-
-    - name: 安装解压缩软件
-      yum:
-        name: ['zip','unzip']
-        state: installed
-
-    - name: 安装开发软件
-      yum:
-        name: ['git','java']
-        state: installed
-
-    - name: 安装工具软件
-      yum:
-        name: ['bash-completion','wget','yum-utils','epel-release','iftop','htop','iotop','net-tools','nethogs','mrtg','nagios','cacti','pv','telnet','tree','tmux','iperf','figlet','lsof','dpkg','expect','hdparm','psmisc','fping','tcpdump','nmap','fio','nc','strace','perf','sysstat','ntp','bind-utils','lynx','w3m','lrzsz','monit','ansible','dosfstools']
-        state: installed
+      when: ansible_os_family == "RedHat"
 
     - name: 启动相关服务
       service:
@@ -83,7 +31,29 @@
         - sysstat
         - monit
         - ntpd
+      ignore_errors: yes
 
-    - name: 清理安装包
+    - name: 清理无用的安装包缓存(Debian)
+      apt:
+        autoclean: yes
+      when: ansible_os_family == "Debian"
+
+    - name:  清理不再使用的依赖包(Debian)
+      apt:
+        autoremove: yes
+      when: ansible_os_family == "Debian"
+
+    - name: 清理下载的安装包缓存(Debian)
+      shell: apt clean && apt autoclean
+      ignore_errors: yes
+      when: ansible_os_family == "Debian"
+
+    - name: 卸载snapd(Debian)
+      shell: apt -y autoremove --purge snapd
+      ignore_errors: yes
+      when: ansible_os_family == "Debian"
+
+    - name: 清理安装包(Redhat)
       shell: yum clean all
       ignore_errors: true
+      when: ansible_os_family == "RedHat"
