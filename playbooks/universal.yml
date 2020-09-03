@@ -12,3 +12,6 @@
 
 # 系统配置
 - import_playbook: config.yml
+
+# 生成ssh-key
+- import_playbook: ssh-key.yml
