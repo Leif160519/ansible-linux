@@ -24,14 +24,10 @@
         - shell: 
             rpm -i /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
 
-        - shell:
-            ip a | grep inet | grep -v inet6 | grep -v 127. | sed 's/^[ \t]*//g' | cut -d ' ' -f2 | grep -v 172 | cut -d '/' -f1 | head -1
-          register: ip_address
-
         - lineinfile:
             dest: /etc/gitlab/gitlab.rb
             regexp: '^external_url'
-            line: "external_url 'http://{{ ip_address.stdout }}'"
+            line: "external_url 'http://{{ ansible_all_ipv4_addresses[0] }}"
   
         - shell: |
             sed -i '$a\0  2    * * *   root    /opt/gitlab/bin/gitlab-rake gitlab:backup:create CRON=1' /etc/crontab
