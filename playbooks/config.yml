@@ -6,7 +6,7 @@
 # @leif160519 @2020.08.29
 ####
 ---
-- name: 系统设置(通用)
+- name: 系统设置
   hosts: all
   tags: config
   tasks:
