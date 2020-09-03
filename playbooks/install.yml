@@ -6,20 +6,63 @@
 # @leif160519 @2020.08.29
 ####
 ---
-- name: Ubuntu 安装基础软件
+- name: 安装基础软件
   hosts: all
   tags: [install]
   tasks:
-    - name: 安装常用软件(Debian)
-      apt:
-        name: ['vim','emacs','git','bash-completion','tree','curl','htop','ctop','iotop','iftop','nethogs','net-tools','sysstat','fio','fping','iperf','screenfetch','neofetch','expect','ntpdate','ansible','rar','lrzsz','monit','dstat','cacti','tmux','figlet','lsof','nmap','dosfstools']
+    - name: 安装常用软件
+      package:
+        name: "{{ item }}"
         state: latest
-      when: ansible_os_family == "Debian"
+      with_items:
+        - nano
+        - vim
+        - emacs
+        - zip
+        - unzip
+        - git
+        - bash-completion
+        - wget
+        - htop
+        - iotop
+        - net-tools
+        - nethogs
+        - mrtg
+        - cacti
+        - telnet
+        - tree
+        - tmux
+        - iperf
+        - figlet
+        - lsof
+        - dpkg
+        - expect
+        - hdparm
+        - psmisc
+        - fping
+        - tcpdump
+        - nmap
+        - fio
+        - strace
+        - sysstat
+        - ntp
+        - lrzsz
+        - monit
+        - ansible
+        - dosfstools
+        - iftop
+      ignore_errors: yes
 
-    - name: 安装常用软件(Redhat)
-      yum:
-        name: ['nano','vim','emacs','zip','unzip','git','bash-completion','wget','yum-utils','epel-release','htop','iotop','net-tools','nethogs','mrtg','nagios','cacti','telnet','tree','tmux','iperf','figlet','lsof','dpkg','expect','hdparm','psmisc','fping','tcpdump','nmap','fio','nc','strace','perf','sysstat','ntp','bind-utils','lrzsz','monit','ansible','dosfstools','iftop']
-        state: installed
+    - package:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - yum-utils
+        - epel-release
+        - nagios
+        - nc
+        - perf
+        - bind-utils
       when: ansible_os_family == "RedHat"
 
     - name: 启动相关服务

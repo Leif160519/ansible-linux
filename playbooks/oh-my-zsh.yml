@@ -10,17 +10,13 @@
   hosts: all
   tags: [zsh]
   tasks:
-    - name: 安装zsh包(Debian)
-      apt:
-        name: [zsh,autojump]
+    - name: 安装zsh和autojump
+      package:
+        name: "{{ item }}"
         state: latest
-      when: ansible_os_family == "Debian"
-
-    - name: 安装zsh包(RedHat)
-      yum:
-        name: [zsh,autojump]
-        state: installed
-      when: ansible_os_family == "RedHat"
+      with_items:
+        - zsh
+        - autojump
 
     - name: 清理下载的安装包缓存(Debian)
       shell: apt clean && apt autoclean
