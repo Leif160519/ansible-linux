@@ -21,17 +21,24 @@
             checksum: md5:{{ gitlab_md5sum }}
           when: ansible_machine=="x86_64"
 
-        - shell: 
-            rpm -i /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
+        - yum: 
+            name: /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
 
         - lineinfile:
             dest: /etc/gitlab/gitlab.rb
             regexp: '^external_url'
-            line: "external_url 'http://{{ ansible_all_ipv4_addresses[0] }}"
-  
-        - shell: |
-            sed -i '$a\0  2    * * *   root    /opt/gitlab/bin/gitlab-rake gitlab:backup:create CRON=1' /etc/crontab
+            line: "external_url 'http://{{ ansible_all_ipv4_addresses[0] }}'"
+
+        - lineinfile:
+            dest: /etc/gitlab/gitlab.rb
+            regexp: "^# gitlab_rails['backup_keep_time'] ="
+            line: "gitlab_rails['backup_keep_time'] = 604800"
+
+        - lineinfile:
+            dest: /etc/crontab
+            line: '0  2    * * *   root    /opt/gitlab/bin/gitlab-rake gitlab:backup:create CRON=1'
+
+        - shell: | 
             crontab /etc/crontab
-            sed -i "s/# gitlab_rails\['backup_keep_time'\] = 604800/gitlab_rails\['backup_keep_time'\] = 604800/g" /etc/gitlab/gitlab.rb
             gitlab-ctl reconfigure
-            ignore_errors: true
+          ignore_errors: true
