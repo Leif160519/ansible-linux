@@ -15,9 +15,9 @@
         path: /etc/fstab
         regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
         replace: '# \1'
-      #mount: 仅对centos有效
-      #  name: swap
-      #  state: absent
+    - mount: # 仅对centos有效
+        name: swap
+        state: absent
       #shell: sed  -i '/swap/s/^/#/' /etc/fstab
 
     - shell: swapoff -a #临时关闭
@@ -47,6 +47,13 @@
         dest: /etc/ssh/sshd_config
         regexp: '^#ClientAliveCountMax'
         line: 'ClientAliveCountMax 60'  
+
+      lineinfile:
+        dest: /etc/ssh/ssh_config
+        line: "{{ item }}"
+      with_items:
+        - ServerAliveInterval 20
+        - ServerAliveCountMax 999
 
     - name: 重启SSH服务
       service:
