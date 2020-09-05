@@ -18,3 +18,6 @@
 
 # 设置ntp时间同步
 - import_playbook: ntp.yml
+ 
+# 设置静态IP地址
+- import_playbook: network.yml
