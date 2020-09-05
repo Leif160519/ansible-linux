@@ -45,7 +45,6 @@
         - fio
         - strace
         - sysstat
-        - ntp
         - lrzsz
         - monit
         - ansible
@@ -73,7 +72,6 @@
       with_items:
         - sysstat
         - monit
-        - ntpd
       ignore_errors: yes
 
     - name: 清理无用的安装包缓存(Debian)
