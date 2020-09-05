@@ -15,3 +15,6 @@
 
 # 生成ssh-key
 - import_playbook: ssh-key.yml
+
+# 设置ntp时间同步
+- import_playbook: ntp.yml
