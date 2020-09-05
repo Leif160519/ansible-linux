@@ -11,8 +11,8 @@
   tags: [rar]
   vars:
     rar_version: 5.7.1
-    rar_md5sum: a5a4e30aa7d3591e0b18835fff5906e5
-    os_version: x64
+    rar_md5sum_x64: a5a4e30aa7d3591e0b18835fff5906e5
+    rar_md5sum_x86: 845b83f6b670877033a6a944a454c47d
   tasks:
     - name: 下载rar安装包
       block:
@@ -21,14 +21,20 @@
           register: rar
 
         - get_url:
-            url: http://www.rarlab.com/rar/rarlinux-{{ os_version }}-{{ rar_version }}.tar.gz
-            dest: /tmp/rarlinux-{{ os_version }}-{{ rar_version }}.tar.gz
-            checksum: md5:{{ rar_md5sum }}
-          when: ansible_machine=="x86_64" and rar.stat.exists == false
+            url: http://www.rarlab.com/rar/rarlinux-x64-{{ rar_version }}.tar.gz
+            dest: /tmp/rarlinux-{{ rar_version }}.tar.gz
+            checksum: md5:{{ rar_md5sum_x64 }}
+          when: ansible_machine == "x86_64" and rar.stat.exists == false
+
+        - get_url:
+            url: http://www.rarsoft.com/rar/rarlinux-{{ rar_version }}.tar.gz
+            dest: /tmp/rarlinux-{{ rar_version }}.tar.gz
+            checksum: md5:{{ rar_md5sum_x86 }}
+          when: not ansible_machine == "x86_64" and rar.stat.exists == false
 
         - unarchive: 
             copy: false
-            src: /tmp/rarlinux-{{ os_version }}-{{ rar_version }}.tar.gz
+            src: /tmp/rarlinux-{{ rar_version }}.tar.gz
             dest: /tmp
             owner: root
             group: root
@@ -37,6 +43,7 @@
         - shell: |
             cd /tmp/rar/
             make
+          ignore_errors: yes
 
         - file:
             path: /tmp/rar
@@ -44,5 +51,5 @@
           when: rar.stat.exists == true
 
         - file:
-            path: /tmp/rarlinux-{{ os_version }}-{{ rar_version }}.tar.gz
+            path: /tmp/rarlinux-{{ rar_version }}.tar.gz
             state: absent
