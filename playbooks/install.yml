@@ -50,6 +50,7 @@
         - ansible
         - dosfstools
         - iftop
+        - uuid
       ignore_errors: yes
 
     - package:

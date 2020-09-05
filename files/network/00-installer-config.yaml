@@ -1,0 +1,12 @@
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    ens33:
+      addresses: [{{ address }}/{{ netmask1 }}]
+      optional: true
+      gateway4: {{ gateway }}
+      nameservers:
+        addresses: [{{ dns1 }},{{ dns2 }}]
+      dhcp4: no
+  version: 2
+  renderer: networkd

@@ -27,7 +27,7 @@
         - lineinfile:
             dest: /etc/gitlab/gitlab.rb
             regexp: '^external_url'
-            line: "external_url 'http://{{ ansible_all_ipv4_addresses[0] }}'"
+            line: "external_url 'http://{{ ansible_host }}'"
 
         - lineinfile:
             dest: /etc/gitlab/gitlab.rb

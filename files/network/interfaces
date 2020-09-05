@@ -1,0 +1,5 @@
+auto {{ interface }}
+iface {{ interface }} inet static
+address {{ address }}
+netmask {{ netmask }}
+gateway {{ gateway }}
