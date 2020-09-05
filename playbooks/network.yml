@@ -10,7 +10,7 @@
   hosts: all
   tags: network
   tasks:
-    - shell: uuidgen
+    - shell: uuid
       register: network_uuid
 
     - set_fact:

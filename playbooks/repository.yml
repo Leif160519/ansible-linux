@@ -29,3 +29,16 @@
         dest: /etc/yum.repos.d/CentOS-Base.repo
     - yum: 
         update_cache: yes
+
+- name: Debian
+  hosts: dist.Debian 
+  tags: debian
+  vars:
+    mirror: http://mirrors.aliyun.com/debian/
+    mirror_security: http://mirrors.aliyun.com/debian-security
+  tasks:
+    - template:
+        src: files/repository/sources-debian.list
+        dest: /etc/apt/sources.list
+    - apt:
+       update_cache: yes

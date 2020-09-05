@@ -10,8 +10,14 @@ ansible-linux
 │   ├── docker
 │   │   ├── daemon.json
 │   │   └── docker-ce.repo
+│   ├── network
+│   │   ├── 00-installer-config.yaml
+│   │   ├── ifcfg-eth0
+│   │   ├── interfaces
+│   │   └── resolv.conf
 │   └── repository
 │       ├── CentOS-Base.repo
+│       ├── sources-debian.list
 │       └── sources.list
 ├── inventory
 │   ├── all
@@ -22,6 +28,8 @@ ansible-linux
 │   ├── files -> ../files
 │   ├── gitlab.yml
 │   ├── install.yml
+│   ├── network.yml
+│   ├── ntp.yml
 │   ├── oh-my-fish.yml
 │   ├── oh-my-zsh.yml
 │   ├── rar.yml
@@ -60,8 +68,9 @@ git clone https://github.com/Leif160519/ansible-linux
 ```
 # all
 [all]
-ubuntu-2004       ansible_host=10.1.26.76
-centos-7          ansible_host=10.1.26.172
+ubuntu-2004       ansible_host=192.168.0.108
+centos-7          ansible_host=192.168.0.109
+debian-10         ansible_host=192.168.0.110
 
 #dist
 [dist]
@@ -71,6 +80,8 @@ dist.redhat
 
 [dist.debian:children]         # debian子类
 dist.ubuntu
+dist.Debian
+
 
 [dist.redhat:children]         # redhat子类
 dist.centos
@@ -86,6 +97,9 @@ dist.centos7
 dist.u1604
 dist.u1804
 dist.u2004
+
+[dist.Debian]                  # Debian子类
+debian-10
 
 [dist.centos6]                 # centos6机器列表
 

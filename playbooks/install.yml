@@ -51,6 +51,7 @@
         - dosfstools
         - iftop
         - uuid
+        - make
       ignore_errors: yes
 
     - package:

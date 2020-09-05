@@ -1,3 +1,4 @@
 [all]
-ubuntu-2004       ansible_host=10.1.26.76
-centos-7          ansible_host=10.1.26.172
+ubuntu-2004       ansible_host=192.168.0.108
+centos-7          ansible_host=192.168.0.109
+debian-10         ansible_host=192.168.0.110

@@ -1,0 +1,9 @@
+deb {{ mirror }} {{ ansible_distribution_release }} main non-free contrib
+deb {{ mirror_security }} {{ ansible_distribution_release }}/updates main
+deb {{ mirror }} {{ ansible_distribution_release }}-updates main non-free contrib
+deb {{ mirror }} {{ ansible_distribution_release }}-backports main non-free contrib
+
+deb-src {{ mirror_security }} {{ ansible_distribution_release }}/updates main
+deb-src {{ mirror }} {{ ansible_distribution_release }} main non-free contrib
+deb-src {{ mirror }} {{ ansible_distribution_release }}-updates main non-free contrib
+deb-src {{ mirror }} {{ ansible_distribution_release }}-backports main non-free contrib

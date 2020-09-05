@@ -64,24 +64,24 @@
       hostname:
         name: "{{ inventory_hostname }}"
 
-    - name: 屏蔽系统错误报告(Debian)
+    - name: 屏蔽系统错误报告(Ubuntu)
       file:
         path: /var/crash/
         state: absent
-      when: ansible_os_family == "Debian"
+      when: ansible_distribution == "Ubuntu"
 
     - lineinfile:
         dest: /etc/default/apport
         regexp: '^enabled='
         line: 'enabled=0'
-      when: ansible_os_family == "Debian"
+      when: ansible_distribution == "Ubuntu"
 
-    - name: 设置所有sudo指令不需要密码(Debian)
+    - name: 设置所有sudo指令不需要密码(Ubuntu)
       lineinfile:
         dest: /etc/sudoers
         regexp: '^%sudo'
         line: '%sudo    ALL=(ALL:ALL) NOPASSWD:ALL'
-      when: ansible_os_family == "Debian"
+      when: ansible_distribution == "Ubuntu"
 
     - name: 禁用selinux(重启后生效)(RedHat)
       lineinfile:

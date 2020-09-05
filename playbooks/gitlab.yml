@@ -13,7 +13,7 @@
     gitlab_version: 13.3.2
     gitlab_md5sum: 56562145dcf67e5f242518b49a03adcd
   tasks:
-    - name: 下载gitlab安装包
+    - name: gitlab
       block:
         - get_url:
             url: https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
