@@ -1,0 +1,18 @@
+##
+# 设置静态IP地址 
+#
+#
+##
+# @leif160519 @2020.09.05
+####
+---
+- name: 设置静态IP
+  hosts: all
+  tags: network
+  tasks:
+    - shell: echo ansible_`ls /sys/class/net | grep ^e`
+      register: interface
+
+    - debug:
+        msg: "{{ ansible_machine }}"
+

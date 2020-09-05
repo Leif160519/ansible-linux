@@ -1,0 +1,56 @@
+##
+# 设置ntp时间同步 
+#
+#
+##
+# @leif160519 @2020.09.05
+####
+---
+- name: 设置ntp时间同步
+  hosts: all
+  tags: ntp
+  tasks:
+    - name: 设置时区
+      shell: timedatectl set-timezone 'Asia/Shanghai'
+
+    - name: 安装ntp服务
+      package: 
+        name: ntp
+
+    - name: 设置时间同步(Debian)
+      lineinfile:
+        dest: /etc/ntp.conf
+        regexp: '^pool [0,1,2,3]'
+        line: "{{ item }}"
+      with_items:
+        - 'server ntp.aliyun.com'
+        - 'server ntp1.aliyun.com'
+        - 'server ntp2.aliyun.com'
+        - 'server ntp3.aliyun.com'
+      when: ansible_os_family == 'Debian'
+
+    - name: 设置时间同步(RedHat)
+      lineinfile:
+        dest: /etc/ntp.conf
+        regexp: '^server [0,1,2,3]'
+        line: "{{ item }}"
+      with_items:
+        - 'server ntp.aliyun.com'
+        - 'server ntp1.aliyun.com'
+        - 'server ntp2.aliyun.com'
+        - 'server ntp3.aliyun.com'
+      when: ansible_os_family == 'RedHat'
+
+    - name: 启动ntp服务(Debian)
+      service:
+        name: ntp
+        state: restarted
+        enabled: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: 启动ntp服务(RedHat)
+      service:
+        name: ntpd
+        state: restarted
+        enabled: yes
+      when: ansible_os_family == 'RedHat'
