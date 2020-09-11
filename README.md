@@ -80,8 +80,8 @@ dist.redhat
 
 [dist.debian:children]         # debian子类
 dist.ubuntu
-dist.Debian
-
+dist.debian9
+dist.debian10
 
 [dist.redhat:children]         # redhat子类
 dist.centos
@@ -98,7 +98,9 @@ dist.u1604
 dist.u1804
 dist.u2004
 
-[dist.Debian]                  # Debian子类
+[dist.debian9]                 # debian9机器列表
+
+[dist.debian10]                # debian10机器列表
 debian-10
 
 [dist.centos6]                 # centos6机器列表
@@ -136,7 +138,7 @@ ansible-playbook -u root -i inventory/ playbooks/install.yml -t [ubuntu | base]
 
 - 2.在某些机器上指定playbook
 ```
-ansible-playbook -u root -i inventory/ playbooks/install.yml -l 'k8s-node1 k8s-node2'
+ansible-playbook -u root -i inventory/ playbooks/install.yml -l 'ubuntu-2004 centos-7 debian-10'
 ```
 
 ## 四、写在最后

@@ -31,7 +31,7 @@
         update_cache: yes
 
 - name: Debian
-  hosts: dist.Debian 
+  hosts: dist.debian:!dist.ubuntu
   tags: debian
   vars:
     mirror: http://mirrors.aliyun.com/debian/

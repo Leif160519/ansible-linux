@@ -5,8 +5,8 @@ dist.redhat
 
 [dist.debian:children]         # debian子类
 dist.ubuntu
-dist.Debian
-
+dist.debian9
+dist.debian10
 
 [dist.redhat:children]         # redhat子类
 dist.centos
@@ -23,7 +23,9 @@ dist.u1604
 dist.u1804
 dist.u2004
 
-[dist.Debian]                  # Debian子类
+[dist.debian9]                 # debian9机器列表
+
+[dist.debian10]                # debian10机器列表
 debian-10
 
 [dist.centos6]                 # centos6机器列表
