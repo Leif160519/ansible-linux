@@ -133,12 +133,31 @@ ansible-playbook -u root -i inventory/ playbooks/universal.yml
 ## 三、特定情况
 - 1.安装某些软件
 ```
-ansible-playbook -u root -i inventory/ playbooks/install.yml -t [ubuntu | base] 
+ansible-playbook -u root -i inventory/ playbooks/install.yml -t [ubuntu | install] 
 ```
 
 - 2.在某些机器上指定playbook
 ```
 ansible-playbook -u root -i inventory/ playbooks/install.yml -l 'ubuntu-2004 centos-7 debian-10'
+```
+
+- 3.监控主机安装prometheus
+执行`prometheus.yml`之后别忘了执行一下`node_exporter.yml`，否则`9090`不能显示监控数据
+
+- 4.被监控主机安装node_exporter
+需在`node_export.yml`文件中将`delegate_to`后面的`prometheus`主机名按照实际情况修改之后再执行
+
+- 5.安装node_exporter时报错解决办法
+在某些情况下，执行带有`delegate_to`（任务委派）的playbook时候，会报错：
+```
+failed: [centos-7 -> 192.168.0.108] (item=  - job_name: 'node') => {"ansible_loop_var": "item", "changed": false, "item": "  - job_name: 'node'", "module_stderr": "Shared connection to 192.168.0.108 closed.\r\n", "module_stdout": "/bin/sh: 1: /usr/bin/python: not found\r\n", "msg": "The module failed to execute correctly, you probably need to set the interpreter.\nSee stdout/stderr for the exact error", "rc": 127}
+
+failed: [debian-10 -> 192.168.0.108] (item=  - job_name: 'node') => {"ansible_loop_var": "item", "changed": false, "item": "  - job_name: 'node'", "module_stderr": "Shared connection to 192.168.0.108 closed.\r\n", "module_stdout": "/bin/sh: 1: /usr/bin/python3.7: not found\r\n", "msg": "The module failed to execute correctly, you probably need to set the interpreter.\nSee stdout/stderr for the exact error", "rc": 127}
+```
+
+原因是ansible未检测到python环境，也就是说你在Linux终端打`python`是提示无此命令的，所以解决办法是，强制ansible使用python3环境，在执行命令后面添加`-e ansible_python_interpreter=/usr/bin/python3`参数即可：
+```
+ansible-playbook -i inventory playbooks/node_exporter.yml  -l 'debian-10' -e ansible_python_interpreter=/usr/bin/python3
 ```
 
 ## 四、写在最后

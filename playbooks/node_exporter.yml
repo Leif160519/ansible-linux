@@ -1,0 +1,77 @@
+##
+# 安装node_exporter
+#
+#
+##
+# @leif160519 @2020.09.11
+####
+---
+- name: 安装node_exporter
+  hosts: all
+  tags: [node_exporter]
+  vars:
+    n_version: 1.0.1
+    n_md5sum: e39f161ae0e7b486b98772c4aeb93805
+  tasks:
+    - name: node_exporter
+      block:
+        - user:
+            name: prometheus
+
+        - group:
+            name: prometheus
+
+        - stat:
+            path: /usr/local/node_exporter
+          register: n
+
+        - get_url:
+            url: https://github.com/prometheus/node_exporter/releases/download/v{{ n_version }}/node_exporter-{{ n_version }}.linux-amd64.tar.gz
+            dest: /tmp/node_exporter-{{ n_version }}.linux-amd64.tar.gz
+            checksum: md5:{{ n_md5sum }}
+          when: n.stat.exists == false
+
+        - unarchive: 
+            copy: false
+            src: /tmp/node_exporter-{{ n_version }}.linux-amd64.tar.gz
+            dest: /usr/local
+            owner: prometheus
+            group: prometheus
+          when: n.stat.exists == false
+
+        - command: mv /usr/local/node_exporter-{{ n_version }}.linux-amd64 /usr/local/node_exporter
+          when: n.stat.exists == false
+       
+        - lineinfile:
+            dest: /usr/local/prometheus/prometheus.yml
+            line: "{{ item }}"
+          with_items:
+            - "  - job_name: 'node'"
+            - "    static_configs:"
+            - "    - targets:"
+            - "        - {{  ansible_default_ipv4['address'] }}:9100"
+          run_once: true
+          delegate_to: "ubuntu-2004"
+
+        - raw: kill -HUP `ps -e | grep prometheus | awk '{print $1}'`
+          delegate_to: "ubuntu-2004"
+          ignore_errors: yes
+          run_once: true
+
+        - set_fact:
+            service_name: node_exporter
+            command: /usr/local/node_exporter/node_exporter
+
+        - template:
+            src: files/service/service.service
+            dest: /lib/systemd/system/{{ service_name }}.service
+            mode: 0644
+
+        - service:
+            name: "{{ service_name }}"
+            state: started
+            enabled: yes
+
+        - file:
+            path: /tmp/node_exporter-{{ n_version }}.linux-amd64.tar.gz
+            state: absent

@@ -1,0 +1,66 @@
+##
+# 安装prometheus
+#
+#
+##
+# @leif160519 @2020.09.11
+####
+---
+- name: 安装prometheus
+  hosts: all
+  tags: [prometheus]
+  vars:
+    p_version: 2.19.2
+    p_md5sum: a1777062449fb5567a58d0b08aa37881
+  tasks:
+    - name: prometheus
+      block:
+        - user:
+            name: prometheus
+
+        - group: 
+            name: prometheus
+
+        - stat:
+            path: /usr/local/prometheus
+          register: p
+
+        - get_url:
+            url: https://github.com/prometheus/prometheus/releases/download/v{{ p_version }}/prometheus-{{ p_version }}.linux-amd64.tar.gz
+            dest: /tmp/prometheus-{{ p_version }}.linux-amd64.tar.gz
+            checksum: md5:{{ p_md5sum }}
+          when: p.stat.exists == false
+
+        - unarchive: 
+            copy: false
+            src: /tmp/prometheus-{{ p_version }}.linux-amd64.tar.gz
+            dest: /usr/local
+            owner: prometheus
+            group: prometheus
+          when: p.stat.exists == false
+
+        - command: mv /usr/local/prometheus-{{ p_version }}.linux-amd64 /usr/local/prometheus
+          when: p.stat.exists == false
+
+        - lineinfile:
+            dest: /usr/local/prometheus/prometheus.yml
+            regexp: 'localhost'
+            line: "    - targets: ['{{ ansible_default_ipv4['address'] }}:9090']"
+
+        - set_fact:
+            service_name: prometheus
+            command: /usr/local/prometheus/prometheus --config.file=/usr/local/prometheus/prometheus.yml --web.enable-lifecycle
+
+        - template:
+            src: files/service/service.service
+            dest: /lib/systemd/system/{{ service_name }}.service
+            mode: 0644
+
+        - service:
+            name: "{{ service_name }}"
+            state: started
+            enabled: yes
+
+        - file:
+            path: /tmp/prometheus-{{ p_version }}.linux-amd64.tar.gz
+            state: absent
