@@ -157,8 +157,10 @@ failed: [debian-10 -> 192.168.0.108] (item=  - job_name: 'node') => {"ansible_lo
 
 原因是ansible未检测到python环境，也就是说你在Linux终端打`python`是提示无此命令的，所以解决办法是，强制ansible使用python3环境，在执行命令后面添加`-e ansible_python_interpreter=/usr/bin/python3`参数即可：
 ```
-ansible-playbook -i inventory playbooks/node_exporter.yml  -l 'debian-10' -e ansible_python_interpreter=/usr/bin/python3
+ansible-playbook -u root -i inventory playbooks/node_exporter.yml  -l 'debian-10' -e ansible_python_interpreter=/usr/bin/python3
 ```
+
+> 注意：仅仅在此情况下指定python版本，若无特别说明，执行其他playbook时请勿添加，否则会报错，因为部分属性依赖python2
 
 ## 四、写在最后
 由于个人精力有限，项目并不会经常更新，若大家有兴趣，可以在项目中贡献自己的代码，一起将[ansible-linux](https://github.com/Leif160519/ansible-linux)发展壮大，感谢各位的理解与支持！

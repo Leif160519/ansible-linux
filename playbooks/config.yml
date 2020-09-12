@@ -96,3 +96,24 @@
         state: stopped
         enabled: no
       when: ansible_os_family == "RedHat"
+
+    - name: 给pip换源
+      file:
+        path: /root/.pip
+        state: directory
+        mode: 0755
+
+    - file:
+        path: /root/.pip/pip.conf
+        state: touch
+        mode: 0755
+
+    - lineinfile:
+        dest: /root/.pip/pip.conf
+        line: "{{ item }}"
+      with_items:
+        - '[global]'
+        - 'index-url = http://mirrors.aliyun.com/pypi/simple/'
+        - '[install]'
+        - 'trusted-host=mirrors.aliyun.com '
+

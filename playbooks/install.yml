@@ -52,6 +52,10 @@
         - iftop
         - uuid
         - make
+        - python
+        - python3
+        - python-pip
+        - python3-pip
       ignore_errors: yes
 
     - package:
