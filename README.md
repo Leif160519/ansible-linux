@@ -15,10 +15,12 @@ ansible-linux
 │   │   ├── ifcfg-eth0
 │   │   ├── interfaces
 │   │   └── resolv.conf
-│   └── repository
-│       ├── CentOS-Base.repo
-│       ├── sources-debian.list
-│       └── sources.list
+│   ├── repository
+│   │   ├── CentOS-Base.repo
+│   │   ├── sources-debian.list
+│   │   └── sources.list
+│   └── service
+│       └── service.service
 ├── inventory
 │   ├── all
 │   └── dist
@@ -27,11 +29,14 @@ ansible-linux
 │   ├── docker.yml
 │   ├── files -> ../files
 │   ├── gitlab.yml
+│   ├── grafana.yml
 │   ├── install.yml
 │   ├── network.yml
+│   ├── node_exporter.yml
 │   ├── ntp.yml
 │   ├── oh-my-fish.yml
 │   ├── oh-my-zsh.yml
+│   ├── prometheus.yml
 │   ├── rar.yml
 │   ├── remove_gnome.yml
 │   ├── repository.yml
