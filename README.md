@@ -29,6 +29,7 @@ ansible-linux
 │   ├── all
 │   └── dist
 ├── playbooks
+│   ├── alertmanager.yml
 │   ├── config.yml
 │   ├── docker.yml
 │   ├── files -> ../files
