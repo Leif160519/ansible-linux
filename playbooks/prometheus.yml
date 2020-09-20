@@ -48,6 +48,25 @@
             regexp: 'localhost'
             line: "    - targets: ['{{ ansible_default_ipv4['address'] }}:9090']"
 
+        - lineinfile: # 定义规则文件路径
+            dest: /opt/prometheus/prometheus.yml
+            insertafter: "^rule_files:"
+            line: "  - /opt/prometheus/rules/*.yml"
+
+        - file:
+            path: /opt/prometheus/rules
+            state: directory
+            mode: 0755
+            owner: prometheus
+            group: prometheus
+
+        - copy:
+            src: files/prometheus/rules/default.yml
+            dest: /opt/prometheus/rules/default.yml
+            mode: 0644
+            owner: prometheus
+            group: prometheus
+
         - set_fact:
             service_name: prometheus
             command: /opt/prometheus/prometheus --config.file=/opt/prometheus/prometheus.yml --web.enable-lifecycle
@@ -61,6 +80,10 @@
             name: "{{ service_name }}"
             state: started
             enabled: yes
+
+        - raw: kill -HUP `ps -e | grep prometheus | awk '{print $1}'`
+          ignore_errors: yes
+          run_once: true
 
         - file:
             path: /tmp/prometheus-{{ p_version }}.linux-amd64.tar.gz

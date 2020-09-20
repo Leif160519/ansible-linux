@@ -69,15 +69,19 @@
             prometheus_targets_node: "{{ groups['all'] }}"
 
         - file:
-            dest: /opt/prometheus/file_sd
+            path: /opt/prometheus/file_sd
             state: directory
             mode: 0755
+            owner: prometheus
+            group: prometheus
           delegate_to: "prometheus-server"
 
         - template:
             src: files/prometheus/node.yml.j2
             dest: /opt/prometheus/file_sd/node.yml
             mode: 0644
+            owner: prometheus
+            group: prometheus
           delegate_to: "prometheus-server"
           run_once: true
 
