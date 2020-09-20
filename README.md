@@ -15,6 +15,10 @@ ansible-linux
 │   │   ├── ifcfg-eth0
 │   │   ├── interfaces
 │   │   └── resolv.conf
+│   ├── prometheus
+│   │   ├── node.yml.j2
+│   │   └── rules
+│   │       └── default.yml
 │   ├── repository
 │   │   ├── CentOS-Base.repo
 │   │   ├── sources-debian.list
@@ -73,9 +77,11 @@ git clone https://github.com/Leif160519/ansible-linux
 ```
 # all
 [all]
-ubuntu-2004       ansible_host=192.168.0.108
-centos-7          ansible_host=192.168.0.109
-debian-10         ansible_host=192.168.0.110
+prometheus-server ansible_host=10.1.1.24
+ansible-server    ansible_host=10.1.1.25
+nexus-server      ansible_host=10.1.1.26
+jenkins-server    ansible_host=10.1.1.27
+gitlab-server     ansible_host=10.1.1.28
 
 #dist
 [dist]
@@ -106,19 +112,21 @@ dist.u2004
 [dist.debian9]                 # debian9机器列表
 
 [dist.debian10]                # debian10机器列表
-debian-10
 
 [dist.centos6]                 # centos6机器列表
 
 [dist.centos7]                 # centos7机器列表
-centos-7
+gitlab-server
 
 [dist.u1604]                   # ubuntu16.04机器列表
 
 [dist.u1804]                   # ubuntu18.04机器列表
 
 [dist.u2004]                   # ubuntu20.04机器列表
-ubuntu-2004
+prometheus-server
+ansible-server
+jenkins-server
+nexus-server
 ```
 
 - 5.ansible配置文件配置忽略组语法错误
@@ -143,7 +151,7 @@ ansible-playbook -u root -i inventory/ playbooks/install.yml -t [ubuntu | instal
 
 - 2.在某些机器上指定playbook
 ```
-ansible-playbook -u root -i inventory/ playbooks/install.yml -l 'ubuntu-2004 centos-7 debian-10'
+ansible-playbook -u root -i inventory/ playbooks/install.yml -l 'jenkins-server nexus-server'
 ```
 
 - 3.监控主机安装prometheus
@@ -162,10 +170,8 @@ failed: [debian-10 -> 192.168.0.108] (item=  - job_name: 'node') => {"ansible_lo
 
 原因是ansible未检测到python环境，也就是说你在Linux终端打`python`是提示无此命令的，所以解决办法是，强制ansible使用python3环境，在执行命令后面添加`-e ansible_python_interpreter=/usr/bin/python3`参数即可：
 ```
-ansible-playbook -u root -i inventory playbooks/node_exporter.yml  -l 'debian-10' -e ansible_python_interpreter=/usr/bin/python3
+ansible-playbook -u root -i inventory playbooks/node_exporter.yml  -l 'jenkins-server' -e ansible_python_interpreter=/usr/bin/python3
 ```
 
-> 注意：仅仅在此情况下指定python版本，若无特别说明，执行其他playbook时请勿添加，否则会报错，因为部分属性依赖python2
-
-## 四、写在最后
-由于个人精力有限，项目并不会经常更新，若大家有兴趣，可以在项目中贡献自己的代码，一起将[ansible-linux](https://github.com/Leif160519/ansible-linux)发展壮大，感谢各位的理解与支持！
+## 四、说明
+- 1.prometheus自带两条规则，分别为"分区剩余空间不足2%"和"分区剩余空间使用预计不足4h"

@@ -13,9 +13,17 @@
     - name: 设置时区
       shell: timedatectl set-timezone 'Asia/Shanghai'
 
-    - name: 安装ntp服务
-      package: 
+    - name: 安装ntp服务(RedHat)
+      yum: 
         name: ntp
+        state: installed
+      when: ansible_os_family == "RedHat"
+
+    - name: 安装ntp服务(Debian)
+      apt:
+        name: ntpdate
+        state: latest
+      when: ansible_os_family == "Debian"
 
     - name: 设置时间同步(Debian)
       lineinfile:
