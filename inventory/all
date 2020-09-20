@@ -1,4 +1,6 @@
 [all]
-ubuntu-2004       ansible_host=192.168.0.108
-centos-7          ansible_host=192.168.0.109
-debian-10         ansible_host=192.168.0.110
+prometheus-server ansible_host=10.1.1.24
+ansible-server    ansible_host=10.1.1.25
+nexus-server      ansible_host=10.1.1.26
+jenkins-server    ansible_host=10.1.1.27
+gitlab-server     ansible_host=10.1.1.28

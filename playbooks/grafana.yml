@@ -28,13 +28,15 @@
           when: ansible_os_family == "Debian"
 
         - get_url:
-            url: https://dl.grafana.com/oss/release/grafana_{{ g_version }}_amd64.deb
+            #url: https://dl.grafana.com/oss/release/grafana_{{ g_version }}_amd64.deb
+            url: http://10.1.1.26/repository/it/prometheus/grafana_{{ g_version }}_amd64.deb
             dest: /tmp/grafana_{{ g_version }}_amd64.deb
             checksum: md5:{{ g_md5sum_deb }}
           when: g.stat.exists == false and ansible_os_family == "Debian"
 
         - get_url:
-            url: https://dl.grafana.com/oss/release/grafana-{{ g_version }}-1.x86_64.rpm
+            #url: https://dl.grafana.com/oss/release/grafana-{{ g_version }}-1.x86_64.rpm
+            url: http://10.1.1.26/repository/it/prometheus/grafana-{{ g_version }}-1.x86_64.rpm
             dest: /tmp/grafana-{{ g_version }}-1.x86_64.rpm
             checksum: md5:{{ g_md5sum_rpm }}
           when: g.stat.exists == false and ansible_os_family == "RedHat"

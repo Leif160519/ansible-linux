@@ -22,11 +22,12 @@
             name: prometheus
 
         - stat:
-            path: /usr/local/prometheus
+            path: /opt/prometheus
           register: p
 
         - get_url:
-            url: https://github.com/prometheus/prometheus/releases/download/v{{ p_version }}/prometheus-{{ p_version }}.linux-amd64.tar.gz
+            #url: https://github.com/prometheus/prometheus/releases/download/v{{ p_version }}/prometheus-{{ p_version }}.linux-amd64.tar.gz
+            url: http://10.1.1.26/repository/it/prometheus/prometheus-{{ p_version }}.linux-amd64.tar.gz
             dest: /tmp/prometheus-{{ p_version }}.linux-amd64.tar.gz
             checksum: md5:{{ p_md5sum }}
           when: p.stat.exists == false
@@ -34,22 +35,22 @@
         - unarchive: 
             copy: false
             src: /tmp/prometheus-{{ p_version }}.linux-amd64.tar.gz
-            dest: /usr/local
+            dest: /opt
             owner: prometheus
             group: prometheus
           when: p.stat.exists == false
 
-        - command: mv /usr/local/prometheus-{{ p_version }}.linux-amd64 /usr/local/prometheus
+        - command: mv /opt/prometheus-{{ p_version }}.linux-amd64 /opt/prometheus
           when: p.stat.exists == false
 
         - lineinfile:
-            dest: /usr/local/prometheus/prometheus.yml
+            dest: /opt/prometheus/prometheus.yml
             regexp: 'localhost'
             line: "    - targets: ['{{ ansible_default_ipv4['address'] }}:9090']"
 
         - set_fact:
             service_name: prometheus
-            command: /usr/local/prometheus/prometheus --config.file=/usr/local/prometheus/prometheus.yml --web.enable-lifecycle
+            command: /opt/prometheus/prometheus --config.file=/opt/prometheus/prometheus.yml --web.enable-lifecycle
 
         - template:
             src: files/service/service.service

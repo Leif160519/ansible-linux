@@ -83,6 +83,13 @@
         line: '%sudo    ALL=(ALL:ALL) NOPASSWD:ALL'
       when: ansible_distribution == "Ubuntu"
 
+     - name: 设置所有sudo指令不需要密码(RedHat)
+      lineinfile:
+        dest: /etc/sudoers
+        regexp: '^%wheel'
+        line: '%wheel   ALL=(ALL)       NOPASSWD:ALL'
+      when: ansible_distribution == "Ubuntu"
+     
     - name: 禁用selinux(重启后生效)(RedHat)
       lineinfile:
         dest: /etc/selinux/config

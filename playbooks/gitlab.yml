@@ -16,7 +16,8 @@
     - name: gitlab
       block:
         - get_url:
-            url: https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
+            #url: https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
+            url: http://10.1.1.26/repository/it/gitlab/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm 
             dest: /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
             checksum: md5:{{ gitlab_md5sum }}
           when: ansible_machine=="x86_64"

@@ -21,13 +21,15 @@
           register: rar
   
         - get_url:
-            url: http://www.rarlab.com/rar/rarlinux-x64-{{ rar_version }}.tar.gz
+            #url: http://www.rarlab.com/rar/rarlinux-x64-{{ rar_version }}.tar.gz
+            url: http://10.1.1.26/repository/it/rar/rarlinux-x64-{{ rar_version }}.tar.gz
             dest: /tmp/rarlinux-{{ rar_version }}.tar.gz
             checksum: md5:{{ rar_md5sum_x64 }}
           when: ansible_machine == "x86_64" and rar.stat.exists == false
   
         - get_url:
-            url: http://www.rarsoft.com/rar/rarlinux-{{ rar_version }}.tar.gz
+            #url: http://www.rarsoft.com/rar/rarlinux-{{ rar_version }}.tar.gz
+            url: http://10.1.1.26/repository/it/rar/rarlinux-{{ rar_version }}.tar.gz
             dest: /tmp/rarlinux-{{ rar_version }}.tar.gz
             checksum: md5:{{ rar_md5sum_x86 }}
           when: not ansible_machine == "x86_64" and rar.stat.exists == false

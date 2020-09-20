@@ -22,11 +22,12 @@
             name: prometheus
 
         - stat:
-            path: /usr/local/node_exporter
+            path: /opt/node_exporter
           register: n
 
         - get_url:
-            url: https://github.com/prometheus/node_exporter/releases/download/v{{ n_version }}/node_exporter-{{ n_version }}.linux-amd64.tar.gz
+            #url: https://github.com/prometheus/node_exporter/releases/download/v{{ n_version }}/node_exporter-{{ n_version }}.linux-amd64.tar.gz
+            url: http://10.1.1.26/repository/it/prometheus/node_exporter-{{ n_version }}.linux-amd64.tar.gz
             dest: /tmp/node_exporter-{{ n_version }}.linux-amd64.tar.gz
             checksum: md5:{{ n_md5sum }}
           when: n.stat.exists == false
@@ -34,16 +35,16 @@
         - unarchive: 
             copy: false
             src: /tmp/node_exporter-{{ n_version }}.linux-amd64.tar.gz
-            dest: /usr/local
+            dest: /opt
             owner: prometheus
             group: prometheus
           when: n.stat.exists == false
 
-        - command: mv /usr/local/node_exporter-{{ n_version }}.linux-amd64 /usr/local/node_exporter
+        - command: mv /opt/node_exporter-{{ n_version }}.linux-amd64 /opt/node_exporter
           when: n.stat.exists == false
        
         - lineinfile:
-            dest: /usr/local/prometheus/prometheus.yml
+            dest: /opt/prometheus/prometheus.yml
             line: "{{ item }}"
           with_items:
             - "  - job_name: 'node'"
@@ -51,16 +52,16 @@
             - "    - targets:"
             - "        - {{  ansible_default_ipv4['address'] }}:9100"
           run_once: true
-          delegate_to: "ubuntu-2004"
+          delegate_to: "prometheus-server"
 
         - raw: kill -HUP `ps -e | grep prometheus | awk '{print $1}'`
-          delegate_to: "ubuntu-2004"
+          delegate_to: "prometheus-server"
           ignore_errors: yes
           run_once: true
 
         - set_fact:
             service_name: node_exporter
-            command: /usr/local/node_exporter/node_exporter
+            command: /opt/node_exporter/node_exporter
 
         - template:
             src: files/service/service.service

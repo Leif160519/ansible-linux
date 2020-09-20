@@ -26,16 +26,18 @@ dist.u2004
 [dist.debian9]                 # debian9机器列表
 
 [dist.debian10]                # debian10机器列表
-debian-10
 
 [dist.centos6]                 # centos6机器列表
 
 [dist.centos7]                 # centos7机器列表
-centos-7
+gitlab-server
 
 [dist.u1604]                   # ubuntu16.04机器列表
 
 [dist.u1804]                   # ubuntu18.04机器列表
 
 [dist.u2004]                   # ubuntu20.04机器列表
-ubuntu-2004
+prometheus-server
+ansible-server
+jenkins-server
+nexus-server
