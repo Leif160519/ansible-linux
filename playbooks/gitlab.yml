@@ -39,7 +39,7 @@
             dest: /etc/crontab
             line: '0  2    * * *   root    /opt/gitlab/bin/gitlab-rake gitlab:backup:create CRON=1'
 
-        - shell: | 
+        - raw: | 
             crontab /etc/crontab
             gitlab-ctl reconfigure
           ignore_errors: true

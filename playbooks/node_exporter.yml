@@ -43,6 +43,12 @@
         - command: mv /opt/node_exporter-{{ n_version }}.linux-amd64 /opt/node_exporter
           when: n.stat.exists == false
        
+
+        - debug:
+            msg: "IP地址为：{{ ansible_default_ipv4['address'] }}"
+
+
+
         - lineinfile:
             dest: /opt/prometheus/prometheus.yml
             line: "{{ item }}"
