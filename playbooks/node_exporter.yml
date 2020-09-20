@@ -43,22 +43,43 @@
         - command: mv /opt/node_exporter-{{ n_version }}.linux-amd64 /opt/node_exporter
           when: n.stat.exists == false
        
-
-        - debug:
-            msg: "IP地址为：{{ ansible_default_ipv4['address'] }}"
-
-
+          #        - lineinfile:
+          #            dest: /opt/prometheus/prometheus.yml
+          #            line: "{{ item }}"
+          #          with_items:
+          #            - "  - job_name: 'node'"
+          #            - "    static_configs:"
+          #            - "    - targets:"
+          #            - "        - {{  ansible_default_ipv4['address'] }}:9100"
+          #          run_once: true
+          #          delegate_to: "prometheus-server"
 
         - lineinfile:
             dest: /opt/prometheus/prometheus.yml
             line: "{{ item }}"
           with_items:
-            - "  - job_name: 'node'"
-            - "    static_configs:"
-            - "    - targets:"
-            - "        - {{  ansible_default_ipv4['address'] }}:9100"
-          run_once: true
+            - "  - file_sd_configs:"
+            - "    - files:"
+            - "      - /opt/prometheus/file_sd/node.yml"
+            - "    job_name: 'node'"
           delegate_to: "prometheus-server"
+          run_once: true
+
+        - set_fact:
+            prometheus_targets_node: "{{ groups['all'] }}"
+
+        - file:
+            dest: /opt/prometheus/file_sd
+            state: directory
+            mode: 0755
+          delegate_to: "prometheus-server"
+
+        - template:
+            src: files/prometheus/node.yml.j2
+            dest: /opt/prometheus/file_sd/node.yml
+            mode: 0644
+          delegate_to: "prometheus-server"
+          run_once: true
 
         - raw: kill -HUP `ps -e | grep prometheus | awk '{print $1}'`
           delegate_to: "prometheus-server"
