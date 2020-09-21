@@ -49,6 +49,30 @@
         - 'server ntp3.aliyun.com'
       when: ansible_os_family == 'RedHat'
 
+    - name: 停止ntp服务(Debian)
+      service:
+        name: ntp
+        state: stopped
+      when: ansible_os_family == 'Debian'
+
+    - name: 停止ntp服务(RedHat)
+      service:
+        name: ntpd
+        state: stopped
+      when: ansible_os_family == "RedHat"
+
+    - name: 进行时间同步
+      raw: ntpdate time.windows.com
+      ignore_errors: true
+
+    - name: 设置计划任务，每隔一小时同步一次实践
+      lineinfile:
+        dest: /etc/crontab
+        line: '* */1 * * * ntpdate -s time.windows.com'
+
+    - name: 计划任务生效
+      raw: crontab /etc/crontab
+
     - name: 启动ntp服务(Debian)
       service:
         name: ntp
