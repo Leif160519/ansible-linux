@@ -1,0 +1,21 @@
+modules:
+  http_2xx:  # http 监测模块
+    prober: http
+    http:
+
+  http_post_2xx: # http post 监测模块
+    prober: http
+    http:
+      method: POST
+
+  tcp_connect: # tcp 监测模块
+    prober: tcp
+
+  icmp:
+    prober: icmp
+
+  ping: # icmp 检测模块
+    prober: icmp
+    timeout: 5s
+    icmp:
+      preferred_ip_protocol: "ip4"

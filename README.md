@@ -16,20 +16,31 @@ ansible-linux
 │   │   ├── interfaces
 │   │   └── resolv.conf
 │   ├── prometheus
-│   │   ├── node.yml.j2
-│   │   └── rules
-│   │       └── default.yml
-│   ├── repository
-│   │   ├── CentOS-Base.repo
-│   │   ├── sources-debian.list
-│   │   └── sources.list
-│   └── service
-│       └── service.service
+│   │   ├── alert
+│   │   │   ├── alertmanager.yml
+│   │   │   └── rules
+│   │   │       ├── default.rules
+│   │   │       └── ping.rules
+│   │   ├── exporter
+│   │   │   └── blackbox_exporter.yml
+│   │   ├── scrape
+│   │   │   ├── file_sd
+│   │   │   │   └── node.yml.j2
+│   │   │   ├── node.job
+│   │   │   ├── ping.job
+│   │   │   └── prometheus.job
+│   │   └── service
+│   │       ├── alertmanager.service
+│   │       ├── blackbox_exporter.service
+│   │       └── node_exporter.service
+│   └── repository
+│       ├── CentOS-Base.repo
+│       ├── sources-debian.list
+│       └── sources.list
 ├── inventory
 │   ├── all
 │   └── dist
 ├── playbooks
-│   ├── alertmanager.yml
 │   ├── config.yml
 │   ├── docker.yml
 │   ├── files -> ../files
@@ -37,7 +48,6 @@ ansible-linux
 │   ├── grafana.yml
 │   ├── install.yml
 │   ├── network.yml
-│   ├── node_exporter.yml
 │   ├── ntp.yml
 │   ├── oh-my-fish.yml
 │   ├── oh-my-zsh.yml
@@ -47,7 +57,9 @@ ansible-linux
 │   ├── repository.yml
 │   ├── ssh-key.yml
 │   └── universal.yml
-└── README.md
+├── README.md
+└── roles
+    └── cloudalchemy.prometheus
 ```
 
 ## 二、如何使用
@@ -141,7 +153,17 @@ force_valid_group_names = ignore
 ```
 - 6.开始刷入
 ```
+# all machine(prometheus.yml auto install node_exporter)
 ansible-playbook -u root -i inventory/ playbooks/universal.yml
+
+# prometheus-server(install prometheus,alertmanager and  blackbox_exporter)
+ansible-playbook -u root -i inventory/ playbooks/prometheus.yml -t admin
+
+# install alertmanager
+ansible-playbook -u root -i inventory/ playbooks/prometheus.yml -t alertmanager
+
+# install blackbox_exporter
+ansible-playbook -u root -i inventory/ playbooks/prometheus.yml -t blackbox
 ```
 
 ## 三、特定情况

@@ -1,0 +1,34 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=alertmanager
+After=network-online.target
+
+[Service]
+Type=simple
+Environment="GOMAXPROCS=2"
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/alertmanager \
+  --config.file=/etc/prometheus/alertmanager.yml \
+  --storage.path=/var/lib/alertmanager/ \
+  --web.listen-address=0.0.0.0:9093 
+CapabilityBoundingSet=CAP_SET_UID
+LimitNOFILE=65000
+LockPersonality=true
+NoNewPrivileges=true
+MemoryDenyWriteExecute=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+RemoveIPC=true
+RestrictSUIDSGID=true
+
+ProtectSystem=full
+
+SyslogIdentifier=prometheus
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

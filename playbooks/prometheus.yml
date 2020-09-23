@@ -6,85 +6,342 @@
 # @leif160519 @2020.09.11
 ####
 ---
-- name: 安装prometheus
-  hosts: all
-  tags: [prometheus]
+- hosts: all
   vars:
-    p_version: 2.19.2
-    p_md5sum: a1777062449fb5567a58d0b08aa37881
+    prometheus_root_dir: /opt/prometheus
+    alertmanager_root_dir: /opt/alertmanager
+    node_exporter_root_dir: /opt/node_exporter
+    blackbox_exporter_root_dir: /opt/black_exporter
+
+    prometheus_version: prometheus-2.19.2.linux-amd64
+    prometheus_url: http://10.1.1.26/repository/it/prometheus/{{ prometheus_version }}.tar.gz
+
+    alertmanager_version: alertmanager-0.21.0.linux-amd64
+    alertmanager_url: http://10.1.1.26/repository/it/prometheus/{{ alertmanager_version }}.tar.gz
+
+    node_exporter_version: node_exporter-1.0.1.linux-amd64
+    node_exporter_url: http://10.1.1.26/repository/it/prometheus/{{ node_exporter_version }}.tar.gz
+
+    blackbox_exporter_version: blackbox_exporter-0.17.0.linux-amd64
+    blackbox_exporter_url: http://10.1.1.26/repository/it/prometheus/{{ blackbox_exporter_version }}.tar.gz
+
+  pre_tasks:
+    - set_fact:
+        prometheus_url: https://github.com/prometheus/prometheus/releases/download/v2.19.2/{{ prometheus_version }}.tar.gz
+        alertmanager_url: https://github.com/prometheus/alertmanager/releases/download/v0.21.0/{{ alertmanager_version }}.tar.gz
+        node_exporter_url: https://github.com/prometheus/node_exporter/releases/download/v1.0.1/{{ node_exporter_version }}.tar.gz
+        blackbox_exporter_url: https://github.com/prometheus/blackbox_exporter/releases/download/v0.17.0/{{ blackbox_exporter_version }}.tar.gz
+      when: false
+
   tasks:
-    - name: prometheus
+    - name: user and group and directories
+      tags: [common]
       block:
-        - user:
-            name: prometheus
+      - name: 安装需要的包
+        package:
+          name: "{{ item }}"
+          state: present
+        with_items:
+          - curl
+          - tar
+          - bzip2
 
-        - group: 
-            name: prometheus
+      - name: 创建prometheus用户
+        group:
+          name: prometheus
+          system: yes
+          state: present
 
-        - stat:
-            path: /opt/prometheus
-          register: p
+      - name: 创建prometheus组
+        user:
+          name: prometheus
+          system: yes
+          shell: "/bin/false"
+          group: "prometheus"
+          createhome: no
 
-        - get_url:
-            #url: https://github.com/prometheus/prometheus/releases/download/v{{ p_version }}/prometheus-{{ p_version }}.linux-amd64.tar.gz
-            url: http://10.1.1.26/repository/it/prometheus/prometheus-{{ p_version }}.linux-amd64.tar.gz
-            dest: /tmp/prometheus-{{ p_version }}.linux-amd64.tar.gz
-            checksum: md5:{{ p_md5sum }}
-          when: p.stat.exists == false
+      - name: 创建prometheus目录
+        file:
+          path: "{{ item }}"
+          state: directory
+          owner: "prometheus"
+          group: "prometheus"
+          mode: 0755
+        with_items:
+          - "/etc/prometheus/conf.d/"
+          - "/var/log/prometheus/"
 
-        - unarchive: 
-            copy: false
-            src: /tmp/prometheus-{{ p_version }}.linux-amd64.tar.gz
-            dest: /opt
-            owner: prometheus
-            group: prometheus
-          when: p.stat.exists == false
+    - name: prometheus
+      tags: [never, prometheus, admin]
+      block:
+      - name: stat prometheus
+        stat:
+          path: "{{ prometheus_root_dir }}"
+        register: p
 
-        - command: mv /opt/prometheus-{{ p_version }}.linux-amd64 /opt/prometheus
-          when: p.stat.exists == false
+      - name: 解压prometheus安装包
+        unarchive:
+          src: "{{ prometheus_url }}"
+          dest: /opt
+          owner: prometheus
+          group: prometheus
+          remote_src: yes
+        when: p.stat.exists == false
 
-        - lineinfile:
-            dest: /opt/prometheus/prometheus.yml
-            regexp: 'localhost'
-            line: "    - targets: ['{{ ansible_default_ipv4['address'] }}:9090']"
+      - name: 重命名prometheus目录
+        command: mv /opt/{{ prometheus_version }} {{ prometheus_root_dir}}
+        when: p.stat.exists == false
 
-        - lineinfile: # 定义规则文件路径
-            dest: /opt/prometheus/prometheus.yml
-            insertafter: "^rule_files:"
-            line: "  - /opt/prometheus/rules/*.yml"
+      - name: 创建prometheus软链接
+        file:
+          src: "{{ prometheus_root_dir }}/{{ item }}"
+          dest: "/usr/local/bin/{{ item }}"
+          state: link
+          force: true
+        with_items:
+          - prometheus
+          - promtool
 
-        - file:
-            path: /opt/prometheus/rules
-            state: directory
-            mode: 0755
-            owner: prometheus
-            group: prometheus
+    - name: alertmanager
+      tags: [never, alertmanager, admin]
+      block:
+      - name: stat alertmanager
+        stat:
+          path: "{{ alertmanager_root_dir }}"
+        register: a
 
-        - copy:
-            src: files/prometheus/rules/default.yml
-            dest: /opt/prometheus/rules/default.yml
-            mode: 0644
-            owner: prometheus
-            group: prometheus
+      - name: 解压alertmanager安装包
+        unarchive:
+          src: "{{ alertmanager_url }}"
+          dest: /opt
+          owner: prometheus
+          group: prometheus
+          remote_src: yes
+        when: a.stat.exists == false 
 
-        - set_fact:
-            service_name: prometheus
-            command: /opt/prometheus/prometheus --config.file=/opt/prometheus/prometheus.yml --web.enable-lifecycle
+      - name: 重命名alertmanager目录
+        command: mv /opt/{{ alertmanager_version }} {{ alertmanager_root_dir }}
+        when: a.stat.exists == false
 
-        - template:
-            src: files/service/service.service
-            dest: /lib/systemd/system/{{ service_name }}.service
-            mode: 0644
+      - name: 创建alertmanager软链接
+        file:
+          src: "{{ alertmanager_root_dir }}/{{ item }}"
+          dest: "/usr/local/bin/{{ item }}"
+          state: link
+          force: true
+        with_items:
+          - alertmanager
+          - amtool
 
-        - service:
-            name: "{{ service_name }}"
-            state: started
-            enabled: yes
+      - name: 复制alertmanager配置文件
+        template:
+          src: files/prometheus/alert/alertmanager.yml 
+          dest: /etc/prometheus/alertmanager.yml
+          force: true
+          owner: prometheus
+          group: prometheus
+          mode: 0644
+          validate: "/opt/alertmanager/amtool --alertmanager.url= check-config %s"
 
-        - raw: kill -HUP `ps -e | grep prometheus | awk '{print $1}'`
-          ignore_errors: yes
-          run_once: true
+      - name: 创建alertmanager服务
+        template:
+          src: files/prometheus/service/alertmanager.service
+          dest: /lib/systemd/system/alertmanager.service
+          mode: 0644
 
-        - file:
-            path: /tmp/prometheus-{{ p_version }}.linux-amd64.tar.gz
-            state: absent
+      - name: 重新载入systemd
+        systemd:
+          daemon_reload: true
+
+      - name: 启动alertmanager服务
+        systemd:
+          name: alertmanager
+          state: started
+
+      - name: 设置alertmanager服务开机自启
+        systemd:
+          name: alertmanager
+          enabled: true
+
+    - name: blackbox_exporter
+      tags: [never, blackbox, admin]
+      block:
+      - name: stat blackbox
+        stat:
+          path: "{{ blackbox_exporter_root_dir }}"
+        register: b
+
+      - name: 解压blackbox安装包
+        unarchive:
+          src: "{{ blackbox_exporter_url }}"
+          dest: /opt
+          owner: prometheus
+          group: prometheus
+          remote_src: yes
+        when: b.stat.exists == false
+
+      - name: 重命名blackbox目录
+        command: mv /opt/{{ blackbox_exporter_version }} {{ blackbox_exporter_root_dir }}
+        when: b.stat.exists == false
+
+      - name: 创建blackbox软链接
+        file:
+          src: "{{ blackbox_exporter_root_dir }}/{{ item }}"
+          dest: "/usr/local/bin/{{ item }}"
+          state: link
+          force: true
+        with_items:
+          - blackbox_exporter
+
+      - name: blackbox配置文件
+        template:
+          dest: /etc/prometheus/conf.d/blackbox_exporter.yml
+          src: files/prometheus/exporter/blackbox_exporter.yml
+          mode: 0644
+          owner: prometheus
+          group: prometheus
+
+      - name: setcap
+        command: setcap cap_net_raw+ep {{ blackbox_exporter_root_dir }}/blackbox_exporter
+
+      - name: 创建blackbox_exporter服务
+        template:
+          src: files/prometheus/service/blackbox_exporter.service
+          dest: /lib/systemd/system/blackbox_exporter.service
+          mode: 0644
+
+      - name: 重新载入systemd
+        systemd:
+          daemon_reload: true
+
+      - name: 启动blackbox_exporter服务
+        systemd:
+          name: blackbox_exporter
+          state: started
+
+      - name: 设置blackbox_exporter服务开机自启
+        systemd:
+          name: blackbox_exporter
+          enabled: true
+
+    - name: scrape配置
+      tags: [ targets ]
+      block:
+      - set_fact:
+          prometheus_targets_node: "{{ groups['all'] }}"
+
+      - name: 创建静态配置文件 
+        template: 
+          src: files/prometheus/scrape/file_sd/node.yml.j2
+          dest: /etc/prometheus/file_sd/node.yml
+        delegate_to: "prometheus-server"
+        run_once: true
+
+    - name: node_exporter
+      tags: [ node_exporter ]
+      block:
+      - name: stat node_exporter
+        stat:
+          path: "{{ node_exporter_root_dir }}"
+        register: n
+
+      - name: 解压node_exporter安装包
+        unarchive:
+          src: "{{ node_exporter_url }}"
+          dest: /opt
+          owner: prometheus
+          group: prometheus
+          remote_src: yes
+        when: n.stat.exists == false
+
+      - name: 重命名node_exporter目录
+        command: mv /opt/{{ node_exporter_version }} {{ node_exporter_root_dir }}
+        when: n.stat.exists == false
+
+      - name: 创建node_exporter软链接
+        file:
+          src: "{{ node_exporter_root_dir }}/{{ item }}"
+          dest: "/usr/local/bin/{{ item }}"
+          state: link
+          force: true
+        with_items:
+          - node_exporter
+
+      - name: 创建node_exporter服务
+        template:
+          src: files/prometheus/service/node_exporter.service
+          dest: /lib/systemd/system/node_exporter.service
+          mode: 0644
+
+      - name: 重新载入systemd
+        systemd:
+          daemon_reload: true
+
+      - name: 启动node_exporter服务
+        systemd:
+          name: node_exporter
+          state: started
+
+      - name: 设置node_exporter服务开机自启
+        systemd:
+          name: node_exporter
+          enabled: true
+
+- hosts: prometheus-server
+  tags: [never, admin]
+  vars:
+    prometheus_scrape_configs: []
+  pre_tasks:
+    - set_fact:
+        prometheus_targets_node: "{{ groups['all'] }}"
+        prometheus_scrape_configs: "{{ prometheus_scrape_configs + lookup('template', item) | from_yaml }}"
+      with_fileglob:
+        - "files/prometheus/scrape/*.job"
+      when: inventory_hostname is match("^prometheus-server")
+
+    - name: 创建prometheus配置文件夹
+      file:
+        path: /etc/prometheus/{{ item }}
+        state: directory
+        owner: prometheus
+        group: prometheus
+        mode: 0755
+      with_items:
+        - file_sd
+
+    - name: 从模板创建静态配置 
+      template:
+        src: "{{ item }}"
+        dest: /etc/prometheus/file_sd/{{ item | basename | regex_replace('.j2')}}
+        force: true
+        owner: prometheus 
+        group: prometheus
+        mode: 0644
+      with_fileglob:
+        - "files/prometheus/scrape/file_sd/*.j2"
+
+  roles: 
+    - role: roles/cloudalchemy.prometheus
+      prometheus_skip_install: true
+      prometheus_storage_retention: 6h
+      prometheus_storage_retention_size: 10GB
+      porometheus_global:
+        scrape_interval: 25s
+        scrape_timeout: 15s
+        evaluation_interval: 25s
+      prometheus_alert_rules: []
+      prometheus_alert_rules_files: [ "files/prometheus/alert/rules/*.rules" ]
+      prometheus_alertmanager_config:
+        - static_configs:
+            - targets:
+                - 10.1.1.24:9093
+  tasks:
+    - name: reload prometheus
+      systemd:
+        name: prometheus
+        state: reloaded
+
+    - name: reload alertmanager
+      systemd:
+        name: alertmanager
+        state: reloaded

@@ -26,4 +26,4 @@
 - import_playbook: rar.yml
 
 # 安装node_exporter
-- import_playbook: node_exporter.yml
+- import_playbook: prometheus.yml

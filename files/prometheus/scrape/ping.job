@@ -1,0 +1,22 @@
+- job_name: "ping"
+  static_configs:
+    - targets: [ "www.baidu.com" ]
+      labels:
+        all: "{{ inventory_hostname }}"
+        idc: "{{ ansible_host }}:9115"       # The blackbox exporter's real hostname:port.
+        app: "#baidu"
+
+  scrape_interval: 10s
+  scrape_timeout: 1s
+  params:
+    module: [ping]
+  metrics_path: /probe
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - source_labels: [idc]
+      target_label: __address__
+    - regex: '^idc$'
+      action: labeldrop

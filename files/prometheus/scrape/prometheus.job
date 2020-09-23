@@ -1,0 +1,6 @@
+- job_name: "prometheus"
+  metrics_path: /metrics
+  static_configs:
+    - targets: [ "10.1.1.24:9090" ]
+      labels:
+        all: prometheus-server
