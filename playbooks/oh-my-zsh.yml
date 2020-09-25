@@ -67,11 +67,11 @@
         clone: yes
         update: yes
 
-    - name: 修改zsh主题
+    - name: 修改zsh主题为随机
       lineinfile:
         dest: ~/.zshrc
         regexp: '^ZSH_THEME='
-        line: 'ZSH_THEME="agnoster"'
+        line: 'ZSH_THEME="random"'
 
     - name: 添加插件
       lineinfile:
