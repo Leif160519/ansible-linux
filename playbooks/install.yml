@@ -15,6 +15,18 @@
         name: "{{ item }}"
         state: latest
       with_items:
+        - yum-utils
+        - epel-release
+        - nagios
+        - nc
+        - perf
+        - bind-utils
+      when: ansible_os_family == "RedHat"
+
+    - package:
+        name: "{{ item }}"
+        state: latest
+      with_items:
         - nano
         - vim
         - emacs
@@ -59,18 +71,6 @@
         - python3
         - python3-pip
       ignore_errors: yes
-
-    - package:
-        name: "{{ item }}"
-        state: latest
-      with_items:
-        - yum-utils
-        - epel-release
-        - nagios
-        - nc
-        - perf
-        - bind-utils
-      when: ansible_os_family == "RedHat"
 
     - name: 启动相关服务
       service:
