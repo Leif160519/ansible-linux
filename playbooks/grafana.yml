@@ -10,16 +10,15 @@
   hosts: all
   tags: [grafana]
   vars:
-    g_version: 7.1.5
-    g_md5sum_deb: f27d81974ce84a72b33ab41358258d70
-    g_md5sum_rpm: bc96c8d10d40bef833eea3853455ea21 
+    grafana_deb_version: grafana_7.1.5_amd64
+    grafana_rpm_version: grafana-7.1.5-1.x86_64
+    grafana_deb_url: http://10.1.1.26/repository/it/prometheus/{{ grafana_rpm_version }}.rpm
+    #grafana_deb_url: https://dl.grafana.com/oss/release/{{ grafana_rpm_version }}.deb
+    grafana_rpm_url: http://10.1.1.26/repository/it/prometheus/{{ grafana_deb_version }}.deb
+    #grafana_rpm_url: https://dl.grafana.com/oss/release/{{ grafana_rpm_version }}.rpm
   tasks:
     - name: grafana
       block:
-        - stat:
-            path: "/tmp/grafana*{{ g_version }}*.*"
-          register: g
-
         - package: 
             name: "{{ item }}"
           with_items:
@@ -27,30 +26,13 @@
             - libfontconfig1
           when: ansible_os_family == "Debian"
 
-        - get_url:
-            #url: https://dl.grafana.com/oss/release/grafana_{{ g_version }}_amd64.deb
-            url: http://10.1.1.26/repository/it/prometheus/grafana_{{ g_version }}_amd64.deb
-            dest: /tmp/grafana_{{ g_version }}_amd64.deb
-            checksum: md5:{{ g_md5sum_deb }}
-          when: g.stat.exists == false and ansible_os_family == "Debian"
-
-        - get_url:
-            #url: https://dl.grafana.com/oss/release/grafana-{{ g_version }}-1.x86_64.rpm
-            url: http://10.1.1.26/repository/it/prometheus/grafana-{{ g_version }}-1.x86_64.rpm
-            dest: /tmp/grafana-{{ g_version }}-1.x86_64.rpm
-            checksum: md5:{{ g_md5sum_rpm }}
-          when: g.stat.exists == false and ansible_os_family == "RedHat"
-
         - apt:
-            deb: /tmp/grafana_{{ g_version }}_amd64.deb
+            deb: "{{ grafana_deb_url }}"
             state: present
           when: ansible_os_family == "Debian"
 
-          #        - shell: yum -y install /tmp/grafana-{{ g_version }}-1.x86_64.rpm
-          #          when: ansible_os_family == "RedHat"
-
-        - yum:
-            name: /tmp/grafana-{{ g_version }}-1.x86_64.rpm
+        - yum: 
+            name: "{{ grafana_rpm_url }}"
             state: present
           when: ansible_os_family == "RedHat"
 
@@ -59,6 +41,3 @@
             state: started
             enabled: yes
 
-        - file:
-            path: /tmp/grafana*{{ g_version }}*.*
-            state: absent

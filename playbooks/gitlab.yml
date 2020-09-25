@@ -10,20 +10,16 @@
   hosts: dist.centos7
   tags: [gitlab]
   vars:
-    gitlab_version: 13.3.2
-    gitlab_md5sum: 56562145dcf67e5f242518b49a03adcd
+    gitlab_version: gitlab-ce-13.3.2-ce.0.el7.x86_64
+    gitlab_url: http://10.1.1.26/repository/it/gitlab/{{ gitlab_version }}.rpm
+    #gitlab_url: url: https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/{{ gitlab_version }}.rpm
   tasks:
     - name: gitlab
       block:
-        - get_url:
-            #url: https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
-            url: http://10.1.1.26/repository/it/gitlab/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm 
-            dest: /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
-            checksum: md5:{{ gitlab_md5sum }}
-          when: ansible_machine=="x86_64"
-
         - yum: 
-            name: /tmp/gitlab-ce-{{ gitlab_version }}-ce.0.el7.x86_64.rpm
+            name: "{{ gitlab_url }}"
+            state: present
+          when: ansible_machine=="x86_64"
 
         - lineinfile:
             dest: /etc/gitlab/gitlab.rb

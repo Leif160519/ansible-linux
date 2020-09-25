@@ -32,7 +32,6 @@
       ignore_errors: yes
 
       #git 版本需要在1.9.5以上，否则会报错        
-      ignore_errors: yes
     - name: 安装oh-my-fish
       shell: curl -L https://github.com/oh-my-fish/oh-my-fish/raw/master/bin/install | fish
       ignore_errors: yes 
