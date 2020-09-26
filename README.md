@@ -156,14 +156,17 @@ force_valid_group_names = ignore
 # all machine(prometheus.yml auto install node_exporter)
 ansible-playbook -u root -i inventory/ playbooks/universal.yml
 
-# prometheus-server(install prometheus,alertmanager and  blackbox_exporter)
-ansible-playbook -u root -i inventory/ playbooks/prometheus.yml -t admin
-
-# install alertmanager
+# prometheus-server(以下顺序不能颠倒)
+# 1.pull submodle
+git submodule update --init --recursive
+# 2.install prometheus
+ansible-playbool -u root -i inventory/ playbooks/prometheus.yml -t prometheus
+# 3.install alertmanager
 ansible-playbook -u root -i inventory/ playbooks/prometheus.yml -t alertmanager
-
-# install blackbox_exporter
+# 4.install blackbox_exporter
 ansible-playbook -u root -i inventory/ playbooks/prometheus.yml -t blackbox
+# 5.config prometheus and start prometheus service
+ansible-playbook -u root -i inventory/ playbooks/prometheus.yml -t admin
 ```
 
 ## 三、特定情况
@@ -197,4 +200,4 @@ ansible-playbook -u root -i inventory playbooks/node_exporter.yml  -l 'jenkins-s
 ```
 
 ## 四、说明
-- 1.prometheus自带两条规则，分别为"分区剩余空间不足2%"和"分区剩余空间使用预计不足4h"
+- 1.prometheus自带两条规则，分别为"分区剩余空间不足2%","分区剩余空间使用预计不足4h"和"ping有丢包"

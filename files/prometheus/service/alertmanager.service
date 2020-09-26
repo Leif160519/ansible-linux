@@ -6,7 +6,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-Environment="GOMAXPROCS=2"
+Environment="GOMAXPROCS={{ ansible_processor_vcpus|default(ansible_processor_count) }}"
 User=prometheus
 Group=prometheus
 ExecReload=/bin/kill -HUP $MAINPID
