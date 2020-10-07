@@ -1,3 +1,6 @@
+auto lo
+iface lo inet loopback
+
 auto {{ interface }}
 iface {{ interface }} inet static
 address {{ address }}
