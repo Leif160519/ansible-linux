@@ -60,6 +60,10 @@
         path: "{{ plugins_path.stdout }}/zsh-history-substring-search"
       register: zsh_history_substring_search
 
+    - stat:
+        path: "{{ plugins_path.stdout }}/history-search-multi-word"
+      register: history_search_multi_word
+
     - name: 安装zsh-syntax-highlighting:模仿fish命令行高亮的插件
       git:
         repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
@@ -92,6 +96,14 @@
         update: yes
       when: zsh_history_substring_search.stat.exists == false
 
+    - name: history-search-multi-word:ctrl+r搜索历史记录
+      git:
+        repo: https://github.com/zdharma/history-search-multi-word
+        dest: "{{ plugins_path.stdout }}/history-search-multi-word"
+        clone: yes
+        update: yes
+      when: history_search_multi_word.stat.exists == false
+
     - name: 修改zsh主题为随机
       lineinfile:
         dest: ~/.zshrc
@@ -102,7 +114,7 @@
       lineinfile:
         dest: ~/.zshrc
         regexp: '^plugins='
-        line: 'plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-completions z history-substring-search command-not-found colored-man-pages extract)'
+        line: 'plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-completions z history-substring-search command-not-found colored-man-pages extract history-search-multi-word)'
 
     - name: 重新登录shell生效
       shell: echo "重新登录shell生效"
