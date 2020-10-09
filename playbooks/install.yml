@@ -70,6 +70,8 @@
         - python
         - python3
         - python3-pip
+        - w3m
+        - lynx
       ignore_errors: yes
 
     - name: 启动相关服务
