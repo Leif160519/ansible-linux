@@ -34,7 +34,6 @@ ansible-linux
 │   │       ├── blackbox_exporter.service
 │   │       └── node_exporter.service
 │   └── repository
-│       ├── CentOS-Base.repo
 │       ├── sources-debian.list
 │       └── sources.list
 ├── inventory
@@ -88,58 +87,62 @@ git clone https://github.com/Leif160519/ansible-linux
 
 - 4.修改inventory下的主机hostname和IP地址
 ```
-# all
-[all]
-prometheus-server ansible_host=10.1.1.24
-ansible-server    ansible_host=10.1.1.25
-nexus-server      ansible_host=10.1.1.26
-jenkins-server    ansible_host=10.1.1.27
-gitlab-server     ansible_host=10.1.1.28
-
-#dist
 [dist]
-[dist:children]   
+[dist:children] # 发行版 {{{
 dist.debian
 dist.redhat
+# }}}
 
-[dist.debian:children]         # debian子类
+[dist.debian:children] # debian 系 {{{
 dist.ubuntu
 dist.debian9
 dist.debian10
+# }}}
 
-[dist.redhat:children]         # redhat子类
+[dist.redhat:children] # redhat子类 {{{1
 dist.centos
 
-[dist.ubuntu:children]         # ubuntu子类
-dist.ubuntu.lts
-
-[dist.centos:children]         # centos子类
+[dist.centos:children] # centos子类 {{{2
 dist.centos6
 dist.centos7
 
-[dist.ubuntu.lts:children]     # ubuntu发行版子类
+[ dist.centos6] # {{{3
+# }}}3
+
+[dist.centos7] # {{{3
+gitlab-server
+# }}}3
+# }}}2
+# }}}1
+
+[dist.ubuntu:children] # ubuntu子类 {{{1
+dist.ubuntu.lts
+
+[dist.ubuntu.lts:children] # ubuntu发行版子类 {{{2
 dist.u1604
 dist.u1804
 dist.u2004
 
-[dist.debian9]                 # debian9机器列表
+[dist.u1604] # {{{3
+# }}}3
 
-[dist.debian10]                # debian10机器列表
+[dist.u1804] # {{{3
+# }}}3
 
-[dist.centos6]                 # centos6机器列表
-
-[dist.centos7]                 # centos7机器列表
-gitlab-server
-
-[dist.u1604]                   # ubuntu16.04机器列表
-
-[dist.u1804]                   # ubuntu18.04机器列表
-
-[dist.u2004]                   # ubuntu20.04机器列表
+[dist.u2004] # {{{3
 prometheus-server
 ansible-server
 jenkins-server
 nexus-server
+# }}}3
+# }}}2
+# }}}1
+
+[dist.debian9] # {{{
+# }}}
+
+[dist.debian10] # {{{
+# }}}
 ```
 
 - 5.ansible配置文件配置忽略组语法错误
@@ -172,7 +175,7 @@ ansible-playbook -u root -i inventory/ playbooks/prometheus.yml -t admin
 ## 三、特定情况
 - 1.安装某些软件
 ```
-ansible-playbook -u root -i inventory/ playbooks/install.yml -t [ubuntu | install] 
+ansible-playbook -u root -i inventory/ playbooks/install.yml -t [ubuntu | install]
 ```
 
 - 2.在某些机器上指定playbook
@@ -200,4 +203,5 @@ ansible-playbook -u root -i inventory playbooks/node_exporter.yml  -l 'jenkins-s
 ```
 
 ## 四、说明
-- 1.prometheus自带两条规则，分别为"分区剩余空间不足2%","分区剩余空间使用预计不足4h"和"ping有丢包"
+- 1.prometheus自带三条规则，分别为"分区剩余空间不足2%","分区剩余空间使用预计不足4h"和"ping有丢包"
+- 2.项目中的部分文件已经配置了在vim下的自动折叠功能，关于vim的具体配置请参照互联网或使用如下命令刷入`ansible-playbook -u root -i inventory playbooks/config`

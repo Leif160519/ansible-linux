@@ -133,27 +133,29 @@
     - name: 配置vim # {{{
       blockinfile:
         path: /etc/vim/vimrc
+        marker: '"{mark} ANSIBLE MANAGED BLOCK"'
         block: |
-          set foldmethod=marker # 自动折叠
-          highlight RedundantSpaces ctermbg=red guibg=red # 高亮多余空白字符和Tab
+          set foldmethod=marker
+          highlight RedundantSpaces ctermbg=red guibg=red
           match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
-          set tabstop=4   # 使用 4 个空格，不使用 Tab
+          set tabstop=4
           set shiftwidth=4
           set expandtab
           set softtabstop=4
-          set fileformats=unix # 总是显示 DOS 格式文件中的 ^M
+          set fileformats=unix
       when: ansible_os_family == "Debian"
 
-    - blockinfile: # {{{
+    - blockinfile:
         path: /etc/vimrc
+        marker: '"{mark} ANSIBLE MANAGED BLOCK"'
         block: |
-          set foldmethod=marker # 自动折叠
-          highlight RedundantSpaces ctermbg=red guibg=red # 高亮多余空白字符和Tab
+          set foldmethod=marker
+          highlight RedundantSpaces ctermbg=red guibg=red
           match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
-          set tabstop=4   # 使用 4 个空格，不使用 Tab
+          set tabstop=4
           set shiftwidth=4
           set expandtab
           set softtabstop=4
-          set fileformats=unix # 总是显示 DOS 格式文件中的 ^M
+          set fileformats=unix
       when: ansible_os_family == "RedHat"
       # }}}
