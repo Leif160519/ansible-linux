@@ -121,14 +121,13 @@
         line: 'ZSH_THEME="random"'
         # }}}
 
-        #    - name: 添加插件 # {{{
-        #      lineinfile:
-        #        dest: ~/.zshrc
-        #        regexp: '^plugins='
-        #        line: 'plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-completions z history-substring-search command-not-found colored-man-pages extract history-search-multi-word)'
-      # }}}
-      #
-    - name: aaa
+    - name: 删除zsh默认插件配置 # {{{ | 配置zsh插件
+      lineinfile:
+        dest: ~/.zshrc
+        regexp: '^plugins='
+        state: absent
+
+    - name: 配置zsh插件
       blockinfile:
         path: ~/.zshrc
         insertbefore: "^source"
@@ -145,6 +144,7 @@
                   extract
                   history-search-multi-word
           )
+      # }}}
 
     - name: 重新登录shell生效 # {{{
       shell: echo "重新登录shell生效"
