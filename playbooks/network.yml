@@ -1,5 +1,5 @@
 ##
-# 设置静态IP地址 
+# 设置静态IP地址
 #
 #
 ##
@@ -23,7 +23,7 @@
         dns1: 180.76.76.76
         dns2: 114.114.114.114
 
-    - shell: |
+    - shell: | # {{{ 计算子网掩码
         maskdigits () {
             a=$(echo "$1" | awk -F "." '{print $1" "$2" "$3" "$4}')
             for num in $a;
@@ -38,24 +38,20 @@
         }
         maskdigits "{{ netmask }}"
       register: netmask_new
+      # }}}
 
     - set_fact:
         netmask1: "{{ netmask_new.stdout }}"
 
-    - template: # ip地址设置，针对18.04及以上的Ubuntu
+    - template: # {{{ ip配置文件设置
         src: files/network/00-installer-config.yaml
         dest: /etc/netplan/00-installer-config.yaml
         mode: 0644
       when: ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,">=")
 
-    - template: # ip地址设置，针对18.04之前的Ubuntu和Debian
+    - template:
         src: files/network/interfaces
         dest: /etc/network/interfaces
-      when: (ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,"<")) or (ansible_distribution == "Debian")
-
-    - template: # dns设置，针对18.04之前的Ubuntu和Debian
-        src: files/network/resolv.conf
-        dest: /etc/resolv.conf
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,"<")) or (ansible_distribution == "Debian")
 
     - template:
@@ -63,17 +59,24 @@
         dest: /etc/sysconfig/network-scripts/ifcfg-{{ interface }}
         mode: 0644
       when: ansible_os_family == "RedHat"
+      # }}}
 
-    - shell: netplan apply
+    - template: # {{{ dns设置，针对18.04之前的Ubuntu和Debian
+        src: files/network/resolv.conf
+        dest: /etc/resolv.conf
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,"<")) or (ansible_distribution == "Debian")
+      # }}}
+
+    - shell: netplan apply # {{{ 使网络生效
       when: ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,">=")
 
-    - service: # 重启网络服务，针对18.04之前的Ubuntu和Debian
+    - service:
         name: networking
         state: restarted
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,"<"))  or (ansible_distribution == "Debian")
 
-    - service: 
+    - service:
         name: network
         state: restarted
       when: ansible_os_family == "RedHat"
-
+      # }}}

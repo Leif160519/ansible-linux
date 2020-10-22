@@ -1,43 +1,56 @@
 [dist]
-[dist:children]   
+[dist:children] # 发行版 {{{
 dist.debian
 dist.redhat
+# }}}
 
-[dist.debian:children]         # debian子类
+[dist.debian:children] # debian 系 {{{
 dist.ubuntu
 dist.debian9
 dist.debian10
+# }}}
 
-[dist.redhat:children]         # redhat子类
+[dist.redhat:children] # redhat子类 {{{1
 dist.centos
 
-[dist.ubuntu:children]         # ubuntu子类
-dist.ubuntu.lts
-
-[dist.centos:children]         # centos子类
+[dist.centos:children] # centos子类 {{{2
 dist.centos6
 dist.centos7
 
-[dist.ubuntu.lts:children]     # ubuntu发行版子类
+[ dist.centos6] # {{{3
+# }}}3
+
+[dist.centos7] # {{{3
+gitlab-server
+# }}}3
+# }}}2
+# }}}1
+
+[dist.ubuntu:children] # ubuntu子类 {{{1
+dist.ubuntu.lts
+
+[dist.ubuntu.lts:children] # ubuntu发行版子类 {{{2
 dist.u1604
 dist.u1804
 dist.u2004
 
-[dist.debian9]                 # debian9机器列表
+[dist.u1604] # {{{3
+# }}}3
 
-[dist.debian10]                # debian10机器列表
+[dist.u1804] # {{{3
+# }}}3
 
-[dist.centos6]                 # centos6机器列表
-
-[dist.centos7]                 # centos7机器列表
-gitlab-server
-
-[dist.u1604]                   # ubuntu16.04机器列表
-
-[dist.u1804]                   # ubuntu18.04机器列表
-
-[dist.u2004]                   # ubuntu20.04机器列表
+[dist.u2004] # {{{3
 prometheus-server
 ansible-server
 jenkins-server
 nexus-server
+# }}}3
+# }}}2
+# }}}1
+
+[dist.debian9] # {{{
+# }}}
+
+[dist.debian10] # {{{
+# }}}

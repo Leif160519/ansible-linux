@@ -10,41 +10,47 @@
   hosts: all
   tags: [docker]
   tasks:
-    - name: 安装Docker和Docker-compose(Debian)
+    - name: 安装Docker和Docker-compose # {{{ | debian
       apt:
         name: ['docker.io','docker-compose']
         state: latest
       when: ansible_os_family == "Debian"
+      # }}}
 
-    - name: 配置Docker源(RedHat)
+    - name: 配置Docker源 # {{{ | redhat
       template:
         src: files/docker/docker-ce.repo
         dest: /etc/yum.repos.d/docker-ce.repo
         mode: 0644
       when: ansible_os_family == "RedHat"
+      # }}}
 
-    - name: 安装Docker和Docker-compose(RedHat)
+    - name: 安装Docker和Docker-co mpose  # {{{ | redhat
       yum:
         name: ['docker-ce','docker-compose']
         state: installed
       when: ansible_os_family == "RedHat"
+      # }}}
 
-    - name:  清理不再使用的依赖包(Debian)
+    - name: 清理不再使用的依赖包 # {{{ | debian
       apt:
         autoremove: yes
       when: ansible_os_family == "Debian"
+      # }}}
 
-    - name: 清理下载的安装包缓存(Debian)
+    - name: 清理下载的安装包缓存 # {{{ | debian
       shell: apt clean && apt autoclean
       ignore_errors: yes
       when: ansible_os_family == "Debian"
+      # }}}
 
-    - name: 清理下载的安装包缓存(RedHat)
+    - name: 清理下载的安装包缓存 # {{{ | redhat
       shell: yum clean all
       ignore_errors: true
       when: ansible_os_family == "RedHat"
+      # }}}
 
-    - name: 配置仓库源和Docker网段
+    - name: 配置仓库源和Docker网段 # {{{
       vars:
         address: 198.18.0.0/16
         size: 24
@@ -56,9 +62,11 @@
         src: files/docker/daemon.json
         dest: /etc/docker/
         mode: 0644
+      # }}}
 
-    - name: 启动Docker服务并设置开机自启
+    - name: 启动Docker服务并设置开机自启  # {{{
       service:
         name: docker
         state: restarted
         enabled: yes
+      # }}}

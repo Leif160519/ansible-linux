@@ -10,22 +10,25 @@
   hosts: dist.ubuntu:dist.centos
   tags: ntp
   tasks:
-    - name: 设置时区
+    - name: 设置时区 # {{{
       shell: timedatectl set-timezone 'Asia/Shanghai'
+      # }}}
 
-    - name: 安装ntp服务(RedHat)
-      yum: 
+    - name: 安装ntp服务(RedHat) # {{{
+      yum:
         name: ntp
         state: installed
       when: ansible_os_family == "RedHat"
+      # }}}
 
-    - name: 安装ntp服务(Debian)
+    - name: 安装ntp服务(Debian) # {{{
       apt:
         name: ntpdate
         state: latest
       when: ansible_os_family == "Debian"
+      # }}}
 
-    - name: 设置时间同步(Debian)
+    - name: 设置时间同步(Debian) # {{{
       lineinfile:
         dest: /etc/ntp.conf
         regexp: '^pool [0,1,2,3]'
@@ -36,8 +39,9 @@
         - 'server ntp2.aliyun.com'
         - 'server ntp3.aliyun.com'
       when: ansible_os_family == 'Debian'
+      # }}}
 
-    - name: 设置时间同步(RedHat)
+    - name: 设置时间同步(RedHat) # {{{
       lineinfile:
         dest: /etc/ntp.conf
         regexp: '^server [0,1,2,3]'
@@ -48,41 +52,49 @@
         - 'server ntp2.aliyun.com'
         - 'server ntp3.aliyun.com'
       when: ansible_os_family == 'RedHat'
+      # }}}
 
-    - name: 停止ntp服务(Debian)
+    - name: 停止ntp服务(Debian) # {{{
       service:
         name: ntp
         state: stopped
       when: ansible_os_family == 'Debian'
+      # }}}
 
-    - name: 停止ntp服务(RedHat)
+    - name: 停止ntp服务(RedHat) # {{{
       service:
         name: ntpd
         state: stopped
       when: ansible_os_family == "RedHat"
+      # }}}
 
-    - name: 进行时间同步
+    - name: 进行时间同步 # {{{
       raw: ntpdate time.windows.com
       ignore_errors: true
+      # }}}
 
-    - name: 设置计划任务，每隔一小时同步一次实践
+    - name: 设置计划任务，每隔一小时同步一次实践 # {{{
       lineinfile:
         dest: /etc/crontab
         line: '* */1 * * * ntpdate -s time.windows.com'
+      # }}}
 
-    - name: 计划任务生效
+    - name: 计划任务生效 # {{{
       raw: crontab /etc/crontab
+      # }}}
 
-    - name: 启动ntp服务(Debian)
+    - name: 启动ntp服务(Debian) # {{{
       service:
         name: ntp
         state: restarted
         enabled: yes
       when: ansible_os_family == 'Debian'
+      # }}}
 
-    - name: 启动ntp服务(RedHat)
+    - name: 启动ntp服务(RedHat) # {{{
       service:
         name: ntpd
         state: restarted
         enabled: yes
       when: ansible_os_family == 'RedHat'
+      # }}}

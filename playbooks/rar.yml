@@ -12,14 +12,12 @@
   vars:
     rar_version_x64: rarlinux-x64-5.7.1
     rar_version_x32: rarlinux-5.7.1
-    rar_url_x64: http://10.1.1.26/repository/it/rar/{{ rar_version_x64 }}.tar.gz
-    #rar_url_x64: http://www.rarlab.com/rar/{{ rar_version_x64 }}.tar.gz
-    rar_url_x32: http://10.1.1.26/repository/it/rar/{{ rar_version_x32 }}.tar.gz
-    #rar_url_x32: http://www.rarlab.com/rar/{{ rar_version_x32 }}.tar.gz
+    rar_url_x64: http://www.rarlab.com/rar/{{ rar_version_x64 }}.tar.gz
+    rar_url_x32: http://www.rarlab.com/rar/{{ rar_version_x32 }}.tar.gz
   tasks:
     - name: rar
       block:
-        - unarchive: 
+        - unarchive:
             copy: false
             src: "{{ rar_url_x64 }}"
             dest: /tmp
@@ -44,4 +42,3 @@
             path: /tmp/rar
             state: absent
           when: rar.stat.exists == true
-

@@ -10,39 +10,44 @@
   hosts: all
   tags: [zsh]
   tasks:
-    - name: 安装zsh和autojump
+    - name: 安装zsh和autojump # {{{
       package:
         name: "{{ item }}"
         state: latest
       with_items:
         - zsh
         - autojump
+      # }}}
 
-    - name: 清理下载的安装包缓存(Debian)
+    - name: 清理下载的安装包缓存(Debian) # {{{
       shell: apt clean && apt autoclean
       ignore_errors: yes
       when: ansible_os_family == "Debian"
+      # }}}
 
-    - name: 清理下载的安装包缓存(RedHat)
+    - name: 清理下载的安装包缓存(RedHat) # {{{
       shell: yum clean all
       ignore_errors: true
       when: ansible_os_family == "RedHat"
+      # }}}
 
     - shell: echo ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins
       register: plugins_path
 
-    - name: 切换默认shell为zsh
+    - name: 切换默认shell为zsh # {{{
       shell: chsh -s /bin/zsh
       ignore_errors: yes
+      # }}}
 
     - stat:
         path: ~/.oh-my-zsh
       register: oh_my_zsh
 
-    - name: 安装oh-my-zsh
+    - name: 安装oh-my-zsh # {{{
       shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
       ignore_errors: yes
       when: oh_my_zsh.stat.exists == false
+      # }}}
 
     - stat:
         path: "{{ plugins_path.stdout }}/zsh-syntax-highlighting"
@@ -64,57 +69,83 @@
         path: "{{ plugins_path.stdout }}/history-search-multi-word"
       register: history_search_multi_word
 
-    - name: 安装zsh-syntax-highlighting:模仿fish命令行高亮的插件
+    - name: 安装zsh-syntax-highlighting:模仿fish命令行高亮的插件 # {{{
       git:
         repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
         dest: "{{ plugins_path.stdout }}/zsh-syntax-highlighting"
         clone: yes
         update: yes
       when: zsh_syntax_highlighting.stat.exists == false
+      # }}}
 
-    - name: 安装zsh-autosuggestions:根据命令历史记录自动推荐和提示的插件
+    - name: 安装zsh-autosuggestions:根据命令历史记录自动推荐和提示的插件 # {{{
       git:
         repo: https://github.com/zsh-users/zsh-autosuggestions
         dest: "{{ plugins_path.stdout }}/zsh-autosuggestions"
         clone: yes
         update: yes
       when: zsh_autosuggestions.stat.exists == false
+      # }}}
 
-    - name: 安装zsh-completions:自动命令补全，类似bash-completions功能的插件
+    - name: 安装zsh-completions:自动命令补全，类似bash-completions功能的插件 # {{{
       git:
         repo: https://github.com/zsh-users/zsh-completions
         dest: "{{ plugins_path.stdout }}/zsh-completions"
         clone: yes
         update: yes
       when: zsh_completions.stat.exists == false
+      # }}}
 
-    - name: history-substring-search:按住向上箭头可以搜索出现过该关键字的历史命令
+    - name: history-substring-search:按住向上箭头可以搜索出现过该关键字的历史命令 # {{{
       git:
         repo: https://github.com/zsh-users/zsh-history-substring-search
         dest: "{{ plugins_path.stdout }}/zsh-history-substring-search"
         clone: yes
         update: yes
       when: zsh_history_substring_search.stat.exists == false
+      # }}}
 
-    - name: history-search-multi-word:ctrl+r搜索历史记录
+    - name: history-search-multi-word:ctrl+r搜索历史记录 # {{{
       git:
         repo: https://github.com/zdharma/history-search-multi-word
         dest: "{{ plugins_path.stdout }}/history-search-multi-word"
         clone: yes
         update: yes
       when: history_search_multi_word.stat.exists == false
+      # }}}
 
-    - name: 修改zsh主题为随机
+    - name: 修改zsh主题为随机 # {{{
       lineinfile:
         dest: ~/.zshrc
         regexp: '^ZSH_THEME='
         line: 'ZSH_THEME="random"'
+        # }}}
 
-    - name: 添加插件
-      lineinfile:
-        dest: ~/.zshrc
-        regexp: '^plugins='
-        line: 'plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-completions z history-substring-search command-not-found colored-man-pages extract history-search-multi-word)'
+        #    - name: 添加插件 # {{{
+        #      lineinfile:
+        #        dest: ~/.zshrc
+        #        regexp: '^plugins='
+        #        line: 'plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-completions z history-substring-search command-not-found colored-man-pages extract history-search-multi-word)'
+      # }}}
+      #
+    - name: aaa
+      blockinfile:
+        path: ~/.zshrc
+        insertbefore: "^source"
+        block: |
+          plugins=(
+                  git
+                  zsh-autosuggestions
+                  zsh-syntax-highlighting
+                  zsh-completions
+                  z
+                  history-substring-search
+                  command-not-found
+                  colored-man-pages
+                  extract
+                  history-search-multi-word
+          )
 
-    - name: 重新登录shell生效
+    - name: 重新登录shell生效 # {{{
       shell: echo "重新登录shell生效"
+      # }}}

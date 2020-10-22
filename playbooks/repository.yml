@@ -6,31 +6,31 @@
 # @leif160519 @2020.08.29
 ####
 ---
-- name: Ubuntu LTS
+- name: Ubuntu LTS # {{{
   hosts: dist.ubuntu.lts
   tags: [ubuntu, lts]
   vars:
     mirror: http://mirrors.aliyun.com/ubuntu/
   tasks:
-    - template: 
+    - template:
         src: files/repository/sources.list
         dest: /etc/apt/sources.list
-    - apt: 
+    - apt:
         update_cache: yes
+# }}}
 
-- name: Centos 7 
-  hosts: dist.centos7
-  tags: [centos, seven]
-  vars:
-    version: RPM-GPG-KEY-CentOS-7
+- name: Centos # {{{
+  hosts: dist.centos
+  tags: [centos]
   tasks:
-    - template: 
-        src: files/repository/CentOS-Base.repo
+    - get_url:
+        url: http://mirrors.aliyun.com/repo/Centos-{{ ansible_distribution_major_version }}.repo
         dest: /etc/yum.repos.d/CentOS-Base.repo
-    - yum: 
+    - yum:
         update_cache: yes
+# }}}
 
-- name: Debian
+- name: Debian # {{{
   hosts: dist.debian:!dist.ubuntu
   tags: debian
   vars:
@@ -42,3 +42,4 @@
         dest: /etc/apt/sources.list
     - apt:
        update_cache: yes
+# }}}

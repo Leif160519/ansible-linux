@@ -10,7 +10,7 @@
   hosts: all
   tags: config
   tasks:
-    - name: 禁用swap分区(重启后生效)
+    - name: 禁用swap分区(重启后生效) # {{{
       replace:
         path: /etc/fstab
         regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
@@ -29,8 +29,9 @@
     #    replace: '\1'
 
     #- shell: swapon -a #临时启用
+    # }}}
 
-    - name: 配置SSH
+    - name: 配置SSH   # {{{
       lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: '^#UseDNS'
@@ -46,7 +47,7 @@
       lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: '^#ClientAliveCountMax'
-        line: 'ClientAliveCountMax 60'  
+        line: 'ClientAliveCountMax 60'
 
       lineinfile:
         dest: /etc/ssh/ssh_config
@@ -59,12 +60,14 @@
       service:
         name: sshd
         state: restarted
+      # }}}
 
-    - name: 修改Hostname
+    - name: 修改Hostname # {{{
       hostname:
         name: "{{ inventory_hostname }}"
+      # }}}
 
-    - name: 屏蔽系统错误报告(Ubuntu)
+    - name: 屏蔽系统错误报告 # {{{
       file:
         path: /var/crash/
         state: absent
@@ -75,36 +78,39 @@
         regexp: '^enabled='
         line: 'enabled=0'
       when: ansible_distribution == "Ubuntu"
+      # }}}
 
-    - name: 设置所有sudo指令不需要密码(Ubuntu)
+    - name: 设置所有sudo指令不需要密码 # {{{
       lineinfile:
         dest: /etc/sudoers
         regexp: '^%sudo'
         line: '%sudo    ALL=(ALL:ALL) NOPASSWD:ALL'
       when: ansible_distribution == "Ubuntu"
 
-    - name: 设置所有sudo指令不需要密码(RedHat)
-      lineinfile:
+    - lineinfile:
         dest: /etc/sudoers
         regexp: '^%wheel'
         line: '%wheel   ALL=(ALL)       NOPASSWD:ALL'
       when: ansible_distribution == "RedHat"
-     
-    - name: 禁用selinux(重启后生效)(RedHat)
+      # }}}
+
+    - name: 禁用selinux(重启后生效) # {{{
       lineinfile:
         dest: /etc/selinux/config
         regexp: '^SELINUX='
         line: 'SELINUX=disabled'
       when: ansible_os_family == "RedHat"
+      # }}}
 
-    - name: 禁用防火墙(RedHat)
+    - name: 禁用防火墙 #{{{
       service:
         name: firewalld
         state: stopped
         enabled: no
       when: ansible_os_family == "RedHat"
+      # }}}
 
-    - name: 给pip换源
+    - name: 给pip换源 # {{{
       file:
         path: /root/.pip
         state: directory
@@ -115,12 +121,39 @@
         state: touch
         mode: 0755
 
-    - lineinfile:
-        dest: /root/.pip/pip.conf
-        line: "{{ item }}"
-      with_items:
-        - '[global]'
-        - 'index-url = http://mirrors.aliyun.com/pypi/simple/'
-        - '[install]'
-        - 'trusted-host=mirrors.aliyun.com '
+    - blockinfile:
+        path: /root/.pip/pip.conf
+        block: |
+          [global]
+          index-url = http://mirrors.aliyun.com/pypi/simple/
+          [install]
+          trusted-host=mirrors.aliyun.com
+      # }}}
 
+    - name: 配置vim # {{{
+      blockinfile:
+        path: /etc/vim/vimrc
+        block: |
+          set foldmethod=marker # 自动折叠
+          highlight RedundantSpaces ctermbg=red guibg=red # 高亮多余空白字符和Tab
+          match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
+          set tabstop=4   # 使用 4 个空格，不使用 Tab
+          set shiftwidth=4
+          set expandtab
+          set softtabstop=4
+          set fileformats=unix # 总是显示 DOS 格式文件中的 ^M
+      when: ansible_os_family == "Debian"
+
+    - blockinfile: # {{{
+        path: /etc/vimrc
+        block: |
+          set foldmethod=marker # 自动折叠
+          highlight RedundantSpaces ctermbg=red guibg=red # 高亮多余空白字符和Tab
+          match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
+          set tabstop=4   # 使用 4 个空格，不使用 Tab
+          set shiftwidth=4
+          set expandtab
+          set softtabstop=4
+          set fileformats=unix # 总是显示 DOS 格式文件中的 ^M
+      when: ansible_os_family == "RedHat"
+      # }}}

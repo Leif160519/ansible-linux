@@ -14,30 +14,21 @@
     blackbox_exporter_root_dir: /opt/black_exporter
 
     prometheus_version: prometheus-2.19.2.linux-amd64
-    prometheus_url: http://10.1.1.26/repository/it/prometheus/{{ prometheus_version }}.tar.gz
-
     alertmanager_version: alertmanager-0.21.0.linux-amd64
-    alertmanager_url: http://10.1.1.26/repository/it/prometheus/{{ alertmanager_version }}.tar.gz
-
     node_exporter_version: node_exporter-1.0.1.linux-amd64
-    node_exporter_url: http://10.1.1.26/repository/it/prometheus/{{ node_exporter_version }}.tar.gz
-
     blackbox_exporter_version: blackbox_exporter-0.17.0.linux-amd64
-    blackbox_exporter_url: http://10.1.1.26/repository/it/prometheus/{{ blackbox_exporter_version }}.tar.gz
-
   pre_tasks:
     - set_fact:
         prometheus_url: https://github.com/prometheus/prometheus/releases/download/v2.19.2/{{ prometheus_version }}.tar.gz
         alertmanager_url: https://github.com/prometheus/alertmanager/releases/download/v0.21.0/{{ alertmanager_version }}.tar.gz
         node_exporter_url: https://github.com/prometheus/node_exporter/releases/download/v1.0.1/{{ node_exporter_version }}.tar.gz
         blackbox_exporter_url: https://github.com/prometheus/blackbox_exporter/releases/download/v0.17.0/{{ blackbox_exporter_version }}.tar.gz
-      when: false
 
   tasks:
     - name: user and group and directories
       tags: [common]
       block:
-      - name: install needed packages
+      - name: install needed packages # {{{ | 前置工作
         package:
           name: "{{ item }}"
           state: present
@@ -70,8 +61,9 @@
         with_items:
           - "/etc/prometheus/conf.d/"
           - "/var/log/prometheus/"
+        # }}}
 
-    - name: prometheus
+    - name: prometheus # {{{
       tags: [never, prometheus]
       block:
       - name: stat prometheus
@@ -101,8 +93,9 @@
         with_items:
           - prometheus
           - promtool
+        # }}}
 
-    - name: alertmanager
+    - name: alertmanager # {{{
       tags: [never, alertmanager]
       block:
       - name: stat alertmanager
@@ -117,7 +110,7 @@
           owner: prometheus
           group: prometheus
           remote_src: yes
-        when: a.stat.exists == false 
+        when: a.stat.exists == false
 
       - name: 重命名alertmanager目录
         command: mv /opt/{{ alertmanager_version }} {{ alertmanager_root_dir }}
@@ -135,7 +128,7 @@
 
       - name: 复制alertmanager配置文件
         template:
-          src: files/prometheus/alert/alertmanager.yml 
+          src: files/prometheus/alert/alertmanager.yml
           dest: /etc/prometheus/alertmanager.yml
           force: true
           owner: prometheus
@@ -170,8 +163,9 @@
         systemd:
           name: alertmanager
           enabled: true
+        # }}}
 
-    - name: blackbox_exporter
+    - name: blackbox_exporter # {{{
       tags: [never, blackbox]
       block:
       - name: stat blackbox
@@ -231,22 +225,24 @@
         systemd:
           name: blackbox_exporter
           enabled: true
+        # }}}
 
-    - name: scrape配置
+    - name: scrape配置 # {{{
       tags: [ targets ]
       block:
       - set_fact:
           prometheus_targets_node: "{{ groups['all'] }}"
 
-      - name: 创建静态配置文件 
-        template: 
-          src: files/prometheus/scrape/file_sd/node.yml.j2
+      - name: 创建静态配置文件
+        template:
+        src: files/prometheus/scrape/file_sd/node.yml.j2
           dest: /etc/prometheus/file_sd/node.yml
         delegate_to: "prometheus-server"
         run_once: true
       when: not inventory_hostname is match("^prometheus-server")
+      # }}}
 
-    - name: node_exporter
+    - name: node_exporter # {{{
       tags: [ node_exporter ]
       block:
       - name: stat node_exporter
@@ -295,6 +291,7 @@
         systemd:
           name: node_exporter
           enabled: true
+        # }}}
 
 - hosts: prometheus-server
   tags: [never, admin]
@@ -318,18 +315,18 @@
       with_items:
         - file_sd
 
-    - name: 从模板创建静态配置 
+    - name: 从模板创建静态配置
       template:
         src: "{{ item }}"
         dest: /etc/prometheus/file_sd/{{ item | basename | regex_replace('.j2')}}
         force: true
-        owner: prometheus 
+        owner: prometheus
         group: prometheus
         mode: 0644
       with_fileglob:
         - "files/prometheus/scrape/file_sd/*.j2"
 
-  roles: 
+  roles:
     - role: roles/cloudalchemy.prometheus
       prometheus_skip_install: true
       prometheus_storage_retention: 6h

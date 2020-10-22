@@ -1,19 +1,19 @@
 ##
-# 生成sshkey 
+# 生成sshkey
 #
 #
 ##
 # @leif160519 @2020.09.03
 ####
 ---
-- name: 生成sshkey 
+- name: 生成sshkey
   hosts: all
   tags: ssh
   tasks:
     - user:
         name: root
         comment: root
-        group: root 
+        group: root
         generate_ssh_key: yes
         ssh_key_file: ~/.ssh/id_rsa
         state: present

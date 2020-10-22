@@ -10,7 +10,7 @@
   hosts: all
   tags: [install]
   tasks:
-    - name: 安装常用软件
+    - name: 安装常用软件 # {{{
       package:
         name: "{{ item }}"
         state: latest
@@ -73,8 +73,9 @@
         - w3m
         - lynx
       ignore_errors: yes
+      # }}}
 
-    - name: 启动相关服务
+    - name: 启动相关服务 # {{{
       service:
         name: "{{ item }}"
         state: started
@@ -83,28 +84,34 @@
         - sysstat
         - monit
       ignore_errors: yes
+      # }}}
 
-    - name: 清理无用的安装包缓存(Debian)
+    - name: 清理无用的安装包缓存 # {{{ | redhat
       apt:
         autoclean: yes
       when: ansible_os_family == "Debian"
+      # }}}
 
-    - name:  清理不再使用的依赖包(Debian)
+    - name:  清理不再使用的依赖包 # {{{ | debian
       apt:
         autoremove: yes
       when: ansible_os_family == "Debian"
+      # }}}
 
-    - name: 清理下载的安装包缓存(Debian)
+    - name: 清理下载的安装包缓存 #  {{{ | debian
       shell: apt clean && apt autoclean
       ignore_errors: yes
       when: ansible_os_family == "Debian"
+      # }}}
 
-    - name: 卸载snapd(Debian)
+    - name: 卸载snapd # {{{ | debian
       shell: apt -y autoremove --purge snapd
       ignore_errors: yes
       when: ansible_os_family == "Debian"
+      # }}}
 
-    - name: 清理安装包(Redhat)
+    - name: 清理安装包 # {{{ | redhat
       shell: yum clean all
       ignore_errors: true
       when: ansible_os_family == "RedHat"
+      # }}}
