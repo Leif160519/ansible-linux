@@ -115,3 +115,9 @@
       ignore_errors: true
       when: ansible_os_family == "RedHat"
       # }}}
+
+# {{{ 安装其他软件
+- import_playbook: "rar.yml"
+
+- import_playbook: "ccat.yml"
+# }}}

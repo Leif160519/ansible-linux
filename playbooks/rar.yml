@@ -37,8 +37,3 @@
             cd /tmp/rar/
             make
           ignore_errors: yes
-
-        - file:
-            path: /tmp/rar
-            state: absent
-          when: rar.stat.exists == true

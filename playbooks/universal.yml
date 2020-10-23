@@ -22,8 +22,5 @@
 # 设置静态IP地址
 - import_playbook: network.yml
 
-# 安装rar
-- import_playbook: rar.yml
-
 # 安装node_exporter
 - import_playbook: prometheus.yml

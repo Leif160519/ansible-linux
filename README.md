@@ -8,55 +8,18 @@
 ansible-linux
 ├── files
 │   ├── docker
-│   │   ├── daemon.json
-│   │   └── docker-ce.repo
 │   ├── network
-│   │   ├── 00-installer-config.yaml
-│   │   ├── ifcfg-eth0
-│   │   ├── interfaces
-│   │   └── resolv.conf
 │   ├── prometheus
 │   │   ├── alert
-│   │   │   ├── alertmanager.yml
 │   │   │   └── rules
-│   │   │       ├── default.rules
-│   │   │       └── ping.rules
 │   │   ├── exporter
-│   │   │   └── blackbox_exporter.yml
 │   │   ├── scrape
-│   │   │   ├── file_sd
-│   │   │   │   └── node.yml.j2
-│   │   │   ├── node.job
-│   │   │   ├── ping.job
-│   │   │   └── prometheus.job
+│   │   │   └── file_sd
 │   │   └── service
-│   │       ├── alertmanager.service
-│   │       ├── blackbox_exporter.service
-│   │       └── node_exporter.service
 │   └── repository
-│       ├── sources-debian.list
-│       └── sources.list
 ├── inventory
-│   ├── all
-│   └── dist
 ├── playbooks
-│   ├── config.yml
-│   ├── docker.yml
-│   ├── files -> ../files
-│   ├── gitlab.yml
-│   ├── grafana.yml
-│   ├── install.yml
-│   ├── network.yml
-│   ├── ntp.yml
-│   ├── oh-my-fish.yml
-│   ├── oh-my-zsh.yml
-│   ├── prometheus.yml
-│   ├── rar.yml
-│   ├── remove_gnome.yml
-│   ├── repository.yml
-│   ├── ssh-key.yml
-│   └── universal.yml
-├── README.md
+│   └── files -> ../files
 └── roles
     └── cloudalchemy.prometheus
 ```

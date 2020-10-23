@@ -1,0 +1,42 @@
+# 安装ccat，代替cat 让终端彩色输出
+- hosts: all
+  tags: ccat
+  vars:
+    ccat_version: linux-amd64-1.1.0
+    ccat_url: https://github.com/jingweno/ccat/releases/download/v1.1.0/{{ ccat_version }}.tar.gz
+  tasks:
+    - stat:
+        path: /usr/local/bin/ccat
+      register: ccat_file
+
+    - stat:
+        path: /root/.zshrc
+      register: zsh_config
+
+    - name: download and unarchive
+      unarchive:
+        copy: false
+        src: "{{ ccat_url }}"
+        dest: /tmp
+        mode: 0755
+        owner: root
+        group: root
+      when: ccat_file.stat.exists == false
+
+    - name: copy ccat
+      shell: cp /tmp/linux-amd64-1.1.0/ccat /usr/local/bin
+      ignore_errors: true
+      when: ccat_file.stat.exists == false
+
+    - name: config bash
+      lineinfile:
+        dest: /root/.bashrc
+        line: 'alias cat==ccat'
+      when: zsh_config.stat.exists == false
+
+    - name: config zsh
+      lineinfile:
+        dest: /root/.zshrc
+        line: 'alias cat==ccat'
+      when: zsh_config.stat.exists == true
+
