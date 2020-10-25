@@ -13,12 +13,15 @@
     gitlab_version: gitlab-ce-13.3.2-ce.0.el7.x86_64
     gitlab_url: https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/{{ gitlab_version }}.rpm
   tasks:
-    - name: gitlab
-      block:
+    - block:
+        - stat:
+            path: /bin/gitlab-ctl
+          register: gitlab_cmd
+
         - yum:
             name: "{{ gitlab_url }}"
             state: present
-          when: ansible_machine=="x86_64"
+          when: (ansible_machine=="x86_64") and (gitlab_cmd.stat.exists == false)
 
         - lineinfile:
             dest: /etc/gitlab/gitlab.rb
@@ -27,7 +30,7 @@
 
         - lineinfile:
             dest: /etc/gitlab/gitlab.rb
-            regexp: "^# gitlab_rails['backup_keep_time'] ="
+            regexp: "backup_keep_time"
             line: "gitlab_rails['backup_keep_time'] = 604800"
 
         - lineinfile:

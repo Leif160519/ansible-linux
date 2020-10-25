@@ -235,7 +235,7 @@
 
       - name: 创建静态配置文件
         template:
-        src: files/prometheus/scrape/file_sd/node.yml.j2
+          src: files/prometheus/scrape/file_sd/node.yml.j2
           dest: /etc/prometheus/file_sd/node.yml
         delegate_to: "prometheus-server"
         run_once: true

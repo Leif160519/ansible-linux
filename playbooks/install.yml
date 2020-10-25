@@ -86,31 +86,31 @@
       ignore_errors: yes
       # }}}
 
-    - name: 清理无用的安装包缓存 # {{{ | redhat
+    - name: 清理无用的安装包缓存 # {{{ | Debian
       apt:
         autoclean: yes
       when: ansible_os_family == "Debian"
       # }}}
 
-    - name:  清理不再使用的依赖包 # {{{ | debian
+    - name:  清理不再使用的依赖包 # {{{ | Debian
       apt:
         autoremove: yes
       when: ansible_os_family == "Debian"
       # }}}
 
-    - name: 清理下载的安装包缓存 #  {{{ | debian
+    - name: 清理下载的安装包缓存 #  {{{ | Debian
       shell: apt clean && apt autoclean
       ignore_errors: yes
       when: ansible_os_family == "Debian"
       # }}}
 
-    - name: 卸载snapd # {{{ | debian
+    - name: 卸载snapd # {{{ | Debian
       shell: apt -y autoremove --purge snapd
       ignore_errors: yes
       when: ansible_os_family == "Debian"
       # }}}
 
-    - name: 清理安装包 # {{{ | redhat
+    - name: 清理安装包 # {{{ | Redhat
       shell: yum clean all
       ignore_errors: true
       when: ansible_os_family == "RedHat"

@@ -17,13 +17,17 @@
   tasks:
     - name: rar
       block:
+        - stat:
+            path: /usr/local/bin/rar
+          register: rar_cmd
+
         - unarchive:
             copy: false
             src: "{{ rar_url_x64 }}"
             dest: /tmp
             owner: root
             group: root
-          when: ansible_machine == "x86_64"
+          when: (ansible_machine == "x86_64") and (rar_cmd.stat.exists == false)
 
         - unarchive:
             copy: false
@@ -31,9 +35,10 @@
             dest: /tmp
             owner: root
             group: root
-          when: not ansible_machine == "x86_64"
+          when: (not ansible_machine == "x86_64") and (rar_cmd.stat.exists == false)
 
         - shell: |
             cd /tmp/rar/
             make
           ignore_errors: yes
+          when: rar_cmd.stat.exists == false

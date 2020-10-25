@@ -17,7 +17,7 @@ dist.centos
 dist.centos6
 dist.centos7
 
-[ dist.centos6] # {{{3
+[dist.centos6] # {{{3
 # }}}3
 
 [dist.centos7] # {{{3

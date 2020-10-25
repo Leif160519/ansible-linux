@@ -17,6 +17,10 @@
   tasks:
     - name: grafana
       block:
+        - stat:
+            path: /usr/sbin/grafana-cli
+          register: grafana_cmd
+
         - package:
             name: "{{ item }}"
           with_items:
@@ -27,12 +31,12 @@
         - apt:
             deb: "{{ grafana_deb_url }}"
             state: present
-          when: ansible_os_family == "Debian"
+          when: (ansible_os_family == "Debian") and (grafana_cmd.stat.exists == false)
 
         - yum:
             name: "{{ grafana_rpm_url }}"
             state: present
-          when: ansible_os_family == "RedHat"
+          when: (ansible_os_family == "RedHat") and (grafana_cmd.stat.exists == false)
 
         - service:
             name: grafana-server

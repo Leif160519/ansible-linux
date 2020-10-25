@@ -11,151 +11,131 @@
   tags: config
   tasks:
     - name: 禁用swap分区(重启后生效) # {{{
-      replace:
-        path: /etc/fstab
-        regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
-        replace: '# \1'
-    - mount: # 仅对centos有效
-        name: swap
-        state: absent
-      #shell: sed  -i '/swap/s/^/#/' /etc/fstab
+      block:
+        - replace:
+            path: /etc/fstab
+            regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+            replace: '# \1'
+        - mount: # 仅对centos有效
+            name: swap
+            state: absent
+            #shell: sed  -i '/swap/s/^/#/' /etc/fstab
 
-    - shell: swapoff -a #临时关闭
+        #- shell: swapoff -a #临时关闭
 
-    #- name: 启用swap分区(重启后生效)
-    #  replace:
-    #    path: /etc/fstab
-    #    regexp: '^# (.+?\sswap\s+sw\s+.*)$'
-    #    replace: '\1'
+        #- name: 启用swap分区(重启后生效)
+        #  replace:
+        #    path: /etc/fstab
+        #    regexp: '^# (.+?\sswap\s+sw\s+.*)$'
+        #    replace: '\1'
 
-    #- shell: swapon -a #临时启用
-    # }}}
+        #- shell: swapon -a #临时启用
+        # }}}
 
     - name: 配置SSH   # {{{
-      lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: '^#UseDNS'
-        line: 'UseDNS no'
-      lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: '^#GSSAPIAuthentication'
-        line: 'GSSAPIAuthentication no'
-      lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: '^#ClientAliveInterval'
-        line: 'ClientAliveInterval 60'
-      lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: '^#ClientAliveCountMax'
-        line: 'ClientAliveCountMax 60'
+      block:
+        - lineinfile:
+            dest: /etc/ssh/sshd_config
+            regexp: '^#UseDNS'
+            line: 'UseDNS no'
 
-      lineinfile:
-        dest: /etc/ssh/ssh_config
-        line: "{{ item }}"
-      with_items:
-        - ServerAliveInterval 20
-        - ServerAliveCountMax 999
+        - lineinfile:
+            dest: /etc/ssh/sshd_config
+            regexp: '^#GSSAPIAuthentication'
+            line: 'GSSAPIAuthentication no'
 
-    - name: 重启SSH服务
-      service:
-        name: sshd
-        state: restarted
-      # }}}
+        - lineinfile:
+            dest: /etc/ssh/sshd_config
+            regexp: '^#ClientAliveInterval'
+            line: 'ClientAliveInterval 60'
+
+        - lineinfile:
+            dest: /etc/ssh/sshd_config
+            regexp: '^#ClientAliveCountMax'
+            line: 'ClientAliveCountMax 60'
+
+        - blockinfile:
+            path: /etc/ssh/ssh_config
+            block: |2
+                  ServerAliveInterval 20
+                  ServerAliveCountMax 999
+
+        - service:
+            name: sshd
+            state: restarted
+        # }}}
 
     - name: 修改Hostname # {{{
-      hostname:
-        name: "{{ inventory_hostname }}"
+      block:
+        - hostname:
+            name: "{{ inventory_hostname }}"
       # }}}
 
     - name: 屏蔽系统错误报告 # {{{
-      file:
-        path: /var/crash/
-        state: absent
-      when: ansible_distribution == "Ubuntu"
+      block:
+        - file:
+            path: /var/crash/
+            state: absent
+          when: ansible_distribution == "Ubuntu"
 
-    - lineinfile:
-        dest: /etc/default/apport
-        regexp: '^enabled='
-        line: 'enabled=0'
-      when: ansible_distribution == "Ubuntu"
-      # }}}
+        - lineinfile:
+            dest: /etc/default/apport
+            regexp: '^enabled='
+            line: 'enabled=0'
+          when: ansible_distribution == "Ubuntu"
+       # }}}
 
     - name: 设置所有sudo指令不需要密码 # {{{
-      lineinfile:
-        dest: /etc/sudoers
-        regexp: '^%sudo'
-        line: '%sudo    ALL=(ALL:ALL) NOPASSWD:ALL'
-      when: ansible_distribution == "Ubuntu"
+      block:
+        - lineinfile:
+            dest: /etc/sudoers
+            regexp: '^%sudo'
+            line: '%sudo    ALL=(ALL:ALL) NOPASSWD:ALL'
+          when: ansible_distribution == "Ubuntu"
 
-    - lineinfile:
-        dest: /etc/sudoers
-        regexp: '^%wheel'
-        line: '%wheel   ALL=(ALL)       NOPASSWD:ALL'
-      when: ansible_distribution == "RedHat"
+        - lineinfile:
+            dest: /etc/sudoers
+            regexp: '^%wheel'
+            line: '%wheel   ALL=(ALL)       NOPASSWD:ALL'
+          when: ansible_distribution == "RedHat"
       # }}}
 
     - name: 禁用selinux(重启后生效) # {{{
-      lineinfile:
-        dest: /etc/selinux/config
-        regexp: '^SELINUX='
-        line: 'SELINUX=disabled'
-      when: ansible_os_family == "RedHat"
+      block:
+        - lineinfile:
+            dest: /etc/selinux/config
+            regexp: '^SELINUX='
+            line: 'SELINUX=disabled'
+          when: ansible_os_family == "RedHat"
       # }}}
 
-    - name: 禁用防火墙 #{{{
-      service:
-        name: firewalld
-        state: stopped
-        enabled: no
-      when: ansible_os_family == "RedHat"
+    - name : 禁用防火墙 #{{{
+      block:
+        - service:
+            name: firewalld
+            state: stopped
+            enabled: no
+          when: ansible_os_family == "RedHat"
       # }}}
 
     - name: 给pip换源 # {{{
-      file:
-        path: /root/.pip
-        state: directory
-        mode: 0755
+      block:
+        - file:
+            path: /root/.pip
+            state: directory
+            mode: 0755
 
-    - file:
-        path: /root/.pip/pip.conf
-        state: touch
-        mode: 0755
+        - file:
+            path: /root/.pip/pip.conf
+            state: touch
+            mode: 0755
 
-    - blockinfile:
-        path: /root/.pip/pip.conf
-        block: |
-          [global]
-          index-url = http://mirrors.aliyun.com/pypi/simple/
-          [install]
-          trusted-host=mirrors.aliyun.com
+        - blockinfile:
+            path: /root/.pip/pip.conf
+            block: |
+              [global]
+              index-url = http://mirrors.aliyun.com/pypi/simple/
+              [install]
+              trusted-host=mirrors.aliyun.com
       # }}}
 
-    - name: 配置vim # {{{
-      blockinfile:
-        path: /etc/vim/vimrc
-        marker: '"{mark} ANSIBLE MANAGED BLOCK"'
-        block: |
-          set foldmethod=marker
-          highlight RedundantSpaces ctermbg=red guibg=red
-          match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
-          set tabstop=4
-          set shiftwidth=4
-          set expandtab
-          set softtabstop=4
-          set fileformats=unix
-      when: ansible_os_family == "Debian"
-
-    - blockinfile:
-        path: /etc/vimrc
-        marker: '"{mark} ANSIBLE MANAGED BLOCK"'
-        block: |
-          set foldmethod=marker
-          highlight RedundantSpaces ctermbg=red guibg=red
-          match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
-          set tabstop=4
-          set shiftwidth=4
-          set expandtab
-          set softtabstop=4
-          set fileformats=unix
-      when: ansible_os_family == "RedHat"
-      # }}}
