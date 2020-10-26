@@ -18,7 +18,7 @@ ExecStart=/usr/local/bin/node_exporter \
   --no-collector.hwmon \
   --no-collector.infiniband \
   --no-collector.zfs \
-  --web.listen-address=0.0.0.0:9100 
+  --web.listen-address=0.0.0.0:9100
 CapabilityBoundingSet=CAP_SET_UID
 LimitNOFILE=65000
 LockPersonality=true

@@ -6,11 +6,11 @@
                 "size": {{ size }}
             }
         ],
-    "registry-mirrors": 
+    "registry-mirrors":
         [
-	    "{{ mirrors1 }}",
-	    "{{ mirrors2 }}",
-	    "{{ mirrors3 }}",
-	    "{{ mirrors4 }}"
-	]
+            "{{ mirrors1 }}",
+            "{{ mirrors2 }}",
+            "{{ mirrors3 }}",
+            "{{ mirrors4 }}"
+        ]
 }
