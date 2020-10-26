@@ -1,0 +1,10 @@
+[Unit]
+Description=mount
+After=network.target
+
+[Service]
+ExecStart={{ start_command }}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
