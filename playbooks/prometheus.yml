@@ -339,7 +339,7 @@
       prometheus_alertmanager_config:
         - static_configs:
             - targets:
-                - 10.1.1.24:9093
+                - "{{ ansible_host }}:9093"
   tasks:
     - name: reload prometheus
       systemd:
