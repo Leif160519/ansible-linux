@@ -3,17 +3,23 @@
 
 针对待执行脚本的主机数量众多的情况下，建议采用ansible刷入的方式统一配置这些机器，可以大大减少人工成本与时间成本
 
+由于本项目中使用众多systemctl特性，故墙裂推荐使用ubuntu 16.04 ，Debian 9 和Centos 7 及以上版本！！！
+
 项目目录结构
 ```
-ansible-linux
 ├── files
 │   ├── docker
+│   ├── loki
+│   │   ├── config
+│   │   └── service
 │   ├── network
 │   ├── prometheus
 │   │   ├── alert
 │   │   │   └── rules
 │   │   ├── exporter
 │   │   ├── scrape
+│   │   │   ├── data
+│   │   │   │   └── wal
 │   │   │   └── file_sd
 │   │   └── service
 │   └── repository
