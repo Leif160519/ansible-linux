@@ -1,0 +1,65 @@
+# 升级git版本
+- hosts: dist.centos
+  tags: git
+  vars:
+    git_version: git-2.29.1
+    git_url: https://mirrors.edge.kernel.org/pub/software/scm/git/{{ git_version }}.tar.xz
+  tasks:
+    - shell: git version | awk '{print $3}'
+      register: git_version_old
+
+    - debug:
+        msg: "当前已安装git版本:{{ git_version_old.stdout }}"
+
+    - debug:
+        msg: "待安装git版本{{ git_version.split('-')[1] }}"
+
+    - block:
+        - name: 下载并解压git安装包
+          unarchive:
+            copy: false
+            src: "{{ git_url }}"
+            dest: /tmp
+            owner: root
+            group: root
+            mode: 0755
+
+        - name: 安装依赖包
+          package:
+            name: "{{ item }}"
+          with_items:
+            - curl-devel
+            - expat-devel
+            - gettext-devel
+            - openssl-devel
+            - zlib-devel
+            - asciidoc
+            - gcc
+            - perl-ExtUtils-MakeMaker
+            - perl
+            - cpio
+            - openssl
+            - zlib
+            - autoconf
+            - tk
+
+        - name: 开始编译
+          shell: |
+            cd /tmp/{{ git_version }}
+            autoconf
+            ./configure
+            make
+            make install
+          ignore_errors: true
+
+        - name: 检测升级后的git版本
+          shell: git version
+          register: git_version_new
+
+        - debug:
+           msg: "{{ git_version_new.stdout }}"
+
+        - name: 重新登录shell即可生效
+          shell: echo "重新登录shell即可生效"
+
+      when: git_version_old.stdout is version(git_version.split('-')[1],"<")
