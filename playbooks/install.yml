@@ -72,6 +72,7 @@
         - python3-pip
         - w3m
         - lynx
+        - dos2unix
       ignore_errors: yes
       # }}}
 
