@@ -139,3 +139,32 @@
               trusted-host=mirrors.aliyun.com
       # }}}
 
+    - name: 配置vim # {{{
+      blockinfile:
+        path: /etc/vim/vimrc
+        marker: '"{mark} ANSIBLE MANAGED BLOCK"'
+        block: |
+          set foldmethod=marker
+          highlight RedundantSpaces ctermbg=red guibg=red
+          match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
+          set tabstop=4
+          set shiftwidth=4
+          set expandtab
+          set softtabstop=4
+          set fileformats=unix
+      when: ansible_os_family == "Debian"
+
+    - blockinfile:
+        path: /etc/vimrc
+        marker: '"{mark} ANSIBLE MANAGED BLOCK"'
+        block: |
+          set foldmethod=marker
+          highlight RedundantSpaces ctermbg=red guibg=red
+          match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
+          set tabstop=4
+          set shiftwidth=4
+          set expandtab
+          set softtabstop=4
+          set fileformats=unix
+      when: ansible_os_family == "RedHat"
+      # }}}
