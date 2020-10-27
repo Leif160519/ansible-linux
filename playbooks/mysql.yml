@@ -1,0 +1,153 @@
+# 安装Linux通用版mysql-5.7.28
+- hosts: all
+  tags: mysql
+  vars:
+    mysql_version: mysql-5.7.28-linux-glibc2.12-x86_64
+    mysql_root_dir: /var/lib/mysql
+    mysql_url: https://downloads.mysql.com/archives/get/p/23/file/{{ mysql_version }}.tar.gz
+  tasks:
+    - stat:
+        path: "{{ mysql_root_dir }}"
+      register: m
+
+    - block:
+        - name: 检测本地3306端口是否被占用
+          shell: lsof -i:3306
+
+      rescue:
+        - debug:
+            msg: "3306端口未被占用"
+
+        - name: 安装依赖
+          package:
+            name: numactl
+            state: latest
+
+        - name: 创建mysql组
+          group:
+            name: mysql
+            system: true
+            state: present
+
+        - name: 创建mysql用户
+          user:
+            name: mysql
+            system: true
+            shell: /bin/false
+            group: mysql
+            createhome: no
+
+        - name: 解压文件
+          unarchive:
+            copy: false
+            src: "{{ mysql_url }}"
+            dest: /var/lib
+            owner: mysql
+            group: mysql
+            mode: 0755
+
+        - name: 重命名
+          shell: mv /var/lib/{{ mysql_version }} {{ mysql_root_dir }}
+          ignore_errors: yes
+
+        - name: 创建data目录
+          file:
+            path: "{{ mysql_root_dir }}/data"
+            state: directory
+            owner: mysql
+            group: mysql
+            mode: 0755
+
+        - name: 创建my.cnf文件
+          file:
+            path: /etc/my.cnf
+            state: touch
+            owner: mysql
+            group: mysql
+            mode: 0644
+
+        - name: 编辑my.cnf配置
+          blockinfile:
+            path: /etc/my.cnf
+            block: |
+              [client]
+              socket=/var/run/mysqld/mysqld.sock
+              default-character-set=utf8
+
+              [mysql]
+              default-character-set=utf8
+
+              [mysql.server]
+              default-character-set=utf8
+
+              [mysqld_safe]
+              default-character-set=utf8
+
+              [mysqld]
+              port = 3306
+              datadir={{ mysql_root_dir }}/data
+              socket=/var/run/mysqld/mysqld.sock
+              basedir={{ mysql_root_dir }}
+
+              character-set-server=utf8
+              collation-server=utf8_general_ci
+              skip-character-set-client-handshake
+
+              symbolic-links=0
+
+              log-error=/var/log/mysqld.log
+              pid-file=/var/run/mysqld/mysqld.pid
+
+              max_connections = 2000
+              max_allowed_packet = 64M
+            owner: mysql
+            group: mysql
+            mode: 0644
+
+        - name: 创建其他路径
+          file:
+            path: /var/run/mysqld
+            state: directory
+            mode: 0755
+            owner: mysql
+            group: mysql
+
+        - name: 创建日志路径文件
+          file:
+            path: /var/log/mysqld.log
+            state: touch
+            mode: 0644
+            owner: mysql
+            group: mysql
+
+        - name: 设置mysql文件夹权限
+          file:
+            dest: "{{ mysql_root_dir }}"
+            owner: mysql
+            group: mysql
+            mode: 0755
+
+        - name: 初始化mysqld
+          shell: |
+            "{{ mysql_root_dir }}"/bin/mysqld \
+                    --initialize-insecure \
+                    --user=mysql \
+                    --basedir={{ mysql_root_dir }} \
+                    --datadir={{ mysql_root_dir }}/data
+
+        - name: 复制启动文件
+          copy:
+            src: "{{ mysql_root_dir }}/support-files/mysql.server"
+            dest: /etc/init.d/mysql
+            owner: root
+            group: root
+            mode: 0755
+            remote_src: true
+
+        - name: 启动mysql
+          service:
+            name: mysql
+            state: started
+            enabled: true
+
+      when: m.stat.exists == false

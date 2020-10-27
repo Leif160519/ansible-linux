@@ -9,7 +9,12 @@
       register: git_version_old
 
     - debug:
+        msg: "当前机器并未安装git"
+      when: git_version_old is failed
+
+    - debug:
         msg: "当前已安装git版本:{{ git_version_old.stdout }}"
+      when: not (git_version_old is failed)
 
     - debug:
         msg: "待安装git版本{{ git_version.split('-')[1] }}"
@@ -27,6 +32,7 @@
         - name: 安装依赖包
           package:
             name: "{{ item }}"
+            state: latest
           with_items:
             - curl-devel
             - expat-devel
