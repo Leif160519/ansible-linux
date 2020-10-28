@@ -2,9 +2,17 @@
 - hosts: all
   tags: mysql
   vars:
-    mysql_version: mysql-5.7.28-linux-glibc2.12-x86_64
+    mysql_version: mysql-5.7.28-linux-glibc2.12-x86_64 # {{{ | 变量定义
     mysql_root_dir: /var/lib/mysql
+    mysql_config_file: /etc/my.cnf
+    mysql_log_file: /var/log/mysqld.log
+    mysql_run_dir: /var/run/mysqld
+    mysql_pid_file: "{{ mysql_run_dir }}/mysqld.pid"
+    mysql_sock_file: "{{ mysql_run_dir }}/mysql.sock"
+    mysql_pre_dir: /usr/share/mysql
+    mysql_pre_file: "{{ mysql_pre_dir }}/mysql-systemd-pre"
     mysql_url: https://downloads.mysql.com/archives/get/p/23/file/{{ mysql_version }}.tar.gz
+    # }}}
   tasks:
     - stat:
         path: "{{ mysql_root_dir }}"
@@ -18,7 +26,7 @@
         - debug:
             msg: "3306端口未被占用"
 
-        - name: 安装依赖
+        - name: 安装依赖 # {{{ | 准备工作
           package:
             name: "{{ item }}"
             state: latest
@@ -40,8 +48,9 @@
             shell: /bin/false
             group: mysql
             createhome: no
+          # }}}
 
-        - name: 解压文件
+        - name: 解压文件 # {{{ | 安装
           unarchive:
             copy: false
             src: "{{ mysql_url }}"
@@ -54,25 +63,30 @@
           shell: mv /var/lib/{{ mysql_version }} {{ mysql_root_dir }}
           ignore_errors: yes
 
-        - name: 创建data目录
+        - name: 设置mysql文件夹权限
+          shell: chown -R mysql:mysql "{{ mysql_root_dir }}"
+          ignore_errors: true
+          # }}}
+
+        - name: 创建data目录 # {{{
           file:
             path: "{{ mysql_root_dir }}/data"
             state: directory
             owner: mysql
             group: mysql
             mode: 0755
+          # }}}
 
-        - name: 创建my.cnf文件
+        - name: 创建mysql配置文件 # {{{
           file:
-            path: /etc/my.cnf
+            path: "{{ mysql_config_file }}"
             state: touch
             owner: mysql
             group: mysql
             mode: 0644
 
-        - name: 编辑my.cnf配置
-          blockinfile:
-            path: /etc/my.cnf
+        - blockinfile:
+            path: "{{ mysql_config_file }}"
             block: |
               [client]
               socket=/var/run/mysqld/mysql.sock
@@ -89,6 +103,7 @@
 
               [mysqld]
               port = 3306
+              bind-address=0.0.0.0
               datadir={{ mysql_root_dir }}/data
               socket=/var/run/mysqld/mysql.sock
               basedir={{ mysql_root_dir }}
@@ -96,6 +111,7 @@
               character-set-server=utf8
               collation-server=utf8_general_ci
               skip-character-set-client-handshake
+              skip-external-locking
 
               symbolic-links=0
 
@@ -107,27 +123,27 @@
             owner: mysql
             group: mysql
             mode: 0644
+          # }}}
 
-        - name: 创建其他路径
+        - name: 创建运行文件夹 # {{{
           file:
-            path: /var/run/mysqld
+            path: "{{ mysql_run_dir }}"
             state: directory
             mode: 0755
             owner: mysql
             group: mysql
+          # }}}
 
-        - name: 创建日志路径文件
+        - name: 创建日志路径文件 # {{{
           file:
-            path: /var/log/mysqld.log
+            path: "{{ mysql_log_file }}"
             state: touch
             mode: 0644
             owner: mysql
             group: mysql
+          # }}}
 
-        - name: 设置mysql文件夹权限
-          shell: chown -R mysql:mysql "{{ mysql_root_dir }}"
-
-        - name: 初始化mysqld
+        - name: 初始化mysqld # {{{
           shell: |
             "{{ mysql_root_dir }}"/bin/mysqld \
                     --initialize-insecure \
@@ -135,36 +151,65 @@
                     --basedir={{ mysql_root_dir }} \
                     --datadir={{ mysql_root_dir }}/data
 
-        - name: 创建mysqld服务启动文件
+          # }}}
+
+        - name: 创建mysql服务启动前需执行的脚本文件 # {{{
+          file:
+            path: "{{ mysql_pre_dir }}"
+            state: directory
+            owner: root
+            group: root
+            mode: 0755
+
+        - file:
+            path: "{{ mysql_pre_file }}"
+            state: touch
+            owner: root
+            group: root
+            mode: 0755
+
+        - blockinfile:
+            path: "{{ mysql_pre_file }}"
+            block: |
+              if [ ! -d "{{ mysql_run_dir }}" ];then
+              mkdir "{{ mysql_run_dir }}"
+              chown -R mysql:mysql /var/run/mysqld
+              fi
+              exit
+          # }}}
+
+        - name: 创建mysqld服务启动文件 # {{{
           file:
             path: /lib/systemd/system/mysqld.service
             state: touch
-            owner: mysql
-            group: mysql
+            owner: root
+            group: root
             mode: 0644
 
-        - name: 编辑mysqld启动文件
-          blockinfile:
+        - blockinfile:
             path: /lib/systemd/system/mysqld.service
             block: |
               [Unit]
-              Description=mount
+              Description=MySQL Community Server
               After=network.target
 
               [Service]
-              ExecStart={{ mysql_root_dir }}/bin/mysqld_safe --defaults-file=/etc/my.cnf
+              ExecStartPre=/bin/bash {{ mysql_pre_file }}
+              ExecStart={{ mysql_root_dir }}/bin/mysqld_safe --defaults-file={{ mysql_config_file }}
               Restart=on-failure
 
               [Install]
               WantedBy=multi-user.target
+          # }}}
 
-        - name: 启动mysql
+        - name: 启动mysql服务 # {{{
           service:
             name: mysqld
             state: started
             enabled: true
+          # }}}
 
-        - name: 创建mysql软链接
+        - name: 创建mysql软链接 # {{{
           file:
             src: "{{ mysql_root_dir }}/bin/{{ item }}"
             state: link
@@ -176,5 +221,6 @@
             - mysqld_safe
             - mysqladmin
             - mysqldump
+          # }}}
 
       when: m.stat.exists == false
