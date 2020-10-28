@@ -20,8 +20,12 @@
 
         - name: 安装依赖
           package:
-            name: numactl
+            name: "{{ item }}"
             state: latest
+          with_items:
+            - libncurses5
+            - numactl
+          ignore_errors: yes
 
         - name: 创建mysql组
           group:
@@ -71,7 +75,7 @@
             path: /etc/my.cnf
             block: |
               [client]
-              socket=/var/run/mysqld/mysqld.sock
+              socket=/var/run/mysqld/mysql.sock
               default-character-set=utf8
 
               [mysql]
@@ -86,7 +90,7 @@
               [mysqld]
               port = 3306
               datadir={{ mysql_root_dir }}/data
-              socket=/var/run/mysqld/mysqld.sock
+              socket=/var/run/mysqld/mysql.sock
               basedir={{ mysql_root_dir }}
 
               character-set-server=utf8
@@ -96,7 +100,7 @@
               symbolic-links=0
 
               log-error=/var/log/mysqld.log
-              pid-file=/var/run/mysqld/mysqld.pid
+              pid-file=/var/run/mysqld/mysql.pid
 
               max_connections = 2000
               max_allowed_packet = 64M
@@ -121,11 +125,7 @@
             group: mysql
 
         - name: 设置mysql文件夹权限
-          file:
-            dest: "{{ mysql_root_dir }}"
-            owner: mysql
-            group: mysql
-            mode: 0755
+          shell: chown -R mysql:mysql "{{ mysql_root_dir }}"
 
         - name: 初始化mysqld
           shell: |
@@ -135,19 +135,46 @@
                     --basedir={{ mysql_root_dir }} \
                     --datadir={{ mysql_root_dir }}/data
 
-        - name: 复制启动文件
-          copy:
-            src: "{{ mysql_root_dir }}/support-files/mysql.server"
-            dest: /etc/init.d/mysql
-            owner: root
-            group: root
-            mode: 0755
-            remote_src: true
+        - name: 创建mysqld服务启动文件
+          file:
+            path: /lib/systemd/system/mysqld.service
+            state: touch
+            owner: mysql
+            group: mysql
+            mode: 0644
+
+        - name: 编辑mysqld启动文件
+          blockinfile:
+            path: /lib/systemd/system/mysqld.service
+            block: |
+              [Unit]
+              Description=mount
+              After=network.target
+
+              [Service]
+              ExecStart={{ mysql_root_dir }}/bin/mysqld_safe --defaults-file=/etc/my.cnf
+              Restart=on-failure
+
+              [Install]
+              WantedBy=multi-user.target
 
         - name: 启动mysql
           service:
-            name: mysql
+            name: mysqld
             state: started
             enabled: true
+
+        - name: 创建mysql软链接
+          file:
+            src: "{{ mysql_root_dir }}/bin/{{ item }}"
+            state: link
+            force: yes
+            dest: "/usr/local/bin/{{ item }}"
+          with_items:
+            - mysql
+            - mysqld
+            - mysqld_safe
+            - mysqladmin
+            - mysqldump
 
       when: m.stat.exists == false
