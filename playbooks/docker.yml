@@ -17,15 +17,15 @@
       when: ansible_os_family == "Debian"
       # }}}
 
-    - name: 配置Docker源 # {{{ | redhat
-      template:
-        src: files/docker/docker-ce.repo
+    - name: 配置Docker源 # {{{ | Redhat
+      get_url:
+        url: https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
         dest: /etc/yum.repos.d/docker-ce.repo
         mode: 0644
       when: ansible_os_family == "RedHat"
       # }}}
 
-    - name: 安装Docker和Docker-compose  # {{{ | redhat
+    - name: 安装Docker和Docker-compose  # {{{ | Redhat
       yum:
         name: ['docker-ce','docker-compose']
         state: installed
@@ -44,7 +44,7 @@
       when: ansible_os_family == "Debian"
       # }}}
 
-    - name: 清理下载的安装包缓存 # {{{ | redhat
+    - name: 清理下载的安装包缓存 # {{{ | Redhat
       shell: yum clean all
       ignore_errors: true
       when: ansible_os_family == "RedHat"

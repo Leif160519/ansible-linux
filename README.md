@@ -7,6 +7,7 @@
 
 项目目录结构
 ```
+ansible-linux
 ├── files
 │   ├── docker
 │   ├── loki
@@ -18,8 +19,6 @@
 │   │   │   └── rules
 │   │   ├── exporter
 │   │   ├── scrape
-│   │   │   ├── data
-│   │   │   │   └── wal
 │   │   │   └── file_sd
 │   │   └── service
 │   └── repository
