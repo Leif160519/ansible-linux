@@ -173,4 +173,18 @@ ansible-playbook -u root -i inventory playbooks/node_exporter.yml  -l 'jenkins-s
 
 ## 四、说明
 - 1.prometheus自带三条规则，分别为"分区剩余空间不足2%","分区剩余空间使用预计不足4h"和"ping有丢包"
-- 2.项目中的部分文件已经配置了在vim下的自动折叠功能，关于vim的具体配置请参照互联网或使用如下命令刷入`ansible-playbook -u root -i inventory playbooks/config`
+- 2.项目中的部分文件已经配置了在vim下的自动折叠功能(依据标志),其他折叠方式如下：
+
+```
+1. manual //手工定义折叠
+2. indent //用缩进表示折叠
+3. expr　 //用表达式来定义折叠
+4. syntax //用语法高亮来定义折叠
+5. diff   //对没有更改的文本进行折叠
+6. marker //用标志折叠
+```
+
+在vim的配置文件中设置`set foldmethod=marker`或者通过ansible刷入即可：
+```
+ansible-playbook -u root -i inventory playbooks/config
+```
