@@ -37,7 +37,6 @@
         - wget
         - htop
         - iotop
-        - net-tools
         - nethogs
         - mrtg
         - cacti
@@ -73,6 +72,7 @@
         - w3m
         - lynx
         - dos2unix
+        - nethogs
       ignore_errors: yes
       # }}}
 
