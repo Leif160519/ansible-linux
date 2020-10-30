@@ -1,8 +1,12 @@
-# 升级git版本
-- hosts: dist.centos
+# 编译升级git版本
+# github地址：https://github.com/git/git/releases
+# 备用地址: https://mirrors.edge.kernel.org/pub/software/scm/git/
+# Leif160519
+# 2020年10月30日
+- hosts: dist.centos # {{{ | RedHat
   tags: git
   vars:
-    git_version: git-2.29.1
+    git_version: git-2.29.2
     git_url: https://mirrors.edge.kernel.org/pub/software/scm/git/{{ git_version }}.tar.xz
   tasks:
     - shell: git version | awk '{print $3}'
@@ -69,8 +73,9 @@
           shell: echo "重新登录shell即可生效"
 
       when: git_version_old.stdout is version(git_version.split('-')[1],"<")
+      # }}}
 
-- hosts: dist.ubuntu
+- hosts: dist.ubuntu # {{{ | Ubuntu
   tags: git
   tasks:
     - name: 添加git源
@@ -93,3 +98,4 @@
     - name: 清理下载的安装包缓存
       shell: apt clean && apt autoclean
       ignore_errors: yes
+      # }}}
