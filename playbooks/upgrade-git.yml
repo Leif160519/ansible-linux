@@ -69,3 +69,27 @@
           shell: echo "重新登录shell即可生效"
 
       when: git_version_old.stdout is version(git_version.split('-')[1],"<")
+
+- hosts: dist.ubuntu
+  tags: git
+  tasks:
+    - name: 添加git源
+      shell: add-apt-repository ppa:git-core/ppa -y
+      ignore_errors: true
+
+    - name: 升级git
+      apt:
+        name: git
+        state: latest
+
+    - name: 清理无用的安装包缓存
+      apt:
+        autoclean: yes
+
+    - name: 清理不再使用的依赖包
+      apt:
+        autoremove: yes
+
+    - name: 清理下载的安装包缓存
+      shell: apt clean && apt autoclean
+      ignore_errors: yes
