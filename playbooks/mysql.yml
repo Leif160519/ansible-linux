@@ -14,7 +14,7 @@
     mysql_url: https://downloads.mysql.com/archives/get/p/23/file/{{ mysql_version }}.tar.gz
     # }}}
   tasks:
-    - stat:
+    - stat: # {{{ | 环境监测
         path: "{{ mysql_root_dir }}"
       register: m
 
@@ -25,6 +25,7 @@
       rescue:
         - debug:
             msg: "3306端口未被占用"
+      # }}}
 
         - name: 安装依赖 # {{{ | 准备工作
           package:

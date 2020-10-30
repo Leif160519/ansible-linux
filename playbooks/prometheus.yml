@@ -292,7 +292,7 @@
           enabled: true
         # }}}
 
-- hosts: prometheus-server
+- hosts: prometheus-server # {{{ 服务器配置
   tags: [never, admin]
   vars:
     prometheus_scrape_configs: []
@@ -350,3 +350,4 @@
       systemd:
         name: alertmanager
         state: reloaded
+    # }}}
