@@ -211,16 +211,12 @@
 
         - name: 创建mysql软链接 # {{{
           file:
-            src: "{{ mysql_root_dir }}/bin/{{ item }}"
+            src: "{{ item }}"
             state: link
             force: yes
-            dest: "/usr/local/bin/{{ item }}"
-          with_items:
-            - mysql
-            - mysqld
-            - mysqld_safe
-            - mysqladmin
-            - mysqldump
+            dest: "/usr/local/bin/{{ item | basename | replace('/var/lib/mysql/bin','') }}"
+          with_fileglob:
+            - "{{ mysql_root_dir }}/bin/*"
           # }}}
 
       when: m.stat.exists == false
