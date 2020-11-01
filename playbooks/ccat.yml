@@ -40,3 +40,6 @@
         line: 'alias cat==ccat'
       when: zsh_config.stat.exists == true
 
+    - name: 重新登录终端生效
+      shell: echo "重新登录终端生效"
+
