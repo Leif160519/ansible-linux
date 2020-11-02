@@ -73,6 +73,7 @@
         - lynx
         - dos2unix
         - nethogs
+        - curl
       ignore_errors: yes
       # }}}
 
