@@ -26,6 +26,11 @@
 
     - name: 彻底删除gnome的相关配置文件
       shell: apt-get purge gnome
+      ignore_errors: yes
+
+    - name: 彻底删除残留gnome相关组件
+      shell: dpkg -l | grep gnome  | awk '{print $2}' | xargs apt-get remove --purge -y
+      ignore_errors: yes
 
     - name: 清理安装gnome时留下的缓存程序软件包
       shell: apt clean && apt autoclean
