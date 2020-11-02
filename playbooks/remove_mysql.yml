@@ -1,0 +1,68 @@
+# 卸载ubuntu自带的mysql-8.0
+# Leif160519 @2020年11月2日
+- hosts: dist.ubuntu
+  tags: mysql
+  vars:
+    mysql_root_dir: /var/lib/mysql
+    mysql_config_dir: /etc/mysql
+    mysql_log_dir: /var/log/mysql
+    mysql_autostart_file: /etc/init.d/mysql
+    mysql_sock_dir1: /var/run/mysqld
+    mysql_sock_dir2: /run/mysqld
+    mysql_share_dir: /usr/share/mysql
+  tasks:
+    - name: 停止mysql服务
+      service:
+        name: mysql
+        state: stopped
+        enabled: false
+      ignore_errors: yes
+
+    - name: 卸载与mysql相关的所有软件包
+      shell: dpkg -l | grep mysql  | awk '{print $2}' | xargs apt-get remove --purge -y
+      ignore_errors: yes
+
+    - name: 删除启动文件 # 重复删除
+      file:
+        path: "{{ mysql_autostart_file }}"
+        state: absent
+
+    - name: 删除mysql运行路径
+      file:
+        path: "{{ mysql_root_dir }}"
+        state: absent
+
+    - name: 删除mysql配置文件路径
+      file:
+        path: "{{ mysql_config_dir }}"
+        state: absent
+
+    - name: 删除mysql日志路径 # 重复删除
+      file:
+        path: "{{ mysql_log_dir }}"
+        state: absent
+
+    - name: 删除mysql.sock路径 # mysql卸载时会自动删除，此处也是为了重复删除
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "{{ mysql_sock_dir1 }}"
+        - "{{ mysql_sock_dir2 }}"
+
+    - name: 删除其他mysql路径
+      file:
+        path: "{{ mysql_share_dir }}"
+        state: absent
+
+    - name: 删除所有mysql开头的路径或文件
+      shell: find / -type f -name mysql* | xargs rm -rf
+      ignore_errors: yes
+
+    - name: 清除无用依赖
+      apt:
+        autoremove: yes
+
+    - name: 清理安装gnome时留下的缓存程序安装包
+      shell: apt clean && apt autoclean
+      ignore_errors: yes
