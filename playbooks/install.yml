@@ -74,6 +74,7 @@
         - dos2unix
         - nethogs
         - curl
+        - nload # 流量监控 nload -u M <network_interface>
       ignore_errors: yes
       # }}}
 
