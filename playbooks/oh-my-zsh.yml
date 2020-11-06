@@ -44,7 +44,12 @@
       register: oh_my_zsh
 
     - name: 安装oh-my-zsh # {{{
-      shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+      get_url:
+        url: https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
+        dest: /tmp/install.sh
+        mode: 0777
+
+    - shell: /bin/bash /tmp/install.sh
       ignore_errors: yes
       when: oh_my_zsh.stat.exists == false
       # }}}
