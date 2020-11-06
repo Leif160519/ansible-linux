@@ -19,7 +19,9 @@
       ignore_errors: yes
 
     - name: 卸载与mysql相关的所有软件包
-      shell: dpkg -l | grep mysql  | awk '{print $2}' | xargs apt-get remove --purge -y
+      shell: |
+        dpkg -l | grep mysql  | awk '{print $2}' | xargs apt-get remove --purge -y
+        dpkg -l | grep mysql  | awk '{print $2}' | xargs apt-get autoremove --purge -y
       ignore_errors: yes
 
     - name: 删除启动文件 # 重复删除

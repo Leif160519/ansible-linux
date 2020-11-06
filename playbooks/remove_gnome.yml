@@ -29,7 +29,9 @@
       ignore_errors: yes
 
     - name: 彻底删除残留gnome相关组件
-      shell: dpkg -l | grep gnome  | awk '{print $2}' | xargs apt-get remove --purge -y
+      shell: |
+        dpkg -l | grep gnome  | awk '{print $2}' | xargs apt-get remove --purge -y
+        dpkg -l | grep gnome  | awk '{print $2}' | xargs apt-get autoremove --purge -y
       ignore_errors: yes
 
     - name: 清理安装gnome时留下的缓存程序软件包
