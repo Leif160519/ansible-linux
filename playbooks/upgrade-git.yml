@@ -78,8 +78,13 @@
 - hosts: dist.ubuntu # {{{ | Ubuntu
   tags: git
   tasks:
+    - name: 安装依赖
+      apt:
+        name: software-properties-common
+        state: latest
+
     - name: 添加git源
-      shell: add-apt-repository ppa:git-core/ppa -y
+      shell: /usr/bin/add-apt-repository ppa:git-core/ppa -y
       ignore_errors: true
 
     - name: 升级git

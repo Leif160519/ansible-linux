@@ -39,7 +39,6 @@
         - iotop
         - nethogs
         - mrtg
-        - cacti
         - telnet
         - tree
         - tmux
