@@ -75,6 +75,7 @@
         - curl
         - nload # 流量监控 nload -u M <network_interface>
         - cifs-utils # windows 文件系统支持
+        - xfsprogs # xfs文件系统支持
       ignore_errors: yes
       # }}}
 
