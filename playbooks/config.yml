@@ -168,3 +168,16 @@
           set fileformats=unix
       when: ansible_os_family == "RedHat"
       # }}}
+
+    - name: 配置关机等待时间 # {{{
+      block:
+        - lineinfile:
+            dest: /etc/systemd/system.conf
+            regexp: "^#DefaultTimeoutStartSec"
+            line: "DefaultTimeoutStartSec=10s"
+
+        - lineinfile:
+            dest: /etc/systemd/system.conf
+            regexp: "^#DefaultTimeoutStopSec"
+            line: "DefaultTimeoutStopSec=10s"
+      # }}}
