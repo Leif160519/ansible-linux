@@ -37,6 +37,7 @@
 
         - name: promtail启动命令
           set_fact:
+            service_name: prmotail
             start_command: /usr/local/bin/promtail -config.file /opt/promtail.yml
 
         - name: 生成promtail服务
@@ -91,6 +92,7 @@
 
         - name: loki启动命令
           set_fact:
+            service_name: loki
             start_command: /usr/local/bin/loki -config.file /opt/loki.yml
 
         - name: 生成loki服务
