@@ -22,9 +22,12 @@
       # }}}
 
     - name: 安装ntp服务(Debian) # {{{
-      apt:
-        name: ntpdate
+      package:
+        name: "{{ item }}"
         state: latest
+      with_items:
+        - ntpdate
+        - ntp
       when: ansible_os_family == "Debian"
       # }}}
 
