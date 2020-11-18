@@ -10,7 +10,7 @@
   hosts: all
   tags: [install]
   tasks:
-    - name: 安装常用软件 # {{{
+    - name: 安装常用软件 # {{{ | RedHat
       package:
         name: "{{ item }}"
         state: latest
@@ -22,8 +22,20 @@
         - perf
         - bind-utils
       when: ansible_os_family == "RedHat"
+      # }}}
 
-    - package:
+    - name: 安装常用软件 # {{{ | Debian
+      package:
+        name: "{{ item }}"
+      with_items:
+        - rar
+        - python-pip
+        - screenfetch
+        - neofetch
+      when: ansible_os_family == "Debian"
+      # }}}
+
+    - package: # {{{ | Linux通用软件包
         name: "{{ item }}"
         state: latest
       with_items:

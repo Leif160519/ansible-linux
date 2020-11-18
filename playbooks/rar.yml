@@ -7,7 +7,7 @@
 ####
 ---
 - name: 安装rar
-  hosts: all
+  hosts: dist.centos
   tags: [rar]
   vars:
     rar_version_x64: rarlinux-x64-5.7.1
