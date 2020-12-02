@@ -59,8 +59,8 @@
         mirrors3: http://docker.mirrors.ustc.edu.cn
         mirrors4: https://registry.docker-cn.com
       template:
-        src: files/docker/daemon.json
-        dest: /etc/docker/
+        src: files/docker/daemon.json.j2
+        dest: /etc/docker/daemon.json
         mode: 0644
       # }}}
 

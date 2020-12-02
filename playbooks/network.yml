@@ -50,28 +50,28 @@
 
     - template: # {{{ ip配置文件设置
         backup: yes
-        src: files/network/00-installer-config.yaml
+        src: files/network/00-installer-config.yaml.j2
         dest: /etc/netplan/00-installer-config.yaml
         mode: 0644
       when: ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,">=")
 
     - template:
         backup: yes
-        src: files/network/interfaces
+        src: files/network/interfaces.j2
         dest: /etc/network/interfaces
         mode: 0644
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,"<"))
 
     - template:
         backup: yes
-        src: files/network/interfaces-debian
+        src: files/network/interfaces-debian.j2
         dest: /etc/network/interfaces
         mode: 0644
       when: ((ansible_distribution == "Debian") and (not ansible_distribution == "Ubuntu"))
 
     - template:
         backup: yes
-        src: files/network/ifcfg-eth0
+        src: files/network/ifcfg-eth0.j2
         dest: /etc/sysconfig/network-scripts/ifcfg-{{ interface }}
         mode: 0644
       when: ansible_os_family == "RedHat"
@@ -79,7 +79,7 @@
 
     - template: # {{{ dns设置，针对18.04之前的Ubuntu和Debian
         backup: yes
-        src: files/network/resolv.conf
+        src: files/network/resolv.conf.j2
         dest: /etc/resolv.conf
         mode: 0644
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,"<")) or (ansible_distribution == "Debian")

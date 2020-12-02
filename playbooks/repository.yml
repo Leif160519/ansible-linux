@@ -14,7 +14,7 @@
   tasks:
     - template:
         backup: yes
-        src: files/repository/sources.list
+        src: files/repository/sources.list.j2
         dest: /etc/apt/sources.list
     - apt:
         update_cache: yes
@@ -41,7 +41,7 @@
   tasks:
     - template:
         backup: yes
-        src: files/repository/sources-debian.list
+        src: files/repository/sources-debian.list.j2
         dest: /etc/apt/sources.list
     - apt:
        update_cache: yes

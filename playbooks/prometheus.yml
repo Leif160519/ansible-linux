@@ -137,7 +137,7 @@
 
       - name: 创建alertmanager服务
         template:
-          src: files/prometheus/service/alertmanager.service
+          src: files/prometheus/service/alertmanager.service.j2
           dest: /lib/systemd/system/alertmanager.service
           mode: 0644
 
@@ -207,7 +207,7 @@
 
       - name: 创建blackbox_exporter服务
         template:
-          src: files/prometheus/service/blackbox_exporter.service
+          src: files/prometheus/service/blackbox_exporter.service.j2
           dest: /lib/systemd/system/blackbox_exporter.service
           mode: 0644
 
@@ -273,7 +273,7 @@
 
       - name: 创建node_exporter服务
         template:
-          src: files/prometheus/service/node_exporter.service
+          src: files/prometheus/service/node_exporter.service.j2
           dest: /lib/systemd/system/node_exporter.service
           mode: 0644
 
