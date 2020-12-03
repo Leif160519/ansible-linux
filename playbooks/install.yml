@@ -32,6 +32,7 @@
         - python-pip
         - screenfetch
         - neofetch
+        - linuxlogo
       when: ansible_os_family == "Debian"
       # }}}
 
