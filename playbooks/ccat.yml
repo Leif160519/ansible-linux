@@ -31,13 +31,13 @@
     - name: config bash
       lineinfile:
         dest: /root/.bashrc
-        line: 'alias cat==ccat'
+        line: 'alias cat=ccat'
       when: zsh_config.stat.exists == false
 
     - name: config zsh
       lineinfile:
         dest: /root/.zshrc
-        line: 'alias cat==ccat'
+        line: 'alias cat=ccat'
       when: zsh_config.stat.exists == true
 
     - name: 重新登录终端生效
