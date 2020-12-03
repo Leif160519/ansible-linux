@@ -36,6 +36,37 @@
       when: ansible_os_family == "Debian"
       # }}}
 
+    - name: 安装“神器”软件 # {{{ | Debian | 来源·知乎：https://www.zhihu.com/question/59227720
+      package:
+        name: "{{ item }}"
+      with_items:
+        - silversearcher-ag # ag:比grep、ack更快的递归搜索文件内容
+        - tig # 字符模式下交互查看git项目，可以替代git命令
+        - mycli # mysql客户端，支持语法高亮和命令补全，效果类似ipython，可以替代mysql命令
+        - jq # 文件处理以及格式化显示，支持高亮，可以替换python -m json.tool
+        - shellcheck # shell脚本静态检查工具，能够识别语法错误以及不规范的写法
+        - mosh # 基于UDP的终端连接，可以替代ssh，连接更稳定，即使IP变了，也能自动重连
+        - fzf # 命令行下模糊搜索工具，能够交互式智能搜索并选取文件或者内容，配合终端ctrl-r历史命令搜索简直完美
+        - axel # 多线程下载工具，下载文件时可以替代curl、wget
+        - lrzsz # sz/rz:交互式文件传输，在多重跳板机下传输文件非常好用，不用一级一级传输
+        - cloc # 代码统计工具，能够统计代码的空行数、注释行、编程语言
+        - ccache # 高速C/C++编译缓存工具，反复编译内核非常有用
+        - tmux # 终端复用工具，替代screen、nohup
+        - neovim # 替代vim
+        - mc # mcedit：终端下面的 NotePad++
+        - icdiff # 分屏显示 diff
+        - powerman # pm：在 bash / zsh 中迅速切换项目目录
+        - ncdu # 可视化的空间分析程序
+        - glances # 更强大的 htop / top 代替者
+        - ranger # 内容浏览/预览
+        - dstat # vmstat 代替者
+        - pcp
+        - multitail # 多重 tail
+        - tldr # 如果你经常不想详读man文档，那么你应该试试这个小工具
+        - figlet # 将输入字符转换成艺术字体
+      when: ansible_os_family == "Debian"
+      # }}}
+
     - package: # {{{ | Linux通用软件包
         name: "{{ item }}"
         state: latest
