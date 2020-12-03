@@ -123,6 +123,7 @@
         - exfat-utils # exfat 文件系统支持
         - net-tools # 网络工具
         - rename # 批量重命名
+        - curlftpfs # ftp 挂载工具
       ignore_errors: yes
       # }}}
 
