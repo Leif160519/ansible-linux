@@ -115,7 +115,7 @@
         - pcp                           # 性能监控工具
         - multitail                     # 多重 tail
         - figlet                        # 将输入字符转换成艺术字体
-     ignore_errors: yes
+      ignore_errors: yes
       # }}}
 
     - name: 启动相关服务 # {{{
