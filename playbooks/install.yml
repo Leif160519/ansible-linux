@@ -115,6 +115,11 @@
         - pcp                           # 性能监控工具
         - multitail                     # 多重 tail
         - figlet                        # 将输入字符转换成艺术字体
+        - kompare                       # GUI 文件对比工具
+        - wdiff                         # 文件对比工具
+        - meld                          # GUI 文件对比工具
+        - kdiff3                        # GUI 比较和合并工具
+        - tkcvs                         # GUI 文件比较工具
       ignore_errors: yes
       # }}}
 
