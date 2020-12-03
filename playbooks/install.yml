@@ -120,6 +120,8 @@
         - meld                          # GUI 文件对比工具
         - kdiff3                        # GUI 比较和合并工具
         - tkcvs                         # GUI 文件比较工具
+        - yakuake                       # 终端工具(搭配图形化界面，支持lrzsz)
+        - smartmontools                 # 磁盘检测工具
       ignore_errors: yes
       # }}}
 
