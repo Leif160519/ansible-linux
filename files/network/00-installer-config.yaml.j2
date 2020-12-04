@@ -7,7 +7,7 @@ network:
       gateway4: {{ gateway }}
       nameservers:
         addresses: [{{ dns1 }},{{ dns2 }}]
-        search: []
+        search: [{{ search }}]
       dhcp4: no
   version: 2
   renderer: networkd

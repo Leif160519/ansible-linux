@@ -6,10 +6,11 @@
   roles:
     - role: roles/ahuffman.resolv
       resolv_nameservers:
-        - "180.76.76.76"
-        - "114.114.114.114"
-      resolv_domain: "localdomain"
-      resolv_search: "localdomain"
+        - 180.76.76.76
+        - 114.114.114.114
+      resolv_domain: localdomain
+      resolv_search:
+        - localdomain
       resolv_options:
-        - "timeout:2"
-        - "rotate"
+        - timeout:2
+        - rotate
