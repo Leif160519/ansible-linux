@@ -1,3 +1,9 @@
 [submodule "roles/cloudalchemy.prometheus"]
 	path = roles/cloudalchemy.prometheus
 	url = https://github.com/cloudalchemy/ansible-prometheus
+[submodule "roles/ahuffman.resolv"]
+	path = roles/ahuffman.resolv
+	url = https://github.com/ahuffman/ansible-resolv
+[submodule "roles/geerlingguy.ntp"]
+	path = roles/geerlingguy.ntp
+	url = https://github.com/geerlingguy/ansible-role-ntp

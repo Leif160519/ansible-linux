@@ -1,0 +1,15 @@
+# 设置域名解析
+# Leif160519 @20201204
+
+- hosts: all
+  tags: resolv
+  roles:
+    - role: roles/ahuffman.resolv
+      resolv_nameservers:
+        - "180.76.76.76"
+        - "114.114.114.114"
+      resolv_domain: "localdomain"
+      resolv_search: "localdomain"
+      resolv_options:
+        - "timeout:2"
+        - "rotate"

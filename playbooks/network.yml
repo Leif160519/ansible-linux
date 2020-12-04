@@ -24,8 +24,6 @@
         address: "{{ ansible_default_ipv4['address'] }}"
         netmask: "{{ ansible_default_ipv4['netmask'] }}"
         gateway: "{{ ansible_default_ipv4['gateway'] }}"
-        dns1: 180.76.76.76
-        dns2: 114.114.114.114
         # }}}
 
     - shell: | # {{{ 计算子网掩码
@@ -75,14 +73,6 @@
         dest: /etc/sysconfig/network-scripts/ifcfg-{{ interface }}
         mode: 0644
       when: ansible_os_family == "RedHat"
-      # }}}
-
-    - template: # {{{ dns设置，针对18.04之前的Ubuntu和Debian
-        backup: yes
-        src: files/network/resolv.conf.j2
-        dest: /etc/resolv.conf
-        mode: 0644
-      when: (ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,"<")) or (ansible_distribution == "Debian")
       # }}}
 
     - shell: netplan apply # {{{ 使网络生效
