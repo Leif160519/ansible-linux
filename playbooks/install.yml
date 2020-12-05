@@ -23,6 +23,7 @@
         - bind-utils
         - ShellCheck                    # shell脚本静态检查工具，能够识别语法错误以及不规范的写法(centos下安装得大写)
       when: ansible_os_family == "RedHat"
+      ignore_errors: yes
       # }}}
 
     - name: 安装常用软件 # {{{ | Debian
@@ -42,6 +43,7 @@
         - ranger                        # 内容浏览/预览
         - tldr                          # 如果你经常不想详读man文档，那么你应该试试这个小工具
       when: ansible_os_family == "Debian"
+      ignore_errors: yes
       # }}}
 
     - package: # {{{ | Linux通用软件包
@@ -57,6 +59,7 @@
         - bash-completion
         - wget
         - htop
+        - ctop
         - iotop                         # iotop命令是一个用来监视磁盘I/O使用状况的top类工具
         - nethogs                       # 是一个开源的命令行工具（类似于Linux的top命令），用来按进程或程序实时统计网络带宽使用率
         - mrtg                          # 是通过SNMP 协议，向运行snmp协议主机询问相关的资料后，主机传递数值给MRTG ，然后MRTG 再绘制成网页上的图表
