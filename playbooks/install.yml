@@ -31,6 +31,8 @@
         name: "{{ item }}"
       with_items:
         - rar
+        - unrar
+        - p7zip-full
         - python-pip
         - screenfetch
         - neofetch
