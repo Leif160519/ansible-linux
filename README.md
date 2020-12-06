@@ -26,7 +26,9 @@ ansible-linux
 ├── playbooks
 │   └── files -> ../files
 └── roles
-    └── cloudalchemy.prometheus
+    ├── ahuffman.resolv
+    ├── cloudalchemy.prometheus
+    └── geerlingguy.ntp
 ```
 
 ## 二、如何使用
