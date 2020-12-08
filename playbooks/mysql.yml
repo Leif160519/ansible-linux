@@ -90,7 +90,7 @@
             path: "{{ mysql_config_file }}"
             block: |
               [client]
-              socket=/var/run/mysqld/mysql.sock
+              socket={{ mysql_sock_file }}
               default-character-set=utf8
 
               [mysql]
@@ -106,7 +106,7 @@
               port = 3306
               bind-address=0.0.0.0
               datadir={{ mysql_root_dir }}/data
-              socket=/var/run/mysqld/mysql.sock
+              socket={{ mysql_sock_file }}
               basedir={{ mysql_root_dir }}
 
               character-set-server=utf8
@@ -116,8 +116,8 @@
 
               symbolic-links=0
 
-              log-error=/var/log/mysqld.log
-              pid-file=/var/run/mysqld/mysql.pid
+              log-error={{ mysql_log_file }}
+              pid-file={{ mysql_pid_file }}
 
               max_connections = 2000
               max_allowed_packet = 64M
@@ -174,7 +174,7 @@
             block: |
               if [ ! -d "{{ mysql_run_dir }}" ];then
               mkdir "{{ mysql_run_dir }}"
-              chown -R mysql:mysql /var/run/mysqld
+              chown -R mysql:mysql {{ mysql_run_dir }}
               fi
               exit
           # }}}
