@@ -127,6 +127,7 @@
 #        - tkcvs                         # GUI 文件比较工具
 #        - yakuake                       # 终端工具(搭配图形化界面，支持lrzsz)
 #        - nautilus                      # 打开文件管理器
+#        - remmina                       # 远程连接windows
         - smartmontools                 # 磁盘检测工具
       ignore_errors: yes
       # }}}
