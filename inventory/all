@@ -4,3 +4,4 @@ ansible-server    ansible_host=10.1.1.25
 nexus-server      ansible_host=10.1.1.26
 jenkins-server    ansible_host=10.1.1.27
 gitlab-server     ansible_host=10.1.1.28
+gr20070076        ansible_host=10.1.27.27
