@@ -4,10 +4,13 @@
 #
 ##
 # @leif160519 @2020.08.29
+# 默认配置用户为root，其他用户请跟参数-e username=ubuntu
 ####
 ---
 - name: 系统设置
   hosts: all
+  vars:
+    username: root
   tags: config
   tasks:
     - name: 禁用swap分区(重启后生效) # {{{
@@ -121,88 +124,22 @@
     - name: 给pip换源 # {{{
       block:
         - file:
-            path: /root/.pip
+            path: ~{{ username }}/.pip
             state: directory
             mode: 0755
 
         - file:
-            path: /root/.pip/pip.conf
+            path: ~{{ username }}/.pip/pip.conf
             state: touch
             mode: 0755
 
         - blockinfile:
-            path: /root/.pip/pip.conf
+            path: ~{{ username }}/.pip/pip.conf
             block: |
               [global]
               index-url = http://mirrors.aliyun.com/pypi/simple/
               [install]
               trusted-host=mirrors.aliyun.com
-      # }}}
-
-    - name: 配置vim # {{{
-      blockinfile:
-        path: /etc/vim/vimrc
-        marker: '"{mark} ANSIBLE MANAGED BLOCK"'
-        block: |
-          highlight RedundantSpaces ctermbg=red guibg=red
-          match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
-          set foldmethod=marker
-          set fileformats=unix
-          set background=dark
-          set encoding=utf-8
-          set softtabstop=4
-          set shiftwidth=4
-          set laststatus=2
-          set history=1000
-          set backspace=2
-          set cursorline
-          set ignorecase
-          set autoindent
-          set smartcase
-          set incsearch
-          set tabstop=4
-          set expandtab
-          set showmatch
-          set showmode
-          set autoread
-          set hlsearch
-          set nowrap
-          set number
-          set ruler
-          syntax on
-      when: ansible_os_family == "Debian"
-
-    - blockinfile:
-        path: /etc/vimrc
-        marker: '"{mark} ANSIBLE MANAGED BLOCK"'
-        block: |
-          highlight RedundantSpaces ctermbg=red guibg=red
-          match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
-          set foldmethod=marker
-          set fileformats=unix
-          set background=dark
-          set encoding=utf-8
-          set softtabstop=4
-          set shiftwidth=4
-          set laststatus=2
-          set history=1000
-          set backspace=2
-          set cursorline
-          set ignorecase
-          set autoindent
-          set smartcase
-          set incsearch
-          set tabstop=4
-          set expandtab
-          set showmatch
-          set showmode
-          set autoread
-          set hlsearch
-          set nowrap
-          set number
-          set ruler
-          syntax on
-      when: ansible_os_family == "RedHat"
       # }}}
 
     - name: 配置关机等待时间 # {{{

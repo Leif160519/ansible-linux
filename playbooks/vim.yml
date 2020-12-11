@@ -1,0 +1,91 @@
+- hosts: all
+  tags: vim
+  vars:
+    username: root
+  tasks:
+     - name: 安装vim
+       package:
+         name: vim
+         state: latest
+
+     - name: 准备vim插件文件夹
+       file:
+         path: ~{{ username }}/.vim/{{ item }}
+         state: directory
+         owner: "{{ username }}"
+         group: "{{ username }}"
+         mode: 0755
+       with_items:
+         - plugged
+         - autoload
+
+     - name: 安装vim-plug插件管理器
+       get_url:
+         url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+         dest: ~{{ username }}/.vim/autoload/plug.vim
+         mode: 0755
+         owner: "{{ username }}"
+         group: "{{ username }}"
+
+     - stat: # {{{ | 安装airline插件
+         path: ~{{ username }}/.vim/plugged/vim-airline
+       register: vim_airline
+
+     - stat:
+         path: ~{{ username }}/.vim/plugged/vim-airline-themes
+       register: vim_airline_themes
+
+     - git:
+         repo: https://github.com/vim-airline/vim-airline
+         dest: ~{{ username }}/.vim/plugged/vim-airline
+         clone: yes
+         update: yes
+       when: vim_airline.stat.exists == false
+
+     - git:
+         repo: https://github.com/vim-airline/vim-airline-themes
+         dest: ~{{ username }}/.vim/plugged/vim-airline-themes
+         clone: yes
+         update: yes
+       when: vim_airline_themes.stat.exists == false
+       # }}}
+
+     - name: 配置vim # {{{
+       blockinfile:
+         path: ~{{ username }}/.vimrc
+         create: yes
+         marker: '"{mark} ANSIBLE MANAGED BLOCK"'
+         block: |
+           highlight RedundantSpaces ctermbg=red guibg=red
+           match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
+           set foldmethod=marker
+           set fileformats=unix
+           set background=dark
+           set encoding=utf-8
+           set softtabstop=4
+           set shiftwidth=4
+           set laststatus=2
+           set history=1000
+           set backspace=2
+           set cursorline
+           set ignorecase
+           set autoindent
+           set smartcase
+           set incsearch
+           set tabstop=4
+           set expandtab
+           set showmatch
+           set showmode
+           set autoread
+           set hlsearch
+           set nowrap
+           set number
+           set ruler
+           syntax on
+           call plug#begin('~/.vim/plugged')
+           Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
+           call plug#end()
+           let g:airline#extensions#tabline#enabled=1
+           let g:airline_theme='simple'
+       # }}}
+

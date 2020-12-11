@@ -1,5 +1,8 @@
 # 安装ccat，代替cat 让终端彩色输出
+# 默认配置用户为root，其他用户请-e username=ubuntu
 - hosts: all
+  vars:
+    username: root
   tags: ccat
   vars:
     ccat_version: linux-amd64-1.1.0
@@ -10,7 +13,7 @@
       register: ccat_file
 
     - stat:
-        path: /root/.zshrc
+        path: ~{{ username }}/.zshrc
       register: zsh_config
 
     - name: download and unarchive
@@ -30,13 +33,13 @@
 
     - name: config bash
       lineinfile:
-        dest: /root/.bashrc
+        dest: ~{{ username }}/.bashrc
         line: 'alias cat=ccat'
       when: zsh_config.stat.exists == false
 
     - name: config zsh
       lineinfile:
-        dest: /root/.zshrc
+        dest: ~{{ username }}/.zshrc
         line: 'alias cat=ccat'
       when: zsh_config.stat.exists == true
 

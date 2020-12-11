@@ -191,5 +191,5 @@ ansible-playbook -u root -i inventory playbooks/node_exporter.yml  -l 'jenkins-s
 
 在vim的配置文件中设置`set foldmethod=marker`或者通过ansible刷入即可：
 ```
-ansible-playbook -u root -i inventory playbooks/config
+ansible-playbook -u root -i inventory playbooks/vim -e username=<username>
 ```
