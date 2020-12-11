@@ -148,6 +148,7 @@
           match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
           set foldmethod=marker
           set fileformats=unix
+          set background=dark
           set encoding=utf-8
           set softtabstop=4
           set shiftwidth=4
@@ -165,7 +166,6 @@
           set showmode
           set autoread
           set hlsearch
-          set bg=dark
           set nowrap
           set number
           set ruler
@@ -180,6 +180,7 @@
           match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
           set foldmethod=marker
           set fileformats=unix
+          set background=dark
           set encoding=utf-8
           set softtabstop=4
           set shiftwidth=4
@@ -197,7 +198,6 @@
           set showmode
           set autoread
           set hlsearch
-          set bg=dark
           set nowrap
           set number
           set ruler
