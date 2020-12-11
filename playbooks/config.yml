@@ -144,28 +144,64 @@
         path: /etc/vim/vimrc
         marker: '"{mark} ANSIBLE MANAGED BLOCK"'
         block: |
-          set foldmethod=marker
           highlight RedundantSpaces ctermbg=red guibg=red
           match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
-          set tabstop=4
-          set shiftwidth=4
-          set expandtab
-          set softtabstop=4
+          set foldmethod=marker
           set fileformats=unix
+          set encoding=utf-8
+          set softtabstop=4
+          set shiftwidth=4
+          set laststatus=2
+          set history=1000
+          set backspace=2
+          set cursorline
+          set ignorecase
+          set autoindent
+          set smartcase
+          set incsearch
+          set tabstop=4
+          set expandtab
+          set showmatch
+          set showmode
+          set autoread
+          set hlsearch
+          set bg=dark
+          set nowrap
+          set number
+          set ruler
+          syntax on
       when: ansible_os_family == "Debian"
 
     - blockinfile:
         path: /etc/vimrc
         marker: '"{mark} ANSIBLE MANAGED BLOCK"'
         block: |
-          set foldmethod=marker
           highlight RedundantSpaces ctermbg=red guibg=red
           match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
-          set tabstop=4
-          set shiftwidth=4
-          set expandtab
-          set softtabstop=4
+          set foldmethod=marker
           set fileformats=unix
+          set encoding=utf-8
+          set softtabstop=4
+          set shiftwidth=4
+          set laststatus=2
+          set history=1000
+          set backspace=2
+          set cursorline
+          set ignorecase
+          set autoindent
+          set smartcase
+          set incsearch
+          set tabstop=4
+          set expandtab
+          set showmatch
+          set showmode
+          set autoread
+          set hlsearch
+          set bg=dark
+          set nowrap
+          set number
+          set ruler
+          syntax on
       when: ansible_os_family == "RedHat"
       # }}}
 
