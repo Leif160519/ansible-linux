@@ -51,6 +51,7 @@
         url: https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
         dest: /tmp/install.sh
         mode: 0777
+      when: oh_my_zsh.stat.exists == false
 
     - shell: /bin/bash /tmp/install.sh
       ignore_errors: yes
