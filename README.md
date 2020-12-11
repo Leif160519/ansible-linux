@@ -193,3 +193,13 @@ ansible-playbook -u root -i inventory playbooks/node_exporter.yml  -l 'jenkins-s
 ```
 ansible-playbook -u root -i inventory playbooks/vim -e username=<username>
 ```
+
+## 五、补充内容
+### 5.1 配置vim
+- [Vim 配置入门](http://www.ruanyifeng.com/blog/2018/09/vimrc.html)
+- [Vim轻量高效插件管理神器vim-plug介绍-Vim插件(9)](https://vimjc.com/vim-plug.html)
+- [Airline & Themes](https://www.bookstack.cn/read/learn-vim/plugins-airline.md)
+
+### 5.2 配置zsh
+- [oh-my-fishy-zsh配置](https://leif.fun/articles/2020/09/02/1599028639385.html)
+- [iterm2下实现FBI WARNING](https://leif.fun/articles/2019/09/06/1567751175266.html)
