@@ -3,7 +3,7 @@
   vars:
     username: root
   tasks:
-     - name: 安装vim
+     - name: 安装vim  # {{{ | 准备工作
        package:
          name: vim
          state: latest
@@ -18,14 +18,21 @@
        with_items:
          - plugged
          - autoload
+       # }}}
 
-     - name: 安装vim-plug插件管理器
-       copy:
-         src: files/vim/plug.vim
+     - name: 安装vim-plug插件管理器 # {{{
+       stat:
+         path: ~{{ username }}/.vim/autoload/plug.vim
+       register: plug_vim
+
+     - get_url:
+         url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
          dest: ~{{ username }}/.vim/autoload/plug.vim
          mode: 0755
          owner: "{{ username }}"
          group: "{{ username }}"
+       when: plug_vim.stat.exists == false
+       # }}}
 
      - stat: # {{{ | 安装airline插件
          path: ~{{ username }}/.vim/plugged/vim-airline
