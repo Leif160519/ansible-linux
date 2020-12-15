@@ -154,3 +154,9 @@
             regexp: "^#DefaultTimeoutStopSec"
             line: "DefaultTimeoutStopSec=10s"
       # }}}
+
+    - name: 配置历史命令日期格式 # {{{
+      lineinfile:
+        path: ~{{ username }}/.bashrc
+        line: 'export HISTTIMEFORMAT="%F %T "'
+      # }}}
