@@ -94,5 +94,8 @@
            call plug#end()
            let g:airline#extensions#tabline#enabled=1
            let g:airline_theme='simple'
+           if has("autocmd")
+             au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+           endif
        # }}}
 
