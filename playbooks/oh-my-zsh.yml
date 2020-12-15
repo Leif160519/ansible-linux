@@ -38,7 +38,7 @@
       register: plugins_path
 
     - name: 切换默认shell为zsh # {{{
-      shell: chsh -s /bin/zsh
+      shell: su - "{{ username }}" -s  /usr/bin/chsh -s /bin/zsh
       ignore_errors: yes
       # }}}
 
@@ -63,7 +63,7 @@
         group: "{{ username }}"
       when: oh_my_zsh.stat.exists == false
 
-    - shell: /bin/bash /tmp/install.sh
+    - shell: su - "{{ username }}" -s /bin/bash /tmp/install.sh
       ignore_errors: yes
       when: oh_my_zsh.stat.exists == false
       # }}}
