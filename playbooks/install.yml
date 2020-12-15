@@ -30,6 +30,7 @@
       package:
         name: "{{ item }}"
       with_items:
+        - apt-utils
         - rar
         - unrar
         - p7zip-full
