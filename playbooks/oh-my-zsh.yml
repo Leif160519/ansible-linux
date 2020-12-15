@@ -47,10 +47,20 @@
       register: oh_my_zsh
 
     - name: 安装oh-my-zsh # {{{
-      get_url:
-        url: https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
+#      get_url:
+#        url: https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
+#        dest: /tmp/install.sh
+#        mode: 0755
+#        owner: "{{ username }}"
+#        group: "{{ username }}"
+#      when: oh_my_zsh.stat.exists == false
+
+      copy:
         dest: /tmp/install.sh
-        mode: 0777
+        src: files/oh-my-zsh/install.sh
+        mode: 0755
+        owner: "{{ username }}"
+        group: "{{ username }}"
       when: oh_my_zsh.stat.exists == false
 
     - shell: /bin/bash /tmp/install.sh
