@@ -38,7 +38,7 @@
       register: plugins_path
 
     - name: 切换默认shell为zsh # {{{
-      shell: su - "{{ username }}" -s  /usr/bin/chsh -s /bin/zsh
+      shell: usermod -s /bin/zsh "{{ username }}"
       ignore_errors: yes
       # }}}
 
