@@ -22,6 +22,8 @@
         - perf                          # 是一款Linux性能分析工具
         - bind-utils
         - ShellCheck                    # shell脚本静态检查工具，能够识别语法错误以及不规范的写法(centos下安装得大写)
+        - nfs-utils                     # nfs服务端和客户端
+        - samba-client                  # smb客户端
       when: ansible_os_family == "RedHat"
       ignore_errors: yes
       # }}}
@@ -45,6 +47,8 @@
         - icdiff                        # 分屏显示 diff
         - ranger                        # 内容浏览/预览
         - tldr                          # 如果你经常不想详读man文档，那么你应该试试这个小工具
+        - nfs-common                    # nfs客户端
+        - smbclient                     # smb客户端
       when: ansible_os_family == "Debian"
       ignore_errors: yes
       # }}}
