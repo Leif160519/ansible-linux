@@ -134,6 +134,7 @@
 #        - nautilus                      # 打开文件管理器
 #        - remmina                       # 远程连接windows
         - smartmontools                 # 磁盘检测工具
+        - ntpdate                       # 时间同步工具
       ignore_errors: yes
       # }}}
 
