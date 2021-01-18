@@ -159,3 +159,23 @@
         path: ~{{ username }}/.bashrc
         line: 'export HISTTIMEFORMAT="%F %T "'
       # }}}
+
+    - name: 打开cron日志 # {{{
+      block:
+        - replace:
+            path: /etc/rsyslog.d/50-default.conf
+            regexp: "#cron"
+            replace: "cron"
+          when: ansible_distribution == "Ubuntu"
+
+        - replace:
+            path: /etc/rsyslog.conf
+            regexp: "#cron"
+            replace: "cron"
+          when: (ansible_distribution == "Debian") or (ansible_os_family == "RedHat")
+
+        - service:
+            name: rsyslog
+            state: restarted
+            enabled: yes
+      # }}}
