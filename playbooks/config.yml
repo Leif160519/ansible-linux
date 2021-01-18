@@ -88,19 +88,18 @@
           when: ansible_distribution == "Ubuntu"
        # }}}
 
-    - name: 设置所有sudo指令不需要密码 # {{{
+    - name: 设置当前用户执行sudo命令不需要密码 # {{{ 为何不直接修改sudoers文件:风险太大
       block:
         - lineinfile:
-            dest: /etc/sudoers
-            regexp: '^%sudo'
-            line: '%sudo    ALL=(ALL:ALL) NOPASSWD:ALL'
-          when: ansible_distribution == "Ubuntu"
-
-        - lineinfile:
-            dest: /etc/sudoers
-            regexp: '^%wheel'
-            line: '%wheel   ALL=(ALL)       NOPASSWD:ALL'
-          when: ansible_distribution == "RedHat"
+            dest: /etc/sudoers.d/{{ item }}
+            create: yes
+            line: '{{ item }} ALL=(ALL) NOPASSWD:ALL'
+            mode: 0440
+            owner: root
+            group: root
+          with_items:
+            - "{{ username }}"
+          when: not ( item is match "root" )
       # }}}
 
     - name: 禁用selinux(重启后生效) # {{{
