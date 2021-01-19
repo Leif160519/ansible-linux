@@ -136,6 +136,7 @@
         - smartmontools                 # 磁盘检测工具
         - ntpdate                       # 时间同步工具
         - lsb
+        - fortune-mod                   # zsh主题依赖:随机格言
       ignore_errors: yes
       # }}}
 
