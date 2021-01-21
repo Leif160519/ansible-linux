@@ -121,6 +121,8 @@
 
               max_connections = 2000
               max_allowed_packet = 64M
+
+              lower_case_table_names=1
             owner: mysql
             group: mysql
             mode: 0644

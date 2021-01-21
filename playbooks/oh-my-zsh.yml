@@ -4,11 +4,14 @@
 #
 ##
 # @leif160519 @2020.08.29
+# 默认安装用户为root，指定其他用户请用-e username=ubuntu
 ####
 ---
 - name: 安装oh-my-zsh
   hosts: all
   tags: [zsh]
+  vars:
+    username: root
   tasks:
     - name: 安装zsh和autojump # {{{
       package:
@@ -31,25 +34,36 @@
       when: ansible_os_family == "RedHat"
       # }}}
 
-    - shell: echo ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins
+    - shell: echo ${ZSH_CUSTOM:-~{{ username }}/.oh-my-zsh/custom}/plugins
       register: plugins_path
 
     - name: 切换默认shell为zsh # {{{
-      shell: chsh -s /bin/zsh
+      shell: usermod -s /bin/zsh "{{ username }}"
       ignore_errors: yes
       # }}}
 
     - stat:
-        path: ~/.oh-my-zsh
+        path: ~{{ username }}/.oh-my-zsh
       register: oh_my_zsh
 
     - name: 安装oh-my-zsh # {{{
-      get_url:
-        url: https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
-        dest: /tmp/install.sh
-        mode: 0777
+#      get_url:
+#        url: https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
+#        dest: /tmp/install.sh
+#        mode: 0755
+#        owner: "{{ username }}"
+#        group: "{{ username }}"
+#      when: oh_my_zsh.stat.exists == false
 
-    - shell: /bin/bash /tmp/install.sh
+      copy:
+        dest: /tmp/install.sh
+        src: files/oh-my-zsh/install.sh
+        mode: 0755
+        owner: "{{ username }}"
+        group: "{{ username }}"
+      when: oh_my_zsh.stat.exists == false
+
+    - shell: su - "{{ username }}" -s /bin/bash /tmp/install.sh
       ignore_errors: yes
       when: oh_my_zsh.stat.exists == false
       # }}}
@@ -122,20 +136,20 @@
 
     - name: 修改zsh主题为随机 # {{{
       lineinfile:
-        dest: ~/.zshrc
+        dest: ~{{ username }}/.zshrc
         regexp: '^ZSH_THEME='
         line: 'ZSH_THEME="random"'
         # }}}
 
     - name: 删除zsh默认插件配置 # {{{ | 配置zsh插件
       lineinfile:
-        dest: ~/.zshrc
+        dest: ~{{ username }}/.zshrc
         regexp: '^plugins='
         state: absent
 
     - name: 配置zsh插件
       blockinfile:
-        path: ~/.zshrc
+        path: ~{{ username }}/.zshrc
         insertbefore: "^source"
         block: |
           plugins=(

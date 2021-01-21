@@ -5,6 +5,10 @@
 
 由于本项目中使用众多systemctl特性，故墙裂推荐使用ubuntu 16.04 ，Debian 9 和Centos 7 及以上版本！！！
 
+### 已知的问题(截止2020-12-07)
+- ansible中的service模块与内核版本为5.8的linux不兼容，会报`FAILED! => {"changed": false, "msg": "Service is in unknown state", "status": {}}`，建议升级systemd版本或降级Linux内核版本,详情参看:[Service is in unknown state #71528](https://github.com/ansible/ansible/issues/71528)
+- 当执行ntp.yml时，若远程机器是ubuntu20.04的系统请将ansible版本升级至2.9.8以上或使用2.10(使用pip3而不是apt安装)，详情参看:[Problems on Ubuntu 20.04 #86](https://github.com/geerlingguy/ansible-role-ntp/issues/86)
+
 项目目录结构
 ```
 ansible-linux
@@ -187,5 +191,15 @@ ansible-playbook -u root -i inventory playbooks/node_exporter.yml  -l 'jenkins-s
 
 在vim的配置文件中设置`set foldmethod=marker`或者通过ansible刷入即可：
 ```
-ansible-playbook -u root -i inventory playbooks/config
+ansible-playbook -u root -i inventory playbooks/vim -e username=<username>
 ```
+
+## 五、补充内容
+### 5.1 配置vim
+- [Vim 配置入门](http://www.ruanyifeng.com/blog/2018/09/vimrc.html)
+- [Vim轻量高效插件管理神器vim-plug介绍-Vim插件(9)](https://vimjc.com/vim-plug.html)
+- [Airline & Themes](https://www.bookstack.cn/read/learn-vim/plugins-airline.md)
+
+### 5.2 配置zsh
+- [oh-my-fishy-zsh配置](https://leif.fun/articles/2020/09/02/1599028639385.html)
+- [iterm2下实现FBI WARNING](https://leif.fun/articles/2019/09/06/1567751175266.html)
