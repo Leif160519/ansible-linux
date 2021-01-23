@@ -20,6 +20,7 @@
       with_items:
         - zsh
         - autojump
+        - fortune-mod # zsh theme
       # }}}
 
     - name: 清理下载的安装包缓存(Debian) # {{{
