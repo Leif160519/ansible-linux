@@ -140,18 +140,24 @@
         dest: ~{{ username }}/.zshrc
         regexp: '^ZSH_THEME='
         line: 'ZSH_THEME="random"'
+        owner: "{{ username }}"
+        group: "{{ username }}"
         # }}}
 
     - name: 删除zsh默认插件配置 # {{{ | 配置zsh插件
       lineinfile:
         dest: ~{{ username }}/.zshrc
         regexp: '^plugins='
+        owner: "{{ username }}"
+        group: "{{ username }}"
         state: absent
 
     - name: 配置zsh插件
       blockinfile:
         path: ~{{ username }}/.zshrc
         insertbefore: "^source"
+        owner: "{{ username }}"
+        group: "{{ username }}"
         block: |
           plugins=(
                   git

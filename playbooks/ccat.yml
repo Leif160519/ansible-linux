@@ -34,12 +34,16 @@
       lineinfile:
         dest: ~{{ username }}/.bashrc
         line: 'alias cat=ccat'
+        owner: "{{ username }}"
+        group: "{{ username }}"
       when: zsh_config.stat.exists == false
 
     - name: config zsh
       lineinfile:
         dest: ~{{ username }}/.zshrc
         line: 'alias cat=ccat'
+        owner: "{{ username }}"
+        group: "{{ username }}"
       when: zsh_config.stat.exists == true
 
     - name: 重新登录终端生效
