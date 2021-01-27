@@ -1,0 +1,26 @@
+- hosts: all
+  tags: nodejs
+  tasks:
+    - name: 安装nodejs和npm
+      package:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - nodejs
+        - npm
+
+    - name: 设置淘宝源
+      shell: npm config set registry https://registry.npm.taobao.org
+      ignore_errors: yes
+
+    - name: 安装工具n
+      shell: npm install n -g
+      ignore_errors: yes
+
+    - name: 安装最新稳定版nodejs
+      shell: n stable
+      ignore_errors: yes
+
+    - name: 安装cnpm
+      shell: npm install -g cnpm
+      ignore_errors: yes
