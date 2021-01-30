@@ -21,7 +21,7 @@
     - shell: uuid
       register: network_uuid
 
-    - find:
+    - find: #为什么不用with_fileglob?:因为它只能获取ansible本机的文件名，不能获取远端的
         path: /etc/netplan
         patterns: "*.yaml"
       register: network_config
