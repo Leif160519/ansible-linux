@@ -21,6 +21,11 @@
     - shell: uuid
       register: network_uuid
 
+    - find:
+        path: /etc/netplan
+        patterns: "*.yaml"
+      register: network_config
+
     - set_fact: # {{{ | 变量定义
         ubuntu_version: 18.04
         interface: "{{ ansible_default_ipv4['interface'] }}"
@@ -53,8 +58,10 @@
     - template: # {{{ ip配置文件设置
         backup: yes
         src: files/network/00-installer-config.yaml.j2
-        dest: /etc/netplan/00-installer-config.yaml
+        dest: "{{ item.path }}"
         mode: 0644
+      with_items:
+        - "{{ network_config.files }}"
       when: ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,">=")
 
     - template:
