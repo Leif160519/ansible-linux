@@ -10,8 +10,13 @@ dist.debian9
 dist.debian10
 # }}}
 
-[dist.redhat:children] # redhat子类 {{{1
+[dist.redhat:children] # redhat 系 {{{1
+dist.redhat7
 dist.centos
+
+[dist.redhat7] # redhat子类 {{{2
+#}}}2
+
 
 [dist.centos:children] # centos子类 {{{2
 dist.centos6

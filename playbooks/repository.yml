@@ -32,6 +32,68 @@
         update_cache: yes
 # }}}
 
+- name: RedHat # {{{ 参考：https://blog.csdn.net/yangZHyu/article/details/80565032
+  hosts: dist.redhat:!dist.centos
+  vars:
+    download_url: https://mirrors.aliyun.com/centos/7/os/x86_64/Packages
+    yum_metadata_pparser_version: yum-metadata-parser-1.1.4-10.el7.x86_64
+    yum_version: yum-3.4.3-168.el7.centos.noarch
+    yum_plugin_fastestmirror_version: yum-plugin-fastestmirror-1.1.31-54.el7_8.noarch
+    yum_utils_version: yum-utils-1.1.31-54.el7_8.noarch
+    python_urlgrabber_version: python-urlgrabber-3.10-10.el7.noarch
+  tags: redhat
+  tasks:
+    - stat:
+        path: /etc/yum.repos.d/Centos-Base.repo
+      register: s
+
+    - block:
+        - name: uninstall yum
+          shell: rpm -qa | grep yum | xargs rpm -e --nodeps
+          ignore_errors: yes
+
+        - name: download yum
+          get_url:
+            url: "{{ item }}"
+            dest: /tmp/
+          with_items:
+            - "{{ download_url }}/{{ yum_metadata_pparser_version }}.rpm"
+            - "{{ download_url }}/{{ yum_version }}.rpm"
+            - "{{ download_url }}/{{ yum_plugin_fastestmirror_version }}.rpm"
+            - "{{ download_url }}/{{ yum_utils_version }}.rpm"
+            - "{{ download_url }}/{{ python_urlgrabber_version }}.rpm"
+
+        - name: install yum
+          shell: |
+            cd /tmp
+            rpm -ivh {{ yum_metadata_pparser_version }}.rpm \
+                     {{ yum_version }}.rpm \
+                     {{ yum_plugin_fastestmirror_version }}.rpm \
+                     {{ yum_utils_version }}.rpm \
+                     --force --nodeps
+
+        - name: download sources file
+          get_url:
+            url: http://mirrors.aliyun.com/repo/Centos-{{ ansible_distribution_major_version }}.repo
+            dest: /etc/yum.repos.d/Centos-Base.repo
+
+        - name: config sources file
+          shell: sed -i 's/\$releasever/7/g' /etc/yum.repos.d/Centos-Base.repo
+
+      when: s.stat.exists == false
+
+    - name: clean packages
+      shell: yum clean all
+      ignore_errors: yes
+
+    - name: establish metadata cache
+      yum:
+        update_cache: yes
+
+    - name: update system
+      shell: yum -y update
+# }}}
+
 - name: Debian # {{{
   hosts: dist.debian:!dist.ubuntu
   tags: debian

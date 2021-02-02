@@ -60,64 +60,8 @@ git clone https://github.com/Leif160519/ansible-linux
 ```
 
 - 4.修改inventory下的主机hostname和IP地址
-```
-[dist]
-[dist:children] # 发行版 {{{
-dist.debian
-dist.redhat
-# }}}
-
-[dist.debian:children] # debian 系 {{{
-dist.ubuntu
-dist.debian9
-dist.debian10
-# }}}
-
-[dist.redhat:children] # redhat子类 {{{1
-dist.centos
-
-[dist.centos:children] # centos子类 {{{2
-dist.centos6
-dist.centos7
-
-[ dist.centos6] # {{{3
-# }}}3
-
-[dist.centos7] # {{{3
-gitlab-server
-# }}}3
-# }}}2
-# }}}1
-
-[dist.ubuntu:children] # ubuntu子类 {{{1
-dist.ubuntu.lts
-
-[dist.ubuntu.lts:children] # ubuntu发行版子类 {{{2
-dist.u1604
-dist.u1804
-dist.u2004
-
-[dist.u1604] # {{{3
-# }}}3
-
-[dist.u1804] # {{{3
-# }}}3
-
-[dist.u2004] # {{{3
-prometheus-server
-ansible-server
-jenkins-server
-nexus-server
-# }}}3
-# }}}2
-# }}}1
-
-[dist.debian9] # {{{
-# }}}
-
-[dist.debian10] # {{{
-# }}}
-```
+> all: 所有机器
+> dist：根据系统版本进行分类
 
 - 5.ansible配置文件(使用pip3安装的ansible不会生成配置文件，可手动创建并配置)
 ```
