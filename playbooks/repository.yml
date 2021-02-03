@@ -91,7 +91,9 @@
         update_cache: yes
 
     - name: update system
-      shell: yum -y update
+      yum:
+        name: "*"
+        state: latest
 # }}}
 
 - name: Debian # {{{
