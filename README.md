@@ -6,7 +6,7 @@
 由于本项目中使用众多systemctl特性，故墙裂推荐使用ubuntu 16.04 ，Debian 9 和Centos 7 及以上版本！！！
 
 ### 已知的问题(截止2021-02-01)
-- ansible中的service模块(systemd版本:245.4)与内核版本为5.8的linux不兼容，会报`FAILED! => {"changed": false, "msg": "Service is in unknown state", "status": {}}`，建议升级systemd版本至245.7及以上或降级Linux内核版本,详情参看:[Service is in unknown state #71528](https://github.com/ansible/ansible/issues/71528) | [ansible fails with systemd 245.4](https://bugs.launchpad.net/ubuntu/+source/systemd/+bug/1899232)
+- ansible中的service模块(systemd版本:245.4)与内核版本为5.8的linux不兼容，会报`FAILED! => {"changed": false, "msg": "Service is in unknown state", "status": {}}`，建议内核版本5.8基础上升级systemd版本至245.7及以上或降级Linux内核版本,详情参看:[Service is in unknown state #71528](https://github.com/ansible/ansible/issues/71528) | [ansible fails with systemd 245.4](https://bugs.launchpad.net/ubuntu/+source/systemd/+bug/1899232)
 - 当执行ntp.yml时，若远程机器是ubuntu20.04的系统请将ansible版本升级至2.9.8以上或使用2.10(使用pip3而不是apt安装)，详情参看:[Problems on Ubuntu 20.04 #86](https://github.com/geerlingguy/ansible-role-ntp/issues/86)
 
 项目目录结构
