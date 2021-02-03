@@ -46,7 +46,10 @@ apt-get install ansible
 yum -y install ansible
 
 #macos
-brew install ansible #没有装brew包管理器的自行百度安装一下
+brew install ansible
+
+# python
+pip3 install ansible
 ```
 
 - 2.将本机的ssh-key全部复制进所有主机中
