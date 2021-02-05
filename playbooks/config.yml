@@ -57,6 +57,11 @@
             regexp: '^#ClientAliveCountMax'
             line: 'ClientAliveCountMax 60'
 
+        - lineinfile:
+            dest: /etc/ssh/ssh_config
+            regexp: '^#   StrictHostKeyChecking'
+            line: '    StrictHostKeyChecking no'
+
         - blockinfile:
             path: /etc/ssh/ssh_config
             block: |2
