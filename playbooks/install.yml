@@ -139,6 +139,7 @@
         - ntpdate                       # 时间同步工具
         - lsb
         - fortune-mod                   # zsh主题依赖:随机格言
+        - ethtool                       # 查看网卡信息
       ignore_errors: yes
       # }}}
 
