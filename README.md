@@ -149,6 +149,8 @@ ansible-playbook -u root -i inventory playbooks/vim -e username=<username>
 - [Vim 配置入门](http://www.ruanyifeng.com/blog/2018/09/vimrc.html)
 - [Vim轻量高效插件管理神器vim-plug介绍-Vim插件(9)](https://vimjc.com/vim-plug.html)
 - [Airline & Themes](https://www.bookstack.cn/read/learn-vim/plugins-airline.md)
+- [在vim中配置最新YouCompleteMe代码自动补全插件](https://blog.csdn.net/qq_28584889/article/details/97131637)
+- [vi代码智能提示功能及相关配置](https://www.cnblogs.com/jxhd1/p/7806626.html)
 
 ### 5.2 配置zsh
 - [oh-my-fishy-zsh配置](https://leif.fun/articles/2020/09/02/1599028639385.html)
