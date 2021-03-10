@@ -1,0 +1,199 @@
+- hosts: all
+  tags: vim
+  vars:
+    username: root
+    vim_version: 8.1.2269
+    gcc_version: 8.4.0
+  tasks:
+     - shell: /usr/bin/gcc --version | head -1 | awk '{print $NF}'
+       register: gcc_installed_version
+
+     - shell: /usr/bin/vim --version | grep IMproved | awk '{print $5}'
+       register: vim_installed_version
+
+     - name: 安装vim和相关依赖  # {{{ | 确保vim版本在8.1.2269及以上
+       package:
+         name: "{{ item }}"
+         state: latest
+       with_items:
+         - vim
+         - golang-go
+         - make
+         - cmake
+         - clang
+         - python3
+         - g++-8
+
+     - block:
+         - name: 升级vim版本-添加源
+           shell: /usr/bin/add-apt-repository ppa:jonathonf/vim -y
+           ignore_errors: yes
+
+         - name: 安装最新版vim
+           package:
+             name: vim
+             state: latest
+       when: vim_installed_version.stdout is version(vim_version,"<")
+
+     - block:
+         - name: 设置g++环境变量
+           shell: update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+           ignore_errors: yes
+       when: gcc_installed_version.stdout is version(gcc_version,"<")
+
+     - name: 准备vim插件文件夹
+       file:
+         path: ~{{ username }}/.vim/{{ item }}
+         state: directory
+         owner: "{{ username }}"
+         group: "{{ username }}"
+         mode: 0755
+       with_items:
+         - plugged
+         - autoload
+         - bundle
+       # }}}
+
+     - name: 安装vim-plug插件管理器 # {{{
+       stat:
+         path: ~{{ username }}/.vim/autoload/plug.vim
+       register: plug_vim
+
+#     - get_url:
+#         url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+#         dest: ~{{ username }}/.vim/autoload/plug.vim
+#         mode: 0644
+#         owner: "{{ username }}"
+#         group: "{{ username }}"
+#       when: plug_vim.stat.exists == false
+
+     - copy:
+         dest: ~{{ username }}/.vim/autoload/plug.vim
+         src: files/vim/plug.vim
+         mode: 0644
+         owner: "{{ username }}"
+         group: "{{ username }}"
+       when: plug_vim.stat.exists == false
+       # }}}
+
+     - stat: # {{{ | 安装airline插件
+         path: ~{{ username }}/.vim/plugged/vim-airline
+       register: vim_airline
+
+     - stat:
+         path: ~{{ username }}/.vim/plugged/vim-airline-themes
+       register: vim_airline_themes
+
+     - git:
+         repo: https://github.com/vim-airline/vim-airline
+         dest: ~{{ username }}/.vim/plugged/vim-airline
+         clone: yes
+         update: yes
+       when: vim_airline.stat.exists == false
+
+     - git:
+         repo: https://github.com/vim-airline/vim-airline-themes
+         dest: ~{{ username }}/.vim/plugged/vim-airline-themes
+         clone: yes
+         update: yes
+       when: vim_airline_themes.stat.exists == false
+       # }}}
+
+     - stat: # {{{ | 安装自动提示插件
+         path: ~{{ username }}/.vim/bundle/Vundle.vim
+       register: vundle_vim
+
+     - stat:
+         path: ~{{ username }}/.vim/bundle/YouCompleteMe
+       register: youcompleteme
+
+     - git:
+         repo: https://github.com/VundleVim/Vundle.vim.git
+         dest: ~{{ username }}/.vim/bundle/Vundle.vim
+         clone: yes
+         update: yes
+       when: vundle_vim.stat.exists == false
+
+     - git:
+         repo: https://github.com/Valloric/YouCompleteMe.git
+         dest: ~{{ username }}/.vim/bundle/YouCompleteMe
+         clone: yes
+         update: yes
+         recursive: yes
+       ignore_errors: yes
+       when: youcompleteme.stat.exists == false
+
+     - shell: ~{{ username }}/.vim/bundle/YouCompleteMe/install.py --all
+       ignore_errors: yes
+       when: youcompleteme.stat.exists == false
+       # }}}
+
+     - name: 配置vim # {{{
+       blockinfile:
+         path: ~{{ username }}/.vimrc
+         create: yes
+         marker: '"{mark} ANSIBLE MANAGED BLOCK"'
+         owner: "{{ username }}"
+         group: "{{ username }}"
+         block: |
+           highlight RedundantSpaces ctermbg=red guibg=red
+           match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
+           set foldmethod=marker
+           set fileformats=unix
+           set background=dark
+           set encoding=utf-8
+           set softtabstop=4
+           set shiftwidth=4
+           set laststatus=2
+           set history=1000
+           set backspace=2
+           set cursorline
+           set ignorecase
+           set autoindent
+           set smartcase
+           set incsearch
+           set tabstop=4
+           set expandtab
+           set showmatch
+           set showmode
+           set autoread
+           set hlsearch
+           set nowrap
+           set number
+           set ruler
+           syntax on
+           call plug#begin('~/.vim/plugged')
+           Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
+           call plug#end()
+           let g:airline#extensions#tabline#enabled=1
+           let g:airline_theme='simple'
+           if has("autocmd")
+             au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+           endif
+           set nocompatible
+           filetype off
+           set rtp+=~/.vim/bundle/Vundle.vim
+           call vundle#begin()
+           Plugin 'VundleVim/Vundle.vim'
+           Plugin 'Valloric/YouCompleteMe'
+           call vundle#end()
+           filetype plugin indent on
+           let g:ycm_confirm_extra_conf=0
+           let g:ycm_complete_in_comments=1
+           let g:ycm_collect_identifiers_from_tags_files=1
+           let g:ycm_min_num_of_chars_for_completion=1
+           nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
+           nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
+           nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+           let g:ycm_show_diagnostics_ui = 0
+           let g:ycm_server_log_level = 'info'
+           let g:ycm_min_num_identifier_candidate_chars = 2
+           let g:ycm_collect_identifiers_from_comments_and_strings = 1
+           let g:ycm_complete_in_strings=1
+           let g:ycm_key_invoke_completion = '<c-z>'
+           noremap <c-z> <NOP>
+           let g:ycm_semantic_triggers =  {
+                       \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
+                       \ 'cs,lua,javascript': ['re!\w{2}'],
+                       \ }
+       # }}}
