@@ -68,6 +68,8 @@
         #          - remmina                       # 远程连接windows
         #          - stacer                        # Debian清理工具
         #          - copyq                         # Debian剪切板复制工具
+        #          - xsensors                      # 监控cpu显卡温度和电压
+        #          - conky                         # 同上
         #        when: ansible_os_family == "Debian"
         #        ignore_errors: yes
         #      # }}}
@@ -153,6 +155,7 @@
           - fortune-mod                   # zsh主题依赖:随机格言
           - ethtool                       # 查看网卡信息
           - lm-sensors                    # 监控CPU温度
+          - s-tui                         # 压力测试工具
         ignore_errors: yes
         # }}}
 
