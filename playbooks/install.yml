@@ -152,6 +152,7 @@
           - lsb
           - fortune-mod                   # zsh主题依赖:随机格言
           - ethtool                       # 查看网卡信息
+          - lm-sensors                    # 监控CPU温度
         ignore_errors: yes
         # }}}
 
