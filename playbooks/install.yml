@@ -49,6 +49,7 @@
           - tldr                          # 如果你经常不想详读man文档，那么你应该试试这个小工具
           - nfs-common                    # nfs客户端
           - smbclient                     # smb客户端
+          - dkms                          # 动态内核模块支持
         when: ansible_os_family == "Debian"
         ignore_errors: yes
         # }}}
