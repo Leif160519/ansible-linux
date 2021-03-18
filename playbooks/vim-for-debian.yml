@@ -185,6 +185,10 @@
            nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
            nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
            nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+           let g:ycm_key_list_select_completion = ['<TAB>', '<Down>']
+           inoremap <leader>; <C-x><C-o>
+           set completeopt-=preview
+           let g:ycm_seed_identifiers_with_syntax=1
            let g:ycm_show_diagnostics_ui = 0
            let g:ycm_server_log_level = 'info'
            let g:ycm_min_num_identifier_candidate_chars = 2
