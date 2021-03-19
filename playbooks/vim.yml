@@ -99,6 +99,7 @@
            set showmode
            set autoread
            set hlsearch
+           set bg=dark
            set nowrap
            set number
            set ruler
