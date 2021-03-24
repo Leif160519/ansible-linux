@@ -71,6 +71,8 @@
         #          - copyq                         # Debian剪切板复制工具
         #          - xsensors                      # 监控cpu显卡温度和电压
         #          - conky                         # 同上
+        #          - guake                         # 终端工具
+        #          - aterm                         # 同上
         #        when: ansible_os_family == "Debian"
         #        ignore_errors: yes
         #      # }}}
