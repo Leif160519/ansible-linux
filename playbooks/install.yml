@@ -159,6 +159,7 @@
           - ethtool                       # 查看网卡信息
           - lm-sensors                    # 监控CPU温度
           - s-tui                         # 压力测试工具
+          - lvm2                          # lvm磁盘工具
         ignore_errors: yes
         # }}}
 
