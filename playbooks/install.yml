@@ -103,7 +103,7 @@
           - lsof                          # lsof命令用于查看你进程开打的文件，打开文件的进程，进程打开的端口(TCP、UDP)
           - dpkg                          # dpkg命令是Debian Linux系统用来安装、创建和管理软件包的实用工具
           - expect
-          - hdparm
+          - hdparm                        # 硬盘测速工具，用法：hdparm -Tt /dev/sda
           - psmisc
           - fping                         # 类似于ping协议回复请求以检测主机是否存在
           - tcpdump                       # tcpdump命令是一款sniffer工具，它可以打印所有经过网络接口的数据包的头信息，也可以使用-w选项将数据包保存到文件中，方便以后分析

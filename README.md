@@ -155,3 +155,23 @@ ansible-playbook -u root -i inventory playbooks/vim -e username=<username>
 ### 5.2 配置zsh
 - [oh-my-fishy-zsh配置](https://leif.fun/articles/2020/09/02/1599028639385.html)
 - [iterm2下实现FBI WARNING](https://leif.fun/articles/2019/09/06/1567751175266.html)
+
+### 5.2 git代码统计工具
+#### 1) svn转化为git:git-svn
+     - 安装：`apt-get install git-svn`
+     - 下载svn库：`git-svn clone <svn_uri>`
+     - 更新svn库：`git-svn rebase`
+
+#### 2) git代码图形化报表：[gitstats](http://gitstats.sourceforge.net/);[gitinspector](https://github.com/ejwa/gitinspector);git-bars
+     - 安装：
+     ```
+        apt-get install gitstats
+        apt-get install gitinspector
+        pip3 install git-bars
+     ```
+     - 生成报表：
+     ```
+        gitstats <git_dir> <report_dir>
+        gitinspector <git_dir> -HTLlrw --since="2021-01-01" -F html > index.html
+        git-bars
+      ```
