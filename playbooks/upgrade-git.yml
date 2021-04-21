@@ -84,7 +84,8 @@
         state: latest
 
     - name: 添加git源
-      shell: /usr/bin/add-apt-repository ppa:git-core/ppa -y
+      apt_repository:
+          repo: git-core/ppa
       ignore_errors: true
 
     - name: 升级git

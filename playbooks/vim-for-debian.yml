@@ -26,7 +26,8 @@
 
      - block:
          - name: 升级vim版本-添加源
-           shell: /usr/bin/add-apt-repository ppa:jonathonf/vim -y
+           apt_repository:
+               repo: jonathonf/vim
            ignore_errors: yes
 
          - name: 安装最新版vim
