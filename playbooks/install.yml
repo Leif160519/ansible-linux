@@ -8,207 +8,214 @@
 ---
 - name: Install software
   hosts: all
-  tags: [install]
   tasks:
-    - block:
-      - name: Install common software # {{{
-        package:
-          name: "{{ item }}"
-          state: latest
-        with_items:
-          - yum-utils
-          - epel-release
-          - nagios                        # 主要用于监控一台或者多台本地主机及远程的各种信息，包括本机资源及对外的服务等
-          - nc                            # 在网络工具中有”瑞士军刀”的美誉，它短小精悍，功能强
-          - perf                          # 是一款Linux性能分析工具
-          - bind-utils
-          - ShellCheck                    # shell脚本静态检查工具，能够识别语法错误以及不规范的写法(centos下安装得大写)
-          - nfs-utils                     # nfs服务端和客户端
-          - samba-client                  # smb客户端
-        when: ansible_os_family == "RedHat"
-        ignore_errors: yes
+    - name: Install common software # {{{
+      tags: [common]
+      block:
+        - package:
+            name: "{{ item }}"
+            state: latest
+          with_items:
+            - yum-utils
+            - epel-release
+            - nagios                        # 主要用于监控一台或者多台本地主机及远程的各种信息，包括本机资源及对外的服务等
+            - nc                            # 在网络工具中有”瑞士军刀”的美誉，它短小精悍，功能强
+            - perf                          # 是一款Linux性能分析工具
+            - bind-utils
+            - ShellCheck                    # shell脚本静态检查工具，能够识别语法错误以及不规范的写法(centos下安装得大写)
+            - nfs-utils                     # nfs服务端和客户端
+            - samba-client                  # smb客户端
+          when: ansible_os_family == "RedHat"
+          ignore_errors: yes
 
-      - package:
-          name: "{{ item }}"
-          state: latest
-        with_items:
-          - apt-utils
-          - rar
-          - unrar
-          - p7zip-full
-          - python-pip
-          - screenfetch
-          - neofetch
-          - linuxlogo
-          - silversearcher-ag             # ag:比grep、ack更快的递归搜索文件内容
-          - mycli                         # mysql客户端，支持语法高亮和命令补全，效果类似ipython，可以替代mysql命令
-          - shellcheck                    # shell脚本静态检查工具，能够识别语法错误以及不规范的写法
-          - fzf                           # 命令行下模糊搜索工具，能够交互式智能搜索并选取文件或者内容，配合终端ctrl-r历史命令搜索简直完美
-          - icdiff                        # 分屏显示 diff
-          - ranger                        # 内容浏览/预览
-          - tldr                          # 如果你经常不想详读man文档，那么你应该试试这个小工具
-          - nfs-common                    # nfs客户端
-          - smbclient                     # smb客户端
-          - dkms                          # 动态内核模块支持
-        when: ansible_os_family == "Debian"
-        ignore_errors: yes
-        # }}}
+        - package:
+            name: "{{ item }}"
+            state: latest
+          with_items:
+            - apt-utils
+            - rar
+            - unrar
+            - p7zip-full
+            - python-pip
+            - screenfetch
+            - neofetch
+            - linuxlogo
+            - silversearcher-ag             # ag:比grep、ack更快的递归搜索文件内容
+            - mycli                         # mysql客户端，支持语法高亮和命令补全，效果类似ipython，可以替代mysql命令
+            - shellcheck                    # shell脚本静态检查工具，能够识别语法错误以及不规范的写法
+            - fzf                           # 命令行下模糊搜索工具，能够交互式智能搜索并选取文件或者内容，配合终端ctrl-r历史命令搜索简直完美
+            - icdiff                        # 分屏显示 diff
+            - ranger                        # 内容浏览/预览
+            - tldr                          # 如果你经常不想详读man文档，那么你应该试试这个小工具
+            - nfs-common                    # nfs客户端
+            - smbclient                     # smb客户端
+            - dkms                          # 动态内核模块支持
+          when: ansible_os_family == "Debian"
+          ignore_errors: yes
+      # }}}
 
-        #      - name: Install special software # {{{
-        #        tags: [never, ui]
-        #        package:
-        #          name: "{{ item }}"
-        #          state: latest
-        #        with_items:
-        #          - kompare                       # GUI 文件对比工具
-        #          - meld                          # GUI 文件对比工具
-        #          - kdiff3                        # GUI 比较和合并工具
-        #          - tkcvs                         # GUI 文件比较工具
-        #          - yakuake                       # 终端工具(搭配图形化界面，支持lrzsz)
-        #          - nautilus                      # 打开文件管理器
-        #          - remmina                       # 远程连接windows
-        #          - stacer                        # Debian清理工具
-        #          - copyq                         # Debian剪切板复制工具
-        #          - xsensors                      # 监控cpu显卡温度和电压
-        #          - conky                         # 同上
-        #          - guake                         # 终端工具
-        #          - aterm                         # 同上
-        #        when: ansible_os_family == "Debian"
-        #        ignore_errors: yes
-        #      # }}}
+    - name: Install special software # {{{
+      tags: [never, special]
+      block:
+        - package:
+            name: "{{ item }}"
+            state: latest
+          with_items:
+            - kompare                       # GUI 文件对比工具
+            - meld                          # GUI 文件对比工具
+            - kdiff3                        # GUI 比较和合并工具
+            - tkcvs                         # GUI 文件比较工具
+            - yakuake                       # 终端工具(搭配图形化界面，支持lrzsz)
+            - nautilus                      # 打开文件管理器
+            - remmina                       # 远程连接windows
+            - stacer                        # Debian清理工具
+            - copyq                         # Debian剪切板复制工具
+            - xsensors                      # 监控cpu显卡温度和电压
+            - conky                         # 同上
+            - guake                         # 终端工具
+            - aterm                         # 同上
+            - gpick                         # 取色器
+            - flameshot                     # 截图工具
+          when: ansible_os_family == "Debian"
+          ignore_errors: yes
+      # }}}
 
-      - name: Install Linux general software package # {{{
-        package:
-          name: "{{ item }}"
-          state: latest
-        with_items:
-          - nano
-          - vim
-          - emacs
-          - zip
-          - unzip
-          - git
-          - bash-completion
-          - wget
-          - iftop
-          - htop
-          - ctop
-          - iotop                         # iotop命令是一个用来监视磁盘I/O使用状况的top类工具
-          - nethogs                       # 是一个开源的命令行工具（类似于Linux的top命令），用来按进程或程序实时统计网络带宽使用率
-          - mrtg                          # 是通过SNMP 协议，向运行snmp协议主机询问相关的资料后，主机传递数值给MRTG ，然后MRTG 再绘制成网页上的图表
-          - telnet
-          - traceroute
-          - tree
-          - iperf                         # 一个网络性能测试工具
-          - lsof                          # lsof命令用于查看你进程开打的文件，打开文件的进程，进程打开的端口(TCP、UDP)
-          - dpkg                          # dpkg命令是Debian Linux系统用来安装、创建和管理软件包的实用工具
-          - expect
-          - hdparm                        # 硬盘测速工具，用法：hdparm -Tt /dev/sda
-          - psmisc
-          - fping                         # 类似于ping协议回复请求以检测主机是否存在
-          - tcpdump                       # tcpdump命令是一款sniffer工具，它可以打印所有经过网络接口的数据包的头信息，也可以使用-w选项将数据包保存到文件中，方便以后分析
-          - nmap                          # 是一款开放源代码的网络探测和安全审核工具，它的设计目标是快速地扫描大型网络
-          - fio                           # fio是一个IO测试工具，可以运行在Linux、Windows等多种系统之上，可以用来测试本地磁盘、网络存储等的性能
-          - strace                        # 是一个集诊断、调试、统计与一体的工具
-          - sysstat
-          - monit                         # 是一款功能非常丰富的进程、文件、目录和设备的监测软件
-          - ansible
-          - dosfstools
-          - uuid
-          - make
-          - colordiff
-          - subnetcalc
-          - groovy
-          - python
-          - python3
-          - python3-pip
-          - w3m                           # w3m是个开放源代码的命令行下面的网页浏览器。
-          - lynx                          # lynx命令是终端上的纯文本模式的网页浏览器，没有JS引擎，不支持CSS排版、图形、音视频等多媒体信息。只能作为一个很有趣的小玩具。
-          - dos2unix
-          - nethogs
-          - curl
-          - nload                         # 流量监控 nload -u M <network_interface>
-          - cifs-utils                    # windows 文件系统支持
-          - xfsprogs                      # xfs文件系统支持
-          - exfat-utils                   # exfat 文件系统支持
-          - net-tools                     # 网络工具
-          - rename                        # 批量重命名
-          - curlftpfs                     # ftp 挂载工具
-          - tig                           # 字符模式下交互查看git项目，可以替代git命令
-          - jq                            # 文件处理以及格式化显示，支持高亮，可以替换python -m json.tool
-          - mosh                          # 基于UDP的终端连接，可以替代ssh，连接更稳定，即使IP变了，也能自动重连
-          - axel                          # 多线程下载工具，下载文件时可以替代curl、wget
-          - lrzsz                         # sz/rz:交互式文件传输，在多重跳板机下传输文件非常好用，不用一级一级传输
-          - cloc                          # 代码统计工具，能够统计代码的空行数、注释行、编程语言
-          - ccache                        # 高速C/C++编译缓存工具，反复编译内核非常有用
-          - tmux                          # 终端复用工具，替代screen、nohup
-          - neovim                        # 替代vim
-          - mc                            # mcedit：终端下面的 NotePad++
-          - powerman                      # pm：在 bash / zsh 中迅速切换项目目录
-          - ncdu                          # 可视化的空间分析程序
-          - glances                       # 更强大的 htop / top 代替者
-          - dstat                         # 是一个用来替换vmstat、iostat、netstat、nfsstat和ifstat这些命令的工具
-          - pcp                           # 性能监控工具
-          - multitail                     # 多重 tail
-          - figlet                        # 将输入字符转换成艺术字体
-          - wdiff                         # 文件对比工具
-          - smartmontools                 # 磁盘检测工具
-          - ntpdate                       # 时间同步工具
-          - lsb
-          - fortune-mod                   # zsh主题依赖:随机格言
-          - ethtool                       # 查看网卡信息
-          - lm-sensors                    # 监控CPU温度
-          - s-tui                         # 压力测试工具
-          - lvm2                          # lvm磁盘工具
-        ignore_errors: yes
-        # }}}
+    - name: Install Linux general software package # {{{
+      tags: [never, general]
+      block:
+        - package:
+            name: "{{ item }}"
+            state: latest
+          with_items:
+            - nano
+            - vim
+            - emacs
+            - zip
+            - unzip
+            - git
+            - bash-completion
+            - wget
+            - iftop
+            - htop
+            - ctop
+            - iotop                         # iotop命令是一个用来监视磁盘I/O使用状况的top类工具
+            - nethogs                       # 是一个开源的命令行工具（类似于Linux的top命令），用来按进程或程序实时统计网络带宽使用率
+            - mrtg                          # 是通过SNMP 协议，向运行snmp协议主机询问相关的资料后，主机传递数值给MRTG ，然后MRTG 再绘制成网页上的图表
+            - telnet
+            - traceroute
+            - tree
+            - iperf                         # 一个网络性能测试工具
+            - lsof                          # lsof命令用于查看你进程开打的文件，打开文件的进程，进程打开的端口(TCP、UDP)
+            - dpkg                          # dpkg命令是Debian Linux系统用来安装、创建和管理软件包的实用工具
+            - expect
+            - hdparm                        # 硬盘测速工具，用法：hdparm -Tt /dev/sda
+            - psmisc
+            - fping                         # 类似于ping协议回复请求以检测主机是否存在
+            - tcpdump                       # tcpdump命令是一款sniffer工具，它可以打印所有经过网络接口的数据包的头信息，也可以使用-w选项将数据包保存到文件中，方便以后分析
+            - nmap                          # 是一款开放源代码的网络探测和安全审核工具，它的设计目标是快速地扫描大型网络
+            - fio                           # fio是一个IO测试工具，可以运行在Linux、Windows等多种系统之上，可以用来测试本地磁盘、网络存储等的性能
+            - strace                        # 是一个集诊断、调试、统计与一体的工具
+            - sysstat
+            - monit                         # 是一款功能非常丰富的进程、文件、目录和设备的监测软件
+            - ansible
+            - dosfstools
+            - uuid
+            - make
+            - colordiff
+            - subnetcalc
+            - groovy
+            - python
+            - python3
+            - python3-pip
+            - w3m                           # w3m是个开放源代码的命令行下面的网页浏览器。
+            - lynx                          # lynx命令是终端上的纯文本模式的网页浏览器，没有JS引擎，不支持CSS排版、图形、音视频等多媒体信息。只能作为一个很有趣的小玩具。
+            - dos2unix
+            - nethogs
+            - curl
+            - nload                         # 流量监控 nload -u M <network_interface>
+            - cifs-utils                    # windows 文件系统支持
+            - xfsprogs                      # xfs文件系统支持
+            - exfat-utils                   # exfat 文件系统支持
+            - net-tools                     # 网络工具
+            - rename                        # 批量重命名
+            - curlftpfs                     # ftp 挂载工具
+            - tig                           # 字符模式下交互查看git项目，可以替代git命令
+            - jq                            # 文件处理以及格式化显示，支持高亮，可以替换python -m json.tool
+            - mosh                          # 基于UDP的终端连接，可以替代ssh，连接更稳定，即使IP变了，也能自动重连
+            - axel                          # 多线程下载工具，下载文件时可以替代curl、wget
+            - lrzsz                         # sz/rz:交互式文件传输，在多重跳板机下传输文件非常好用，不用一级一级传输
+            - cloc                          # 代码统计工具，能够统计代码的空行数、注释行、编程语言
+            - ccache                        # 高速C/C++编译缓存工具，反复编译内核非常有用
+            - tmux                          # 终端复用工具，替代screen、nohup
+            - neovim                        # 替代vim
+            - mc                            # mcedit：终端下面的 NotePad++
+            - powerman                      # pm：在 bash / zsh 中迅速切换项目目录
+            - ncdu                          # 可视化的空间分析程序
+            - glances                       # 更强大的 htop / top 代替者
+            - dstat                         # 是一个用来替换vmstat、iostat、netstat、nfsstat和ifstat这些命令的工具
+            - pcp                           # 性能监控工具
+            - multitail                     # 多重 tail
+            - figlet                        # 将输入字符转换成艺术字体
+            - wdiff                         # 文件对比工具
+            - smartmontools                 # 磁盘检测工具
+            - ntpdate                       # 时间同步工具
+            - lsb
+            - fortune-mod                   # zsh主题依赖:随机格言
+            - ethtool                       # 查看网卡信息
+            - lm-sensors                    # 监控CPU温度
+            - s-tui                         # 压力测试工具
+            - lvm2                          # lvm磁盘工具
+          ignore_errors: yes
+      # }}}
 
-      - name: Uninstall snapd # {{{ | Debian
-        apt:
-          name: snapd
-          state: absent
-          purge: yes
-        ignore_errors: yes
-        when: ansible_os_family == "Debian"
-        # }}}
+    - name: Uninstall snapd # {{{ | Debian
+      tags: [common]
+      block:
+        - apt:
+            name: snapd
+            state: absent
+            purge: yes
+          ignore_errors: yes
+          when: ansible_os_family == "Debian"
+      # }}}
 
-      - name: Start related services # {{{
-        service:
-          name: "{{ item }}"
-          state: started
-          enabled: yes
-        with_items:
-          - sysstat
-          - monit
-        ignore_errors: yes
-        # }}}
+    - name: Start related services # {{{
+      tags: [never, general]
+      block:
+        - service:
+            name: "{{ item }}"
+            state: started
+            enabled: yes
+          with_items:
+            - sysstat
+            - monit
+          ignore_errors: yes
+      # }}}
 
-      - name: Clean up dependent packages # {{{
-        apt:
-          autoremove: yes
-        when: ansible_os_family == "Debian"
+    - name: Clean up dependent packages # {{{
+      tags: [common]
+      block:
+        - apt:
+            autoremove: yes
+          when: ansible_os_family == "Debian"
 
-      - yum:
-          autoremove: yes
-        when: ansible_os_family == "RedHat"
-        # }}}
+        - yum:
+            autoremove: yes
+          when: ansible_os_family == "RedHat"
+      # }}}
 
-      - name: Clean up the installation package (cache) # {{{
-        apt:
-          autoclean: yes
-        when: ansible_os_family == "Debian"
+    - name: Clean up the installation package (cache) # {{{
+      tags: [common]
+      block:
+        - apt:
+            autoclean: yes
+          when: ansible_os_family == "Debian"
 
-      - shell: apt clean
-        ignore_errors: true
-        when: ansible_os_family == "Debian"
+        - shell: apt clean
+          ignore_errors: true
+          when: ansible_os_family == "Debian"
 
-      - shell: yum clean all
-        ignore_errors: true
-        when: ansible_os_family == "RedHat"
-        # }}}
-
-# {{{ 安装其他软件
-- import_playbook: "rar.yml"
-
-- import_playbook: "ccat.yml"
-# }}}
+        - shell: yum clean all
+          ignore_errors: true
+          when: ansible_os_family == "RedHat"
+      # }}}
