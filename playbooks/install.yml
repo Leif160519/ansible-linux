@@ -205,7 +205,6 @@
       # }}}
 
     - name: Clean up the installation package (cache) # {{{
-      tags: [common]
       block:
         - apt:
             autoclean: yes
