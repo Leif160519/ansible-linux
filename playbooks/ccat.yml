@@ -2,6 +2,7 @@
 # 默认配置用户为root，其他用户请-e username=ubuntu
 - hosts: all
   tags: ccat
+  environment: "{{ proxy_env }}"
   vars:
     username: root
     ccat_version: linux-amd64-1.1.0

@@ -9,6 +9,7 @@
 - name: 安装Docker
   hosts: all
   tags: [docker]
+  environment: "{{ proxy_env }}"
   tasks:
     - name: 安装Docker和Docker-compose # {{{ | Debian
       apt:

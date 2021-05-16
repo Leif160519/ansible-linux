@@ -9,6 +9,7 @@
 - name: 安装rar
   hosts: dist.centos
   tags: rar
+  environment: "{{ proxy_env }}"
   vars:
     rar_version_x64: rarlinux-x64-5.7.1
     rar_version_x32: rarlinux-5.7.1

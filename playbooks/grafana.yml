@@ -9,6 +9,7 @@
 - name: 安装grafana
   hosts: all
   tags: [grafana]
+  environment: "{{ proxy_env }}"
   vars:
     grafana_deb_version: grafana_7.3.1_amd64
     grafana_rpm_version: grafana-7.3.1-1.x86_64

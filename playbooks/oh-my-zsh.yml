@@ -10,6 +10,7 @@
 - name: 安装oh-my-zsh
   hosts: all
   tags: [zsh]
+  environment: "{{ proxy_env }}"
   vars:
     username: root
   tasks:

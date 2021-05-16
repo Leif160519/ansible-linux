@@ -1,5 +1,6 @@
 - hosts: all
   tags: nodejs
+  environment: "{{ proxy_env }}"
   tasks:
     - name: 安装nodejs和npm
       package:

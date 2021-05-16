@@ -3,6 +3,7 @@
 
 - hosts: all
   tags: resolv
+  environment: "{{ proxy_env }}"
   roles:
     - role: roles/ahuffman.resolv
       resolv_nameservers:

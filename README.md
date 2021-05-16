@@ -18,6 +18,7 @@ ansible-linux
 │   │   ├── config
 │   │   └── service
 │   ├── network
+│   ├── oh-my-zsh
 │   ├── prometheus
 │   │   ├── alert
 │   │   │   └── rules
@@ -25,10 +26,14 @@ ansible-linux
 │   │   ├── scrape
 │   │   │   └── file_sd
 │   │   └── service
-│   └── repository
+│   ├── repository
+│   └── vim
+├── group_vars
+│   └── all
 ├── inventory
 ├── playbooks
-│   └── files -> ../files
+│   ├── files -> ../files
+│   └── group_vars -> ../group_vars
 └── roles
     ├── ahuffman.resolv
     ├── cloudalchemy.prometheus
@@ -78,7 +83,7 @@ private_key_file = /root/.ssh/id_rsa # 指定ansible用于ssh连接的私钥绝�
 ···
 
 ```
-- 6.开始刷入
+- 6.开始刷入(若使用代理上网，请修改`group_vars/all/proxy_env.yml`里的内容)
 ```
 # all machine(prometheus.yml auto install node_exporter)
 ansible-playbook -u root -i inventory/ playbooks/universal.yml

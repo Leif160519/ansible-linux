@@ -7,6 +7,7 @@
 ####
 ---
 - hosts: all
+  environment: "{{ proxy_env }}"
   vars:
     prometheus_root_dir: /opt/prometheus
     alertmanager_root_dir: /opt/alertmanager

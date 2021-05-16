@@ -9,6 +9,7 @@
 - name: Ubuntu LTS # {{{
   hosts: dist.ubuntu.lts
   tags: [ubuntu, lts]
+  environment: "{{ proxy_env }}"
   vars:
     mirror: http://mirrors.aliyun.com/ubuntu/
   tasks:
@@ -23,6 +24,7 @@
 - name: Centos # {{{
   hosts: dist.centos
   tags: [centos]
+  environment: "{{ proxy_env }}"
   tasks:
     - get_url:
         backup: yes
@@ -34,6 +36,7 @@
 
 - name: RedHat # {{{ 参考：https://blog.csdn.net/yangZHyu/article/details/80565032
   hosts: dist.redhat:!dist.centos
+  environment: "{{ proxy_env }}"
   vars:
     download_url: https://mirrors.aliyun.com/centos/7/os/x86_64/Packages
     yum_metadata_pparser_version: yum-metadata-parser-1.1.4-10.el7.x86_64
@@ -99,6 +102,7 @@
 - name: Debian # {{{
   hosts: dist.debian:!dist.ubuntu
   tags: debian
+  environment: "{{ proxy_env }}"
   vars:
     mirror: http://mirrors.aliyun.com/debian/
     mirror_security: http://mirrors.aliyun.com/debian-security

@@ -1,5 +1,6 @@
 - hosts: all
   tags: vim
+  environment: "{{ proxy_env }}"
   vars:
     username: root
   tasks:
@@ -55,8 +56,6 @@
          dest: ~{{ username }}/.vim/plugged/vim-airline
          clone: yes
          update: yes
-         owner: "{{ username }}"
-         group: "{{ username }}"
        when: vim_airline.stat.exists == false
 
      - git:
@@ -64,8 +63,6 @@
          dest: ~{{ username }}/.vim/plugged/vim-airline-themes
          clone: yes
          update: yes
-         owner: "{{ username }}"
-         group: "{{ username }}"
        when: vim_airline_themes.stat.exists == false
        # }}}
 
@@ -100,7 +97,6 @@
            set autoread
            set hlsearch
            set bg=dark
-           set nowrap
            set number
            set ruler
            syntax on

@@ -10,6 +10,7 @@
 - name: 设置ntp时间同步
   hosts: all
   tags: ntp
+  environment: "{{ proxy_env }}"
   roles:
     - role: roles/geerlingguy.ntp
       ntp_enabled: true

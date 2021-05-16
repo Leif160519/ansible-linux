@@ -1,5 +1,6 @@
 - hosts: all
   tags: vim
+  environment: "{{ proxy_env }}"
   vars:
     username: root
     vim_version: 8.1.2269
@@ -160,7 +161,6 @@
            set autoread
            set hlsearch
            set bg=dark
-           set nowrap
            set number
            set ruler
            syntax on

@@ -5,6 +5,7 @@
 # 2020年10月30日
 - hosts: dist.centos # {{{ | RedHat
   tags: git
+  environment: "{{ proxy_env }}"
   vars:
     git_version: git-2.29.2
     git_url: https://mirrors.edge.kernel.org/pub/software/scm/git/{{ git_version }}.tar.xz
@@ -77,6 +78,7 @@
 
 - hosts: dist.ubuntu # {{{ | Ubuntu
   tags: git
+  environment: "{{ proxy_env }}"
   tasks:
     - name: 安装依赖
       apt:

@@ -1,6 +1,7 @@
 # 安装Linux通用版mysql-5.7.28
 - hosts: all
   tags: mysql
+  environment: "{{ proxy_env }}"
   vars:
     mysql_version: mysql-5.7.28-linux-glibc2.12-x86_64 # {{{ | 变量定义
     mysql_root_dir: /var/lib/mysql
