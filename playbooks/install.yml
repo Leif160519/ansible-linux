@@ -193,7 +193,7 @@
       # }}}
 
     - name: Clean up dependent packages # {{{
-      tags: [common]
+      tags: [common, general, special]
       block:
         - apt:
             autoremove: yes
@@ -205,6 +205,7 @@
       # }}}
 
     - name: Clean up the installation package (cache) # {{{
+      tags: [common, general, special]
       block:
         - apt:
             autoclean: yes
