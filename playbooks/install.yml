@@ -8,6 +8,7 @@
 ---
 - name: Install software
   hosts: all
+  environment: "{{ proxy_env }}"
   tasks:
     - name: Install common software # {{{
       tags: [common]
