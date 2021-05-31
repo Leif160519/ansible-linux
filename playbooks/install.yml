@@ -77,6 +77,7 @@
             - aterm                         # 同上
             - gpick                         # 取色器
             - flameshot                     # 截图工具
+            - nnn                           # 终端文件管理器
           when: ansible_os_family == "Debian"
           ignore_errors: yes
       # }}}
@@ -166,6 +167,7 @@
             - lm-sensors                    # 监控CPU温度
             - s-tui                         # 压力测试工具
             - lvm2                          # lvm磁盘工具
+            - enca                          # 识别文件编码
           ignore_errors: yes
       # }}}
 
