@@ -13,28 +13,6 @@
     username: root
   tags: config
   tasks:
-    - name: 禁用swap分区(重启后生效) # {{{
-      block:
-        - replace:
-            path: /etc/fstab
-            regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
-            replace: '# \1'
-        - mount: # 仅对centos有效
-            name: swap
-            state: absent
-            #shell: sed  -i '/swap/s/^/#/' /etc/fstab
-
-        #- shell: swapoff -a #临时关闭
-
-        #- name: 启用swap分区(重启后生效)
-        #  replace:
-        #    path: /etc/fstab
-        #    regexp: '^# (.+?\sswap\s+sw\s+.*)$'
-        #    replace: '\1'
-
-        #- shell: swapon -a #临时启用
-        # }}}
-
     - name: 配置SSH   # {{{
       block:
         - lineinfile:
@@ -116,7 +94,7 @@
           when: ansible_os_family == "RedHat"
       # }}}
 
-    - name : 禁用防火墙 #{{{
+    - name: 禁用防火墙 #{{{
       block:
         - service:
             name: firewalld
@@ -128,28 +106,34 @@
     - name: 给pip换源 # {{{
       block:
         - file:
-            path: ~{{ username }}/.pip
+            path: ~{{ item }}/.pip
             state: directory
-            owner: "{{ username }}"
-            group: "{{ username }}"
+            owner: "{{ item }}"
+            group: "{{ item }}"
             mode: 0755
+          with_items:
+            - "{{ username }}"
 
         - file:
-            path: ~{{ username }}/.pip/pip.conf
+            path: ~{{ item }}/.pip/pip.conf
             state: touch
-            owner: "{{ username }}"
-            group: "{{ username }}"
+            owner: "{{ item }}"
+            group: "{{ item }}"
             mode: 0755
+          with_items:
+            - "{{ username }}"
 
         - blockinfile:
-            path: ~{{ username }}/.pip/pip.conf
-            owner: "{{ username }}"
-            group: "{{ username }}"
+            path: ~{{ item }}/.pip/pip.conf
+            owner: "{{ item }}"
+            group: "{{ item }}"
             block: |
               [global]
               index-url = http://mirrors.aliyun.com/pypi/simple/
               [install]
               trusted-host=mirrors.aliyun.com
+          with_items:
+            - "{{ username }}"
       # }}}
 
     - name: 配置关机等待时间 # {{{
@@ -163,14 +147,6 @@
             dest: /etc/systemd/system.conf
             regexp: "^#DefaultTimeoutStopSec"
             line: "DefaultTimeoutStopSec=10s"
-      # }}}
-
-    - name: 配置历史命令日期格式 # {{{
-      lineinfile:
-        path: ~{{ username }}/.bashrc
-        line: 'export HISTTIMEFORMAT="%F %T "'
-        owner: "{{ username }}"
-        group: "{{ username }}"
       # }}}
 
     - name: 打开cron日志 # {{{
@@ -192,3 +168,56 @@
             state: restarted
             enabled: yes
       # }}}
+
+    - name: 配置bash # {{{
+      block:
+        - file:
+            path: /etc/bashrc
+            state: directory
+
+        - template:
+            src: files/config/bash-ps1.sh.j2
+            dest: /etc/bashrc/bash-ps1.sh
+            force: yes
+            mode: 0755
+            owner: root
+            group: root
+
+        - copy:
+            src: files/config/bash-alias.sh
+            dest: /etc/bashrc/
+            mode: 0755
+            owner: root
+            group: root
+
+        - blockinfile:
+            dest: "~{{ item }}/.bashrc"
+            create: yes
+            marker: '#{mark} ANSIBLE MANAGED BASHRC'
+            owner: "{{ item }}"
+            group: "{{ item }}"
+            block: |
+              if [ -d /etc/bashrc ]; then
+                for i in /etc/bashrc/*.sh; do
+                  if [ -r $i ]; then
+                    . $i
+                  fi
+                done
+                unset i
+              fi
+          with_items:
+            - "{{ username }}"
+
+        - blockinfile:
+            dest: ~{{ item }}/.bashrc
+            create: yes
+            marker: '#{mark} ANSIBLE MANAGED HISTORY'
+            owner: "{{ item }}"
+            group: "{{ item }}"
+            block: |
+              shopt -s histappend
+              PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+              export HISTTIMEFORMAT="%F %T"
+          with_items:
+            - "{{ username }}"
+        # }}}
