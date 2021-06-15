@@ -1,19 +1,19 @@
 ---
 # 生成uuid
 - name: create uuid
-  include: uuid/main.yml
+  include_tasks: uuid/main.yml
 
 # 查找yml配置文件
 - name: find yml config
-  include: config/main.yml
+  include_tasks: config/main.yml
 
 # 计算子网掩码
 - name: caculate netmask
-  include: netmask/main.yml
+  include_tasks: netmask/main.yml
 
 # 生成配置文件
 - name: create Debian
-  include: Debian.yml
+  include_tasks: Debian.yml
 
 - name: config RedHat
-  include: RedHat.yml
+  include_tasks: RedHat.yml
