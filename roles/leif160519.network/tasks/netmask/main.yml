@@ -1,0 +1,21 @@
+---
+- name: caculate netmask
+  block:
+    - shell: |
+        maskdigits () {
+            a=$(echo "$1" | awk -F "." '{print $1" "$2" "$3" "$4}')
+            for num in $a;
+            do
+                while [ $num != 0 ];do
+                echo -n $(($num%2)) >> /tmp/num;
+                num=$(($num/2));
+                done
+            done
+            echo $(grep -o "1" /tmp/num | wc -l)
+            rm /tmp/num
+        }
+        maskdigits "{{ netmask }}"
+      register: netmask_new
+
+    - set_fact:
+        netmask1: "{{ netmask_new.stdout }}"

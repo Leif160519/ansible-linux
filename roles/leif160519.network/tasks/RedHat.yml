@@ -1,0 +1,15 @@
+- name: create config file
+  block:
+    - template:
+        backup: yes
+        src: files/network/ifcfg-eth0.j2
+        dest: /etc/sysconfig/network-scripts/ifcfg-{{ interface }}
+        mode: 0644
+      when: ansible_os_family == "RedHat"
+
+- name: apply config
+  block:
+    - service:
+        name: network
+        state: restarted
+      when: ansible_os_family == "RedHat"

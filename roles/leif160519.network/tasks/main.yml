@@ -1,0 +1,19 @@
+---
+# 生成uuid
+- name: create uuid
+  include: uuid/main.yml
+
+# 查找yml配置文件
+- name: find yml config
+  include: config/main.yml
+
+# 计算子网掩码
+- name: caculate netmask
+  include: netmask/main.yml
+
+# 生成配置文件
+- name: create Debian
+  include: Debian.yml
+
+- name: config RedHat
+  include: RedHat.yml
