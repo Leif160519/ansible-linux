@@ -52,6 +52,11 @@
             - smbclient                     # smb客户端
             - dkms                          # 动态内核模块支持
             - oping                         # 一段时间内的ping情况,用法(n)oping <ip>
+            - exfat-utils                   # exfat 文件系统支持
+            - s-tui                         # 压力测试工具
+            - rename                        # 批量重命名
+            - ctop
+            - lm-sensors                    # 监控CPU温度
           when: ansible_os_family == "Debian"
           ignore_errors: yes
       # }}}
@@ -100,7 +105,6 @@
             - wget
             - iftop
             - htop
-            - ctop
             - iotop                         # iotop命令是一个用来监视磁盘I/O使用状况的top类工具
             - nethogs                       # 是一个开源的命令行工具（类似于Linux的top命令），用来按进程或程序实时统计网络带宽使用率
             - mrtg                          # 是通过SNMP 协议，向运行snmp协议主机询问相关的资料后，主机传递数值给MRTG ，然后MRTG 再绘制成网页上的图表
@@ -138,9 +142,7 @@
             - nload                         # 流量监控 nload -u M <network_interface>
             - cifs-utils                    # windows 文件系统支持
             - xfsprogs                      # xfs文件系统支持
-            - exfat-utils                   # exfat 文件系统支持
             - net-tools                     # 网络工具
-            - rename                        # 批量重命名
             - curlftpfs                     # ftp 挂载工具
             - tig                           # 字符模式下交互查看git项目，可以替代git命令
             - jq                            # 文件处理以及格式化显示，支持高亮，可以替换python -m json.tool
@@ -165,8 +167,6 @@
             - lsb
             - fortune-mod                   # zsh主题依赖:随机格言
             - ethtool                       # 查看网卡信息
-            - lm-sensors                    # 监控CPU温度
-            - s-tui                         # 压力测试工具
             - lvm2                          # lvm磁盘工具
             - enca                          # 识别文件编码
           ignore_errors: yes
