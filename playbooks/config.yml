@@ -172,20 +172,20 @@
     - name: 配置bash # {{{
       block:
         - file:
-            path: /etc/bashrc_config
+            path: /etc/bash.d
             state: directory
 
         - template:
-            src: files/config/bash-ps1.sh.j2
-            dest: /etc/bashrc_config/bash-ps1.sh
+            src: files/bash.d/bash-ps1.sh.j2
+            dest: /etc/bash.d/bash-ps1.sh
             force: yes
             mode: 0755
             owner: root
             group: root
 
         - copy:
-            src: files/config/bash-alias.sh
-            dest: /etc/bashrc_config/
+            src: files/bash.d/bash-alias.sh
+            dest: /etc/bash.d/
             mode: 0755
             owner: root
             group: root
@@ -197,8 +197,8 @@
             owner: "{{ item }}"
             group: "{{ item }}"
             block: |
-              if [ -d /etc/bashrc_config ]; then
-                for i in /etc/bashrc_config/*.sh; do
+              if [ -d /etc/bash.d ]; then
+                for i in /etc/bash.d/*.sh; do
                   if [ -r $i ]; then
                     . $i
                   fi
