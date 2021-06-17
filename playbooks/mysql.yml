@@ -39,6 +39,7 @@
           with_items:
             - libncurses5
             - numactl
+            - libaio1
           ignore_errors: yes
 
         - name: 创建mysql组
@@ -226,6 +227,13 @@
             dest: "/usr/bin/{{ item | basename | replace('/var/lib/mysql/bin','') }}"
           with_fileglob:
             - "{{ mysql_root_dir }}/bin/*"
+
+        - name: 创建socket软链接
+          file:
+            src: "{{ mysql_sock_file }}"
+            state: link
+            force: yes
+            dest: "/tmp/mysql.sock"
           # }}}
 
       when: m.stat.exists == false
