@@ -102,7 +102,7 @@
               skip-external-locking
               symbolic-links = 0
               log-error = {{ mysql_error_log_file }}
-              general_log_file = "{{ mysql_log_file }}"
+              general_log_file = {{ mysql_log_file }}
               general_log = 1
               pid-file = {{ mysql_pid_file }}
               max_connections = 2000
