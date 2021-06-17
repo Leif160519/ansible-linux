@@ -127,6 +127,7 @@
               datadir = {{ mysql_root_dir }}/data
               socket = {{ mysql_sock_file }}
               basedir = {{ mysql_root_dir }}
+              tmpdir = /tmp
               lc-messages-dir = {{ mysql_pre_dir }}
 
               character-set-server = utf8
