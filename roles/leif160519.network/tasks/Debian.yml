@@ -2,7 +2,7 @@
   block:
     - template:
         backup: yes
-        src: files/network/00-installer-config.yaml.j2
+        src: 00-installer-config.yaml.j2
         dest: "{{ item.path }}"
         mode: 0644
       with_items:
@@ -10,7 +10,7 @@
       when: network_config.files | length != 0 and ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,">=")
 
     - template:
-        src: files/network/00-installer-config.yaml.j2
+        src: 00-installer-config.yaml.j2
         dest: /etc/netplan/00-installer-config.yaml
         mode: 0644
         owner: root
@@ -19,7 +19,7 @@
 
     - template:
         backup: yes
-        src: files/network/interfaces.j2
+        src: interfaces.j2
         dest: /etc/network/interfaces
         mode: 0644
         owner: root
@@ -28,7 +28,7 @@
 
     - template:
         backup: yes
-        src: files/network/interfaces-debian.j2
+        src: interfaces-debian.j2
         dest: /etc/network/interfaces
         mode: 0644
         owner: root
