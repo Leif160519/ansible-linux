@@ -35,6 +35,9 @@
 - shell: mv /var/lib/{{ mysql_version }} {{ mysql_root_dir }}
   ignore_errors: yes
 
+- shell: chown -R mysql:mysql "{{ mysql_root_dir }}"
+  ignore_errors: yes
+
 - name: Create mysql config
   template:
     dest: "{{ mysql_config_file }}"
