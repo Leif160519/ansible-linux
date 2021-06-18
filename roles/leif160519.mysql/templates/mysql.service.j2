@@ -1,0 +1,11 @@
+[Unit]
+Description=MySQL Community Server
+After=network.target
+
+[Service]
+ExecStartPre=/bin/bash {{ mysql_pre_file }}
+ExecStart={{ mysql_root_dir }}/bin/mysqld_safe --defaults-file={{ mysql_config_file }}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

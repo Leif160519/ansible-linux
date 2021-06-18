@@ -1,0 +1,9 @@
+---
+- name: environmental test
+  block:
+    - stat:
+        path: "{{ mysql_root_dir }}"
+      register: m
+
+    - shell: echo $(lsof -i:3306)
+      register: lsof

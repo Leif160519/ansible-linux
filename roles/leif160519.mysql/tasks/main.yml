@@ -1,0 +1,6 @@
+---
+
+- include_tasks: mysql-pre.yml
+
+- include_tasks: mysql-main.yml
+  when: m.stat.exists == false and lsof.stdout | length == 0

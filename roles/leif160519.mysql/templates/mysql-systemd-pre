@@ -1,0 +1,6 @@
+#/bin/bash
+if [ ! -d "{{ mysql_run_dir }}" ];then
+    mkdir "{{ mysql_run_dir }}"
+    chown -R mysql:mysql {{ mysql_run_dir }}
+    fi
+exit

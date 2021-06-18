@@ -1,0 +1,31 @@
+[client]
+socket = {{ mysql_sock_file }}
+default-character-set = utf8
+
+[mysql]
+default-character-set = utf8
+
+[mysql.server]
+default-character-set = utf8
+
+[mysqld_safe]
+default-character-set = utf8
+
+[mysqld]
+port = 3306
+bind-address = 0.0.0.0
+datadir = {{ mysql_root_dir }}/data
+socket = {{ mysql_sock_file }}
+basedir = {{ mysql_root_dir }}
+character-set-server = utf8
+collation-server = utf8_general_ci
+skip-character-set-client-handshake
+skip-external-locking
+symbolic-links = 0
+log-error = {{ mysql_error_log_file }}
+general_log_file = {{ mysql_general_log_file }}
+general_log = 1
+pid-file = {{ mysql_pid_file }}
+max_connections = 2000
+max_allowed_packet = 64M
+lower_case_table_names = 1

@@ -1,0 +1,114 @@
+---
+- name: Install dependencies
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - libncurses5
+    - numactl
+    - libaio1
+  ignore_errors: yes
+
+- name: Create mysql group
+  group:
+    name: mysql
+    system: true
+    state: present
+
+- name: Create mysql user
+  user:
+    name: mysql
+    system: true
+    shell: /bin/false
+    group: mysql
+    createhome: no
+
+- name: Unarchive package
+  unarchive:
+    copy: false
+    src: "{{ mysql_url }}"
+    dest: /var/lib
+    owner: mysql
+    group: mysql
+    mode: 0755
+
+- shell: mv /var/lib/{{ mysql_version }} {{ mysql_root_dir }}
+  ignore_errors: yes
+
+- name: Create mysql config
+  template:
+    dest: "{{ mysql_config_file }}"
+    src: my.cnf.j2
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Create run dir
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: mysql
+    group: mysql
+  with_items:
+    - "{{ mysql_log_dir }}"
+    - "{{ mysql_run_dir }}"
+
+- name: Create log file
+  file:
+    path: "{{ item }}"
+    state: touch
+    mode: 0644
+    owner: mysql
+    group: mysql
+  with_items:
+    - "{{ mysql_general_log_file }}"
+    - "{{ mysql_error_log_file }}"
+
+- name: Initialize mysql
+  shell: |
+    "{{ mysql_root_dir }}"/bin/mysqld \
+            --initialize-insecure \
+            --user=mysql \
+            --basedir={{ mysql_root_dir }} \
+            --datadir={{ mysql_root_dir }}/data
+
+- name: Create pre file
+  file:
+    path: "{{ mysql_pre_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- template:
+    dest: "{{ mysql_pre_file }}"
+    src: mysql-systemd-pre
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Create mysql service file
+  template:
+    dest: /lib/systemd/system/mysql.service
+    src: mysql.service.j2
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Start mysql service
+  service:
+    name: mysql
+    state: started
+    enabled: true
+    daemon_reload: yes
+
+- name: Create mysql link
+  file:
+    src: "{{ item }}"
+    state: link
+    force: yes
+    dest: "/usr/local/bin/{{ item | basename | replace('/var/lib/mysql/bin','') }}"
+  with_fileglob:
+    - "{{ mysql_root_dir }}/bin/*"
+

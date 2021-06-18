@@ -1,0 +1,8 @@
+---
+mysql_version: mysql-5.7.28-linux-glibc2.12-x86_64
+mysql_url: https://downloads.mysql.com/archives/get/p/23/file/{{ mysql_version }}.tar.gz
+mysql_general_log_file: "{{ mysql_log_dir }}/mysql.log"
+mysql_error_log_file: "{{ mysql_log_dir }}/error.log"
+mysql_pid_file: "{{ mysql_run_dir }}/mysql.pid"
+mysql_sock_file: "{{ mysql_run_dir }}/mysql.sock"
+mysql_pre_file: "{{ mysql_pre_dir }}/mysql-systemd-pre"
