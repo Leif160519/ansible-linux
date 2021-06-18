@@ -221,3 +221,10 @@
           with_items:
             - "{{ username }}"
         # }}}
+
+    - name: 配置时钟和时区 # {{{
+      block:
+        - timezone:
+            hwclock: UTC
+            name: Asia/Shanghai
+      # }}}
