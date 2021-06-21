@@ -25,6 +25,10 @@ T() { # tail
     tail -F "$*"
 }
 
+W() { # wget
+    wget -c $1 --no-check-certificate
+}
+
 # archive {{{
 tgz() {
     name=$(echo $1 | /bin/sed 's/\/*$//g')
