@@ -23,16 +23,24 @@
     group: mysql
     createhome: no
 
+- name: Create dir
+  file:
+    path: "{{ mysql_root_dir.split('/')[0:-1] | join('/') }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
 - name: Unarchive package
   unarchive:
     copy: false
     src: "{{ mysql_url }}"
-    dest: /var/lib
+    dest: /tmp
     owner: mysql
     group: mysql
     mode: 0755
 
-- shell: mv /var/lib/{{ mysql_version }} {{ mysql_root_dir }}
+- shell: mv /tmp/{{ mysql_version }} {{ mysql_root_dir }}
   ignore_errors: yes
 
 - shell: chown -R mysql:mysql "{{ mysql_root_dir }}"
@@ -111,7 +119,7 @@
     src: "{{ item }}"
     state: link
     force: yes
-    dest: "/usr/local/bin/{{ item | basename | replace('/var/lib/mysql/bin','') }}"
+    dest: "/usr/bin/{{ item | basename | replace('{{ mysql_root_dir }}/bin','') }}"
   with_fileglob:
     - "{{ mysql_root_dir }}/bin/*"
 
