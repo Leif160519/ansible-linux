@@ -124,7 +124,7 @@
 
      - name: 配置vim # {{{
        template:
-         src: files/vim/vimrc.j2
+         src: files/vim/vimrc-for-debian.j2
          dest: "~{{ username }}/.vimrc"
          owner: "{{ username }}"
          group: "{{ username }}"
