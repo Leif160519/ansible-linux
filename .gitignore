@@ -1,1 +1,4 @@
+inventory/all_tmp
+inventory/dist_tmp
+group_vars/all/proxy_env_tmp.yml
 playbooks/test.yml
