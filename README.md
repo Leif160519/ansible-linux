@@ -13,19 +13,9 @@
 ```
 ansible-linux
 ├── files
-│   ├── docker
+│   ├── bash.d
 │   ├── loki
-│   │   ├── config
-│   │   └── service
-│   ├── network
-│   ├── oh-my-zsh
 │   ├── prometheus
-│   │   ├── alert
-│   │   │   └── rules
-│   │   ├── exporter
-│   │   ├── scrape
-│   │   │   └── file_sd
-│   │   └── service
 │   ├── repository
 │   └── vim
 ├── group_vars
@@ -37,10 +27,10 @@ ansible-linux
 └── roles
     ├── ahuffman.resolv
     ├── cloudalchemy.prometheus
-    ├── leif160519.network
-    ├── leif160519.mysql
+    ├── geerlingguy.ntp
     ├── leif160519.docker
-    └── geerlingguy.ntp
+    ├── leif160519.mysql
+    └── leif160519.network
 ```
 
 ## 二、如何使用
