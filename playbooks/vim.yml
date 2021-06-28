@@ -26,17 +26,9 @@
          path: ~{{ username }}/.vim/autoload/plug.vim
        register: plug_vim
 
-#     - get_url:
-#         url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-#         dest: ~{{ username }}/.vim/autoload/plug.vim
-#         mode: 0644
-#         owner: "{{ username }}"
-#         group: "{{ username }}"
-#       when: plug_vim.stat.exists == false
-
-     - copy:
+     - get_url:
+         url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
          dest: ~{{ username }}/.vim/autoload/plug.vim
-         src: files/vim/plug.vim
          mode: 0644
          owner: "{{ username }}"
          group: "{{ username }}"
