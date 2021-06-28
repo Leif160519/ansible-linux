@@ -217,7 +217,7 @@
             block: |
               shopt -s histappend
               PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
-              export HISTTIMEFORMAT="%F %T"
+              export HISTTIMEFORMAT="%F %T "
           with_items:
             - "{{ username }}"
         # }}}
