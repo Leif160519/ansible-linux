@@ -1,0 +1,66 @@
+highlight RedundantSpaces ctermbg=red guibg=red
+match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
+set foldmethod=marker
+set fileformats=unix
+set background=dark
+set encoding=utf-8
+set softtabstop=4
+set shiftwidth=4
+set laststatus=2
+set history=1000
+set backspace=2
+set cursorline
+set ignorecase
+set autoindent
+set smartcase
+set incsearch
+set tabstop=4
+set expandtab
+set showmatch
+set showmode
+set autoread
+set hlsearch
+set bg=dark
+set number
+set ruler
+syntax on
+call plug#begin('~/.vim/plugged')
+Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
+call plug#end()
+let g:airline#extensions#tabline#enabled=1
+let g:airline_theme='simple'
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'Valloric/YouCompleteMe'
+call vundle#end()
+filetype plugin indent on
+let g:ycm_confirm_extra_conf=0
+let g:ycm_complete_in_comments=1
+let g:ycm_collect_identifiers_from_tags_files=1
+let g:ycm_min_num_of_chars_for_completion=1
+nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
+nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+let g:ycm_key_list_select_completion = ['<TAB>', '<Down>']
+inoremap <leader>; <C-x><C-o>
+set completeopt-=preview
+let g:ycm_seed_identifiers_with_syntax=1
+let g:ycm_show_diagnostics_ui = 0
+let g:ycm_server_log_level = 'info'
+let g:ycm_min_num_identifier_candidate_chars = 2
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
+let g:ycm_complete_in_strings=1
+let g:ycm_key_invoke_completion = '<c-z>'
+noremap <c-z> <NOP>
+let g:ycm_semantic_triggers =  {
+            \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
+            \ 'cs,lua,javascript': ['re!\w{2}'],
+            \ }
+highlight PMenu ctermfg=0 ctermbg=242 guifg=black guibg=darkgrey
+highlight PMenuSel ctermfg=242 ctermbg=8 guifg=darkgrey guibg=black
