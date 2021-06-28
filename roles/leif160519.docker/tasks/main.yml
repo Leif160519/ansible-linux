@@ -1,0 +1,25 @@
+---
+- include_tasks: Debian.yml
+  when: ansible_os_family == "Debian"
+
+- include_tasks: RedHat.yml
+  when: ansible_os_family == "RedHat"
+
+- name: Start docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Config docker.json
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    mode: 0644
+
+- name: Restart docker service
+  service:
+    name: docker
+    state: restarted
+    enabled: yes
+

@@ -1,0 +1,10 @@
+---
+docker_root_dir: /var/lib/docker
+address: 198.18.0.0/16
+size: 24
+mirrors1: http://hub-mirror.c.163.com
+mirrors2: https://b9pmyelo.mirror.aliyuncs.com
+mirrors3: http://docker.mirrors.ustc.edu.cn
+mirrors4: https://registry.docker-cn.com
+log_max_file: 3
+log_max_size: 10m

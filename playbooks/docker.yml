@@ -1,73 +1,16 @@
-##
-# 安装Docker
-#
-#
-##
-# @leif160519 @2020.08.29
-####
----
-- name: 安装Docker
+- name: Install docker & docker-compose
   hosts: all
-  tags: [docker]
+  tags: docker
   environment: "{{ proxy_env }}"
-  tasks:
-    - name: 安装Docker和Docker-compose # {{{ | Debian
-      apt:
-        name: ['docker.io','docker-compose']
-        state: latest
-      when: ansible_os_family == "Debian"
-      # }}}
-
-    - name: 配置Docker源 # {{{ | Redhat
-      get_url:
-        url: https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
-        dest: /etc/yum.repos.d/docker-ce.repo
-        mode: 0644
-      when: ansible_os_family == "RedHat"
-      # }}}
-
-    - name: 安装Docker和Docker-compose  # {{{ | Redhat
-      yum:
-        name: ['docker-ce','docker-compose']
-        state: installed
-      when: ansible_os_family == "RedHat"
-      # }}}
-
-    - name: 清理不再使用的依赖包 # {{{ | Debian
-      apt:
-        autoremove: yes
-      when: ansible_os_family == "Debian"
-      # }}}
-
-    - name: 清理下载的安装包缓存 # {{{ | Debian
-      shell: apt clean && apt autoclean
-      ignore_errors: yes
-      when: ansible_os_family == "Debian"
-      # }}}
-
-    - name: 清理下载的安装包缓存 # {{{ | Redhat
-      shell: yum clean all
-      ignore_errors: true
-      when: ansible_os_family == "RedHat"
-      # }}}
-
-    - name: 配置仓库源和Docker网段 # {{{
-      vars:
-        address: 198.18.0.0/16
-        size: 24
-        mirrors1: http://hub-mirror.c.163.com
-        mirrors2: https://b9pmyelo.mirror.aliyuncs.com
-        mirrors3: http://docker.mirrors.ustc.edu.cn
-        mirrors4: https://registry.docker-cn.com
-      template:
-        src: files/docker/daemon.json.j2
-        dest: /etc/docker/daemon.json
-        mode: 0644
-      # }}}
-
-    - name: 启动Docker服务并设置开机自启  # {{{
-      service:
-        name: docker
-        state: restarted
-        enabled: yes
-      # }}}
+  vars:
+    docker_root_dir: /var/lib/docker
+    address: 198.18.0.0/16
+    size: 24
+    mirrors1: http://hub-mirror.c.163.com
+    mirrors2: https://b9pmyelo.mirror.aliyuncs.com
+    mirrors3: http://docker.mirrors.ustc.edu.cn
+    mirrors4: https://registry.docker-cn.com
+    log_max_file: 3
+    log_max_size: 10m
+  roles:
+    - role: roles/leif160519.docker

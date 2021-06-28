@@ -1,4 +1,12 @@
 {
+    "data-root": "{{ docker_root_dir }}",
+    "live-restore": true,
+    "log-driver": "json-file",
+    "log-opts":
+        {
+            "max-file": "{{ log_max_file }}",
+            "max-size": "{{ log_max_size }}"
+        },
     "default-address-pools":
         [
             {
