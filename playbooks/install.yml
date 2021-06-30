@@ -15,11 +15,11 @@
       block:
         - apt:
             update_cache: yes
-            update: full
+            upgrade: full
           when: ansible_os_family == "Debian"
 
         - yum:
-            name: *
+            name: "*"
             state: latest
             update_cache: yes
           when: ansible_os_family == "RedHat"
