@@ -1,0 +1,9 @@
+# +---------------------- The Minute (0-59)
+# |  +------------------- The Hour (0-23)
+# |  |  +---------------- The day of the month (1-31)
+# |  |  |  +------------- The Month of year (1-12)
+# |  |  |  |  +---------- The Day of week (0-6, 0=Sunday)
+# |  |  |  |  |   +-----  The shell command to be run
+# |  |  |  |  |   |
+# v  v  v  v  v   v
+# MM HH DD MM DoW CMD

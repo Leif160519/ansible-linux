@@ -14,126 +14,125 @@
   tags: config
   tasks:
     - name: 配置SSH   # {{{
-      block:
-        - lineinfile:
-            dest: /etc/ssh/sshd_config
-            regexp: '^#UseDNS'
-            line: 'UseDNS no'
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^#UseDNS'
+        line: 'UseDNS no'
 
-        - lineinfile:
-            dest: /etc/ssh/sshd_config
-            regexp: '^#GSSAPIAuthentication'
-            line: 'GSSAPIAuthentication no'
+    - lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^#GSSAPIAuthentication'
+        line: 'GSSAPIAuthentication no'
 
-        - lineinfile:
-            dest: /etc/ssh/sshd_config
-            regexp: '^#ClientAliveInterval'
-            line: 'ClientAliveInterval 60'
+    - lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^#ClientAliveInterval'
+        line: 'ClientAliveInterval 60'
 
-        - lineinfile:
-            dest: /etc/ssh/sshd_config
-            regexp: '^#ClientAliveCountMax'
-            line: 'ClientAliveCountMax 60'
+    - lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^#ClientAliveCountMax'
+        line: 'ClientAliveCountMax 60'
 
-        - lineinfile:
-            dest: /etc/ssh/ssh_config
-            regexp: '^#   StrictHostKeyChecking'
-            line: '    StrictHostKeyChecking no'
+    - lineinfile:
+        dest: /etc/ssh/ssh_config
+        regexp: '^#   StrictHostKeyChecking'
+        line: '    StrictHostKeyChecking no'
 
-        - blockinfile:
-            path: /etc/ssh/ssh_config
-            block: |2
-                  ServerAliveInterval 20
-                  ServerAliveCountMax 999
+    - blockinfile:
+        path: /etc/ssh/ssh_config
+        block: |2
+              ServerAliveInterval 20
+              ServerAliveCountMax 999
 
-        - service:
-            name: sshd
-            state: restarted
+    - lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "PermitRootLogin"
+        line: PermitRootLogin without-password
+        state: present
+
+    - service:
+        name: sshd
+        state: restarted
         # }}}
 
     - name: 修改Hostname # {{{
-      block:
-        - hostname:
-            name: "{{ inventory_hostname }}"
+      hostname:
+        name: "{{ inventory_hostname }}"
       # }}}
 
     - name: 屏蔽系统错误报告 # {{{
-      block:
-        - file:
-            path: /var/crash/
-            state: absent
-          when: ansible_distribution == "Ubuntu"
+      file:
+        path: /var/crash/
+        state: absent
+      when: ansible_distribution == "Ubuntu"
 
-        - lineinfile:
-            dest: /etc/default/apport
-            regexp: '^enabled='
-            line: 'enabled=0'
-          when: ansible_distribution == "Ubuntu"
+    - lineinfile:
+        dest: /etc/default/apport
+        regexp: '^enabled='
+        line: 'enabled=0'
+      when: ansible_distribution == "Ubuntu"
        # }}}
 
     - name: 设置当前用户执行sudo命令不需要密码 # {{{ 为何不直接修改sudoers文件:风险太大
-      block:
-        - lineinfile:
-            dest: /etc/sudoers.d/{{ item }}
-            create: yes
-            line: '{{ item }} ALL=(ALL) NOPASSWD:ALL'
-            mode: 0440
-            owner: root
-            group: root
-          with_items:
-            - "{{ username }}"
-          when: not ( item is match "root" )
+      lineinfile:
+        dest: /etc/sudoers.d/{{ item }}
+        create: yes
+        line: '{{ item }} ALL=(ALL) NOPASSWD:ALL'
+        mode: 0440
+        owner: root
+        group: root
+      with_items:
+        - "{{ username }}"
+      when: not ( item is match "root" )
       # }}}
 
     - name: 禁用selinux(重启后生效) # {{{
-      block:
-        - lineinfile:
-            dest: /etc/selinux/config
-            regexp: '^SELINUX='
-            line: 'SELINUX=disabled'
-          when: ansible_os_family == "RedHat"
+      lineinfile:
+        dest: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: 'SELINUX=disabled'
+      when: ansible_os_family == "RedHat"
       # }}}
 
     - name: 禁用防火墙 #{{{
-      block:
-        - service:
-            name: firewalld
-            state: stopped
-            enabled: no
-          when: ansible_os_family == "RedHat"
+      service:
+        name: firewalld
+        state: stopped
+        enabled: no
+      when: ansible_os_family == "RedHat"
       # }}}
 
     - name: 给pip换源 # {{{
-      block:
-        - file:
-            path: ~{{ item }}/.pip
-            state: directory
-            owner: "{{ item }}"
-            group: "{{ item }}"
-            mode: 0755
-          with_items:
-            - "{{ username }}"
+      file:
+        path: ~{{ item }}/.pip
+        state: directory
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        mode: 0755
+      with_items:
+        - "{{ username }}"
 
-        - file:
-            path: ~{{ item }}/.pip/pip.conf
-            state: touch
-            owner: "{{ item }}"
-            group: "{{ item }}"
-            mode: 0755
-          with_items:
-            - "{{ username }}"
+    - file:
+        path: ~{{ item }}/.pip/pip.conf
+        state: touch
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        mode: 0755
+      with_items:
+        - "{{ username }}"
 
-        - blockinfile:
-            path: ~{{ item }}/.pip/pip.conf
-            owner: "{{ item }}"
-            group: "{{ item }}"
-            block: |
-              [global]
-              index-url = http://mirrors.aliyun.com/pypi/simple/
-              [install]
-              trusted-host=mirrors.aliyun.com
-          with_items:
-            - "{{ username }}"
+    - blockinfile:
+        path: ~{{ item }}/.pip/pip.conf
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        block: |
+          [global]
+          index-url = http://mirrors.aliyun.com/pypi/simple/
+          [install]
+          trusted-host=mirrors.aliyun.com
+      with_items:
+        - "{{ username }}"
       # }}}
 
     - name: 配置关机等待时间 # {{{
@@ -223,8 +222,28 @@
         # }}}
 
     - name: 配置时钟和时区 # {{{
-      block:
-        - timezone:
-            hwclock: UTC
-            name: Asia/Shanghai
+      timezone:
+        hwclock: UTC
+        name: Asia/Shanghai
       # }}}
+
+    - name: 设置默认编辑器为vim # {{{
+      lineinfile:
+        dest: "~{{ username }}/.selected_editor"
+        create: yes
+        mode: 0644
+        owner: "{{ username }}"
+        group: "{{ username }}"
+        line: 'SELECTED_EDITOR="/usr/bin/vim.basic"'
+        state: present
+      # }}}
+
+    - name: 重写定时任务模板 # {{{
+      template:
+        dest: /etc/crontab
+        src: files/crontab
+        mode: 0644
+        owner: root
+        group: root
+        force: yes
+     # }}}
