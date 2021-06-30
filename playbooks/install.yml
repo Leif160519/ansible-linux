@@ -10,6 +10,22 @@
   hosts: all
   environment: "{{ proxy_env }}"
   tasks:
+    - name: Update software # {{{
+      tags: [update]
+      block:
+        - apt:
+            update_cache: yes
+            update: full
+          when: ansible_os_family == "Debian"
+
+        - yum:
+            name: *
+            state: latest
+            update_cache: yes
+          when: ansible_os_family == "RedHat"
+
+      # }}}
+
     - name: Install common software # {{{
       tags: [common]
       block:
