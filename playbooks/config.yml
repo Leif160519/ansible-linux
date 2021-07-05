@@ -113,17 +113,9 @@
       with_items:
         - "{{ username }}"
 
-    - file:
-        path: ~{{ item }}/.pip/pip.conf
-        state: touch
-        owner: "{{ item }}"
-        group: "{{ item }}"
-        mode: 0755
-      with_items:
-        - "{{ username }}"
-
     - blockinfile:
         path: ~{{ item }}/.pip/pip.conf
+        create: yes
         owner: "{{ item }}"
         group: "{{ item }}"
         block: |
