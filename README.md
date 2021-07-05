@@ -73,6 +73,7 @@ force_valid_group_names = ignore     # 忽略语法错误
 roles_path = ansible/roles           # 指定roles绝对路径
 host_key_checking = False            # 禁用检测host key，即首次连接不会提示输入`yes`
 private_key_file = /root/.ssh/id_rsa # 指定ansible用于ssh连接的私钥绝对路径
+command_warnings = False             # 不显示命名警告信息
 ···
 
 ```
