@@ -29,6 +29,10 @@ W() { # wget
     wget -c $1 --no-check-certificate
 }
 
+F() { # find
+    find $1 -type f | xargs grep $2 --color=always
+}
+
 # archive {{{
 tgz() {
     name=$(echo $1 | /bin/sed 's/\/*$//g')
