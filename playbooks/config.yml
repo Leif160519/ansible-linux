@@ -35,6 +35,21 @@
         line: 'ClientAliveCountMax 60'
 
     - lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^#PermitRootLogin"
+        line: "PermitRootLogin without-password"
+
+    - lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^#PasswordAuthentication"
+        line: "PasswordAuthentication yes"
+
+    - lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^#PermitEmptyPasswords"
+        line: "PermitEmptyPasswords no"
+
+    - lineinfile:
         dest: /etc/ssh/ssh_config
         regexp: '^#   StrictHostKeyChecking'
         line: '    StrictHostKeyChecking no'
@@ -44,18 +59,6 @@
         block: |2
               ServerAliveInterval 20
               ServerAliveCountMax 999
-
-    - lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: "^#PermitRootLogin"
-        line: "PermitRootLogin without-password"
-        state: present
-
-    - lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: "^#PasswordAuthentication"
-        line: "PasswordAuthentication yes"
-        state: present
 
     - service:
         name: sshd
