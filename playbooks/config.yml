@@ -47,13 +47,19 @@
 
     - lineinfile:
         dest: /etc/ssh/sshd_config
-        regexp: "PermitRootLogin"
-        line: PermitRootLogin without-password
+        regexp: "^#PermitRootLogin"
+        line: "PermitRootLogin without-password"
+        state: present
+
+    - lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^#PasswordAuthentication"
+        line: "PasswordAuthentication yes"
         state: present
 
     - service:
         name: sshd
-        state: restarted
+        state: reloaded
         # }}}
 
     - name: 修改Hostname # {{{
@@ -82,6 +88,7 @@
         mode: 0440
         owner: root
         group: root
+        validate: /usr/sbin/visudo -cf %s
       with_items:
         - "{{ username }}"
       when: not ( item is match "root" )
