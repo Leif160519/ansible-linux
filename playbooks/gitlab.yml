@@ -32,13 +32,29 @@
         - lineinfile:
             dest: /etc/gitlab/gitlab.rb
             regexp: "backup_keep_time"
-            line: "gitlab_rails['backup_keep_time'] = 604800"
+            state: absent
 
         - lineinfile:
-            dest: /etc/crontab
-            line: '0  2    * * *   root    /opt/gitlab/bin/gitlab-rake gitlab:backup:create CRON=1'
+            dest: /etc/gitlab/gitlab.rb
+            regexp: "backup_keep_time"
+            insertafter: "The duration in seconds to keep backups before they are allowed to be deleted"
+            line: "gitlab_rails['backup_keep_time'] = 604800"
 
-        - raw: |
-            crontab /etc/crontab
-            gitlab-ctl reconfigure
-          ignore_errors: true
+        - cron:
+            minute: 0
+            hour: 2
+            day: "*"
+            month: "*"
+            weekday: "*"
+            job: "/opt/gitlab/bin/gitlab-rake gitlab:backup:create CRON=1"
+            name: gitlab
+            state: present
+            user: root
+
+            #        - shell: |
+            #            gitlab-ctl reconfigure
+            #          register: reconfigure_result
+            #          ignore_errors: true
+            #
+            #        - debug:
+            #            var: reconfigure_result.stdout_lines
