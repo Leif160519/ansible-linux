@@ -231,21 +231,25 @@
 
     - name: 设置默认编辑器为vim # {{{
       lineinfile:
-        dest: "~{{ username }}/.selected_editor"
+        dest: "~{{ item }}/.selected_editor"
         create: yes
         mode: 0644
-        owner: "{{ username }}"
-        group: "{{ username }}"
+        owner: "{{ item }}"
+        group: "{{ item }}"
         line: 'SELECTED_EDITOR="/usr/bin/vim.basic"'
         state: present
+      with_items:
+        - "{{ username }}"
       # }}}
 
     - name: 重写定时任务模板 # {{{
       template:
-        dest: /etc/crontab
+        dest: "/var/spool/cron/crontabs/{{ item }}"
         src: files/crontab
         mode: 0644
-        owner: root
-        group: root
-        force: yes
+        owner: "{{ item }}"
+        group: crontab
+      with_items:
+        - "{{ username }}"
+      ignore_errors: yes
      # }}}
