@@ -4,15 +4,21 @@
 #
 ##
 # @leif160519 @2020.08.29
+# 官方包下载地址:https://packages.gitlab.com/gitlab/gitlab-ce
+# Quick install:
+#     curl -s https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash
+#     curl -s https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
 ####
 ---
 - name: 安装gitlab
-  hosts: dist.centos7
+  hosts: all
   tags: [gitlab]
   environment: "{{ proxy_env }}"
   vars:
-    gitlab_version: gitlab-ce-13.3.2-ce.0.el7.x86_64
-    gitlab_url: https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/{{ gitlab_version }}.rpm
+    gitlab_rpm_version: gitlab-ce-13.12.8-ce.0.el7.x86_64
+    gitlab_rpm_url: https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/{{ gitlab_rpm_version }}.rpm/download.rpm
+    gitlab_deb_version: gitlab-ce_13.12.8-ce.0_amd64
+    gitlab_deb_url: https://packages.gitlab.com/gitlab/gitlab-ce/packages/{{ ansible_lsb.id | lower }}/{{ ansible_lsb.codename }}/{{ gitlab_deb_version }}.deb/download.deb
   tasks:
     - block:
         - stat:
@@ -20,9 +26,14 @@
           register: gitlab_cmd
 
         - yum:
-            name: "{{ gitlab_url }}"
+            name: "{{ gitlab_rpm_url }}"
             state: present
-          when: (ansible_machine=="x86_64") and (gitlab_cmd.stat.exists == false)
+          when: (ansible_machine=="x86_64") and (gitlab_cmd.stat.exists == false) and (ansible_os_family == "RedHat")
+
+        - apt:
+            deb: "{{ gitlab_deb_url }}"
+            state: present
+          when: (ansible_machine=="x86_64") and (gitlab_cmd.stat.exists == false) and (ansible_os_family == "Debian")
 
         - lineinfile:
             dest: /etc/gitlab/gitlab.rb
@@ -51,10 +62,6 @@
             state: present
             user: root
 
-            #        - shell: |
-            #            gitlab-ctl reconfigure
-            #          register: reconfigure_result
-            #          ignore_errors: true
-            #
-            #        - debug:
-            #            var: reconfigure_result.stdout_lines
+        - shell: |
+            gitlab-ctl reconfigure
+          ignore_errors: true
