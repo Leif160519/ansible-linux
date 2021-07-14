@@ -1,0 +1,103 @@
+##
+# 更新oh-my-zsh及其插件和vim的插件
+#
+#
+#
+##
+# @leif160519 @2021.07.14
+#
+####
+---
+- hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    username: root
+  tags: zsh
+  tasks:
+    - shell: |
+        cd "~{{ username }}"/.oh-my-zsh
+        git pull origin master
+      register: oh_my_zsh
+
+    - debug:
+        var: oh_my_zsh.stdout_lines
+
+    - shell: |
+        cd "~{{ username }}"/.oh-my-zsh/custom/plugins/zsh-completions
+        git pull origin master
+      register: zsh_completions
+
+    - debug:
+        var: zsh_completions.stdout_lines
+
+    - shell: |
+        cd "~{{ username }}"/.oh-my-zsh/custom/plugins/zsh-history-substring-search
+        git pull origin master
+      register: zsh_history_substring_search
+
+    - debug:
+        var: zsh_history_substring_search.stdout_lines
+
+    - shell: |
+        cd "~{{ username }}"/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+        git pull origin master
+      register: zsh_autosuggestions
+
+    - debug:
+        var: zsh_autosuggestions.stdout_lines
+
+    - shell: |
+        cd "~{{ username }}"/.oh-my-zsh/custom/plugins/history-search-multi-word
+        git pull origin master
+      register: history_search_multi_word
+
+    - debug:
+        var: history_search_multi_word.stdout_lines
+
+    - shell: |
+        cd "~{{ username }}"/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+        git pull origin master
+      register: zsh_syntax_highlighting
+
+    - debug:
+        var: zsh_syntax_highlighting.stdout_lines
+
+- hosts: localhost
+  connection: local
+  gather_facts: true
+  tags: vim
+  vars:
+    username: root
+  tasks:
+    - shell: |
+        cd "~{{ username }}"/.vim/bundle/YouCompleteMe
+        git pull origin master
+      register: youcompleteme
+
+    - debug:
+        var: youcompleteme.stdout_lines
+
+    - shell: |
+        cd /home/luofei/.vim/bundle/Vundle.vim
+        git pull origin master
+      register: vundle
+
+    - debug:
+        var: vundle.stdout_lines
+
+    - shell: |
+        cd "~{{ username }}"/.vim/plugged/vim-airline-themes
+        git pull origin master
+      register: vim_airline_themes
+
+    - debug:
+        var: vim_airline_themes.stdout_lines
+
+    - shell: |
+        cd "~{{ username }}"/.vim/plugged/vim-airline
+        git pull origin master
+      register: vim_airline
+
+    - debug:
+        var: vim_airline.stdout_lines
