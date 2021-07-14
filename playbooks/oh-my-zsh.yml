@@ -13,6 +13,7 @@
   environment: "{{ proxy_env }}"
   vars:
     username: root
+    zsh_theme: random  # oh-my-zsh主题，默认为random(随机),可以设置为其他，比如agnoster
   tasks:
     - name: 安装zsh和autojump # {{{
       package:
@@ -132,7 +133,7 @@
       lineinfile:
         dest: ~{{ username }}/.zshrc
         regexp: '^ZSH_THEME='
-        line: 'ZSH_THEME="random"'
+        line: 'ZSH_THEME="{{ zsh_theme }}"'
         owner: "{{ username }}"
         group: "{{ username }}"
         # }}}
