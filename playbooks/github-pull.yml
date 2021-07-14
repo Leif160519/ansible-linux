@@ -70,10 +70,10 @@
   vars:
     username: root
   tasks:
-    - shell: |
-        cd "~{{ username }}"/.vim/bundle/YouCompleteMe
-        git pull origin master
-      register: youcompleteme
+#    - shell: |
+#        cd "~{{ username }}"/.vim/bundle/YouCompleteMe
+#        git pull origin master
+#      register: youcompleteme
 
     - debug:
         var: youcompleteme.stdout_lines
