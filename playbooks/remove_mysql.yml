@@ -57,10 +57,6 @@
         path: "{{ mysql_share_dir }}"
         state: absent
 
-    - name: 删除所有mysql开头的路径或文件
-      shell: find / -type f -name mysql\* -delete
-      ignore_errors: yes
-
     - name: 清除无用依赖
       apt:
         autoremove: yes
