@@ -1,4 +1,5 @@
 [all]
+localhost               ansible_host=127.0.0.1
 prometheus-server       ansible_host=10.1.1.24
 ansible-server          ansible_host=10.1.1.25
 nexus-server            ansible_host=10.1.1.26

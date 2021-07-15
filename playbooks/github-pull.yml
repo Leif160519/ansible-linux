@@ -74,9 +74,9 @@
 #        cd "~{{ username }}"/.vim/bundle/YouCompleteMe
 #        git pull origin master
 #      register: youcompleteme
-
-    - debug:
-        var: youcompleteme.stdout_lines
+#
+#    - debug:
+#        var: youcompleteme.stdout_lines
 
     - shell: |
         cd /home/luofei/.vim/bundle/Vundle.vim

@@ -46,6 +46,7 @@ dist.u2004
 # }}}3
 
 [dist.u2004] # {{{3
+localhost
 prometheus-server
 ansible-server
 jenkins-server

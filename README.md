@@ -155,6 +155,11 @@ ansible-playbook -u root -i inventory playbooks/vim -e username=<username>
 - [oh-my-fishy-zsh配置](https://leif.fun/articles/2020/09/02/1599028639385.html)
 - [iterm2下实现FBI WARNING](https://leif.fun/articles/2019/09/06/1567751175266.html)
 
+### 5.3 更新oh-my-zsh及其主题和vim插件
+```
+ansible-playbook playbooks/github-pull.yml -l 'localhost' -e username=root
+```
+
 ### 5.2 git代码统计工具
 #### 1) svn转化为git:git-svn
 - 安装：`apt-get install git-svn`
