@@ -14,7 +14,6 @@
     mirror: http://mirrors.aliyun.com/ubuntu/
   tasks:
     - template:
-        backup: yes
         src: files/repository/sources.list.j2
         dest: /etc/apt/sources.list
     - apt:
@@ -27,7 +26,6 @@
   environment: "{{ proxy_env }}"
   tasks:
     - get_url:
-        backup: yes
         url: http://mirrors.aliyun.com/repo/Centos-{{ ansible_distribution_major_version }}.repo
         dest: /etc/yum.repos.d/CentOS-Base.repo
     - yum:
@@ -108,7 +106,6 @@
     mirror_security: http://mirrors.aliyun.com/debian-security
   tasks:
     - template:
-        backup: yes
         src: files/repository/sources-debian.list.j2
         dest: /etc/apt/sources.list
     - apt:

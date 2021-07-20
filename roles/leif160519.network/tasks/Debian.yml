@@ -1,7 +1,6 @@
 - name: create config file # {{{
   block:
     - template:
-        backup: yes
         src: 00-installer-config.yaml.j2
         dest: "{{ item.path }}"
         mode: 0644
@@ -18,22 +17,12 @@
       when: network_config.files | length == 0 and ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,">=")
 
     - template:
-        backup: yes
         src: interfaces.j2
         dest: /etc/network/interfaces
         mode: 0644
         owner: root
         group: root
-      when: (ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,"<"))
-
-    - template:
-        backup: yes
-        src: interfaces-debian.j2
-        dest: /etc/network/interfaces
-        mode: 0644
-        owner: root
-        group: root
-      when: ((ansible_distribution == "Debian") and (not ansible_distribution == "Ubuntu"))
+      when: ansible_os_family == "Debian"
 # }}}
 
 - name: apply config # {{{
