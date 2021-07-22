@@ -171,7 +171,7 @@ ansible-playbook playbooks/github-pull.yml -l 'localhost' -e username=root
 #### 2) git代码图形化报表：[gitstats](http://gitstats.sourceforge.net/);[gitinspector](https://github.com/ejwa/gitinspector);git-bars
 - 安装：
 ```
-apt-get install gitstats
+apt-get install gitstats(ubuntu 20.04请先安装gnuplot-nox，之后可以去下载gitstats_2015.10.03-1_all.deb之后再安装)
 apt-get install gitinspector
 pip3 install git-bars
 ```
