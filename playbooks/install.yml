@@ -43,6 +43,7 @@
             - nfs-utils                     # nfs服务端和客户端
             - samba-client                  # smb客户端
             - iputils
+            - trafshow                      # 网络带宽监控工具
           when: ansible_os_family == "RedHat"
           ignore_errors: yes
 
@@ -73,6 +74,10 @@
             - rename                        # 批量重命名
             - ctop
             - lm-sensors                    # 监控CPU温度
+            - cbm                           # 带宽监控工具
+            - speedometer                   # 同上
+            - pktstat                       # 网络监控工具
+            - netdiag                       # 同上
           when: ansible_os_family == "Debian"
           ignore_errors: yes
       # }}}
@@ -119,7 +124,7 @@
             - git
             - bash-completion
             - wget
-            - iftop
+            - iftop                         # 网络工具
             - htop
             - iotop                         # iotop命令是一个用来监视磁盘I/O使用状况的top类工具
             - nethogs                       # 是一个开源的命令行工具（类似于Linux的top命令），用来按进程或程序实时统计网络带宽使用率
@@ -153,7 +158,6 @@
             - w3m                           # w3m是个开放源代码的命令行下面的网页浏览器。
             - lynx                          # lynx命令是终端上的纯文本模式的网页浏览器，没有JS引擎，不支持CSS排版、图形、音视频等多媒体信息。只能作为一个很有趣的小玩具。
             - dos2unix
-            - nethogs
             - curl
             - nload                         # 流量监控 nload -u M <network_interface>
             - cifs-utils                    # windows 文件系统支持
@@ -185,6 +189,15 @@
             - ethtool                       # 查看网卡信息
             - lvm2                          # lvm磁盘工具
             - enca                          # 识别文件编码
+            - nload                         # 网络工具
+            - iptraf                        # 同上
+            - bmon                          # 同上
+            - slurm                         # 同上
+            - tcptrack                      # 同上
+            - vnstat                        # 同上
+            - bwm-ng                        # 同上
+            - ifstat                        # 同上
+            - collectl                      # 同上
           ignore_errors: yes
       # }}}
 
