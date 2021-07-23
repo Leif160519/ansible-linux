@@ -253,3 +253,10 @@
         - "{{ username }}"
       ignore_errors: yes
      # }}}
+
+    - name: 配置git #{{{
+      shell: |
+        git config --global core.editor vim
+        git config --global core.quotepath false
+      ignore_errors: yes
+     # }}}
