@@ -68,6 +68,11 @@
     - name: 修改Hostname # {{{
       hostname:
         name: "{{ inventory_hostname }}"
+
+    - name: 修改hosts
+      template:
+        src: files/hosts.j2
+        dest: /etc/hosts
       # }}}
 
     - name: 屏蔽系统错误报告 # {{{
@@ -97,11 +102,16 @@
       when: not ( item is match "root" )
       # }}}
 
-    - name: 禁用selinux(重启后生效) # {{{
+    - name: 禁用selinux # {{{
       lineinfile:
         dest: /etc/selinux/config
         regexp: '^SELINUX='
         line: 'SELINUX=disabled'
+      when: ansible_os_family == "RedHat"
+
+    - name: 即时生效
+      shell: setinforce 0
+      ignore_errors: yes
       when: ansible_os_family == "RedHat"
       # }}}
 
