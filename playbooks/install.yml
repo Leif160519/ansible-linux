@@ -78,6 +78,7 @@
             - speedometer                   # 同上
             - pktstat                       # 网络监控工具
             - netdiag                       # 同上
+            - ripgrep                       # 通过正则快速查找文件内容工具
           when: ansible_os_family == "Debian"
           ignore_errors: yes
       # }}}
