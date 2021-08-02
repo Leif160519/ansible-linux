@@ -199,6 +199,7 @@
             - bwm-ng                        # 同上
             - ifstat                        # 同上
             - collectl                      # 同上
+            - zstd                          # 压缩工具
           ignore_errors: yes
       # }}}
 
