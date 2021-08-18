@@ -200,6 +200,7 @@
             - ifstat                        # 同上
             - collectl                      # 同上
             - zstd                          # 压缩工具
+            - moreutils                     # ts时间戳
           ignore_errors: yes
       # }}}
 
