@@ -7,148 +7,181 @@
 # 默认配置用户为root，其他用户请跟参数-e username=ubuntu
 ####
 ---
-- name: 系统设置
+- name: 1.Configure ssh  # {{{
   hosts: all
+  tags: config, ssh
+  tasks:
+    - block:
+        - lineinfile:
+            dest: /etc/ssh/sshd_config
+            regexp: '^#UseDNS'
+            line: 'UseDNS no'
+
+        - lineinfile:
+            dest: /etc/ssh/sshd_config
+            regexp: '^#GSSAPIAuthentication'
+            line: 'GSSAPIAuthentication no'
+
+        - lineinfile:
+            dest: /etc/ssh/sshd_config
+            regexp: '^#ClientAliveInterval'
+            line: 'ClientAliveInterval 60'
+
+        - lineinfile:
+            dest: /etc/ssh/sshd_config
+            regexp: '^#ClientAliveCountMax'
+            line: 'ClientAliveCountMax 60'
+
+        - lineinfile:
+            dest: /etc/ssh/sshd_config
+            regexp: "^#PermitRootLogin"
+            line: "PermitRootLogin without-password"
+
+        - lineinfile:
+            dest: /etc/ssh/sshd_config
+            regexp: "^#PasswordAuthentication"
+            line: "PasswordAuthentication yes"
+
+        - lineinfile:
+            dest: /etc/ssh/sshd_config
+            regexp: "^#PermitEmptyPasswords"
+            line: "PermitEmptyPasswords no"
+
+        - lineinfile:
+            dest: /etc/ssh/ssh_config
+            regexp: '^#   StrictHostKeyChecking'
+            line: '    StrictHostKeyChecking no'
+
+        - blockinfile:
+            path: /etc/ssh/ssh_config
+            block: |2
+                  ServerAliveInterval 20
+                  ServerAliveCountMax 999
+
+        - service:
+            name: sshd
+            state: reloaded
+  # }}}
+
+- name: 2.Configure hostname & hosts # {{{
+  hosts: all
+  tags: config, host
+  tasks:
+    - block:
+        - name: configure hostname
+          hostname:
+            name: "{{ inventory_hostname }}"
+
+        - name: configure hosts
+          template:
+            src: files/hosts.j2
+            dest: /etc/hosts
+  # }}}
+
+- name: 3.Masking system error reports # {{{
+  hosts: all
+  tags: config, error
+  tasks:
+    - block:
+        - file:
+            path: /var/crash/
+            state: absent
+          when: ansible_distribution == "Ubuntu"
+
+        - lineinfile:
+            dest: /etc/default/apport
+            regexp: '^enabled='
+            line: 'enabled=0'
+          when: ansible_distribution == "Ubuntu"
+  # }}}
+
+- name: 4.Configure sudoer privileges # {{{
+  hosts: all
+  tags: config, sudo
   vars:
     username: root
-  tags: config
   tasks:
-    - name: 配置SSH   # {{{
-      lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: '^#UseDNS'
-        line: 'UseDNS no'
+    - block:
+        - lineinfile:
+            dest: /etc/sudoers.d/{{ item }}
+            create: yes
+            line: '{{ item }} ALL=(ALL) NOPASSWD:ALL'
+            mode: 0440
+            owner: root
+            group: root
+            validate: /usr/sbin/visudo -cf %s
+          with_items:
+            - "{{ username }}"
+          when: not ( item is match "root" )
+  # }}}
 
-    - lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: '^#GSSAPIAuthentication'
-        line: 'GSSAPIAuthentication no'
+- name: 5.Disable selinux # {{{
+  hosts: all
+  tags: config, seliux
+  tasks:
+    - block:
+        - lineinfile:
+            dest: /etc/selinux/config
+            regexp: '^SELINUX='
+            line: 'SELINUX=disabled'
+          when: ansible_os_family == "RedHat"
 
-    - lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: '^#ClientAliveInterval'
-        line: 'ClientAliveInterval 60'
+        - name: effective immediately
+          shell: setinforce 0
+          ignore_errors: yes
+          when: ansible_os_family == "RedHat"
+  # }}}
 
-    - lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: '^#ClientAliveCountMax'
-        line: 'ClientAliveCountMax 60'
+- name: 6.Disable firewall #{{{
+  hosts: all
+  tags: config, firewall
+  tasks:
+    - block:
+        - name: stop firewalld service
+          service:
+            name: firewalld
+            state: stopped
+            enabled: no
+          when: ansible_os_family == "RedHat"
+  # }}}
 
-    - lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: "^#PermitRootLogin"
-        line: "PermitRootLogin without-password"
+- name: 7.Configure pip # {{{
+  hosts: all
+  tags: config, pip, python
+  vars:
+    username: root
+  tasks:
+    - block:
+        - name: create .pip directory
+          file:
+            path: ~{{ item }}/.pip
+            state: directory
+            owner: "{{ item }}"
+            group: "{{ item }}"
+            mode: 0755
+          with_items:
+            - "{{ username }}"
 
-    - lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: "^#PasswordAuthentication"
-        line: "PasswordAuthentication yes"
+        - name: generate configuration file
+          blockinfile:
+            path: ~{{ item }}/.pip/pip.conf
+            create: yes
+            owner: "{{ item }}"
+            group: "{{ item }}"
+            block: |
+              [global]
+              index-url = http://mirrors.aliyun.com/pypi/simple/
+              [install]
+              trusted-host=mirrors.aliyun.com
+          with_items:
+            - "{{ username }}"
+  # }}}
 
-    - lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: "^#PermitEmptyPasswords"
-        line: "PermitEmptyPasswords no"
-
-    - lineinfile:
-        dest: /etc/ssh/ssh_config
-        regexp: '^#   StrictHostKeyChecking'
-        line: '    StrictHostKeyChecking no'
-
-    - blockinfile:
-        path: /etc/ssh/ssh_config
-        block: |2
-              ServerAliveInterval 20
-              ServerAliveCountMax 999
-
-    - service:
-        name: sshd
-        state: reloaded
-        # }}}
-
-    - name: 修改Hostname # {{{
-      hostname:
-        name: "{{ inventory_hostname }}"
-
-    - name: 修改hosts
-      template:
-        src: files/hosts.j2
-        dest: /etc/hosts
-      # }}}
-
-    - name: 屏蔽系统错误报告 # {{{
-      file:
-        path: /var/crash/
-        state: absent
-      when: ansible_distribution == "Ubuntu"
-
-    - lineinfile:
-        dest: /etc/default/apport
-        regexp: '^enabled='
-        line: 'enabled=0'
-      when: ansible_distribution == "Ubuntu"
-       # }}}
-
-    - name: 设置当前用户执行sudo命令不需要密码 # {{{ 为何不直接修改sudoers文件:风险太大
-      lineinfile:
-        dest: /etc/sudoers.d/{{ item }}
-        create: yes
-        line: '{{ item }} ALL=(ALL) NOPASSWD:ALL'
-        mode: 0440
-        owner: root
-        group: root
-        validate: /usr/sbin/visudo -cf %s
-      with_items:
-        - "{{ username }}"
-      when: not ( item is match "root" )
-      # }}}
-
-    - name: 禁用selinux # {{{
-      lineinfile:
-        dest: /etc/selinux/config
-        regexp: '^SELINUX='
-        line: 'SELINUX=disabled'
-      when: ansible_os_family == "RedHat"
-
-    - name: 即时生效
-      shell: setinforce 0
-      ignore_errors: yes
-      when: ansible_os_family == "RedHat"
-      # }}}
-
-    - name: 禁用防火墙 #{{{
-      service:
-        name: firewalld
-        state: stopped
-        enabled: no
-      when: ansible_os_family == "RedHat"
-      # }}}
-
-    - name: 给pip换源 # {{{
-      file:
-        path: ~{{ item }}/.pip
-        state: directory
-        owner: "{{ item }}"
-        group: "{{ item }}"
-        mode: 0755
-      with_items:
-        - "{{ username }}"
-
-    - blockinfile:
-        path: ~{{ item }}/.pip/pip.conf
-        create: yes
-        owner: "{{ item }}"
-        group: "{{ item }}"
-        block: |
-          [global]
-          index-url = http://mirrors.aliyun.com/pypi/simple/
-          [install]
-          trusted-host=mirrors.aliyun.com
-      with_items:
-        - "{{ username }}"
-      # }}}
-
-    - name: 配置关机等待时间 # {{{
-      block:
+- name: 8.Configure shutdown wait time  # {{{
+  hosts: all
+  tags: config, shutdown
+  tasks:
+    - block:
         - lineinfile:
             dest: /etc/systemd/system.conf
             regexp: "^#DefaultTimeoutStartSec"
@@ -158,10 +191,13 @@
             dest: /etc/systemd/system.conf
             regexp: "^#DefaultTimeoutStopSec"
             line: "DefaultTimeoutStopSec=10s"
-      # }}}
+  # }}}
 
-    - name: 打开cron日志 # {{{
-      block:
+- name: 9.Open cron log # {{{
+  hosts: all
+  tags: config, cron
+  tasks:
+    - block:
         - replace:
             path: /etc/rsyslog.d/50-default.conf
             regexp: "#cron"
@@ -178,10 +214,15 @@
             name: rsyslog
             state: restarted
             enabled: yes
-      # }}}
+  # }}}
 
-    - name: 配置bash # {{{
-      block:
+- name: 10.Configure bash # {{{
+  hosts: all
+  tags: config, bash
+  vars:
+    username: root
+  tasks:
+    - block:
         - file:
             path: /etc/bash.d
             state: directory
@@ -231,42 +272,98 @@
               export HISTTIMEFORMAT="%F %T "
           with_items:
             - "{{ username }}"
-        # }}}
+  # }}}
 
-    - name: 配置时钟和时区 # {{{
-      timezone:
-        hwclock: UTC
-        name: Asia/Shanghai
-      # }}}
+- name: 11.Configure clock & time zone # {{{
+  hosts: all
+  tags: config, clock, time
+  tasks:
+    - block:
+        - timezone:
+            hwclock: UTC
+            name: Asia/Shanghai
+  # }}}
 
-    - name: 设置默认编辑器为vim # {{{
-      lineinfile:
-        dest: "~{{ item }}/.selected_editor"
-        create: yes
-        mode: 0644
-        owner: "{{ item }}"
-        group: "{{ item }}"
-        line: 'SELECTED_EDITOR="/usr/bin/vim.basic"'
-        state: present
-      with_items:
-        - "{{ username }}"
-      # }}}
+- name: 12.Configure the default editor # {{{
+  hosts: all
+  tags: config, editor
+  vars:
+    username: root
+  tasks:
+    - block:
+        - lineinfile:
+            dest: "~{{ item }}/.selected_editor"
+            create: yes
+            mode: 0644
+            owner: "{{ item }}"
+            group: "{{ item }}"
+            line: 'SELECTED_EDITOR="/usr/bin/vim.basic"'
+            state: present
+          with_items:
+            - "{{ username }}"
+          # }}}
 
-    - name: 重写定时任务模板 # {{{
-      template:
-        dest: "/var/spool/cron/crontabs/{{ item }}"
-        src: files/crontab
-        mode: 0644
-        owner: "{{ item }}"
-        group: crontab
-      with_items:
-        - "{{ username }}"
-      ignore_errors: yes
-     # }}}
+- name: 13.Rewrite cron templates  # {{{
+  hosts: all
+  tags: config, cron
+  vars:
+    username: root
+  tasks:
+    - block:
+        - template:
+            dest: "/var/spool/cron/crontabs/{{ item }}"
+            src: files/crontab
+            mode: 0644
+            owner: "{{ item }}"
+            group: crontab
+          with_items:
+            - "{{ username }}"
+          ignore_errors: yes
+         # }}}
 
-    - name: 配置git #{{{
-      shell: |
-        git config --global core.editor vim
-        git config --global core.quotepath false
-      ignore_errors: yes
-     # }}}
+- name: 14.Configure git #{{{
+  hosts: all
+  tags: config, git
+  tasks:
+    - block:
+        - shell: |
+            git config --global core.editor vim
+            git config --global core.quotepath false
+          ignore_errors: yes
+  # }}}
+
+- name: 15.Uninstall useless kernel # {{{
+  hosts: dist.ubuntu
+  tags: never, kernel
+  tasks:
+    - block:
+        - name: get the kernel version number currently in use
+          shell: /bin/uname -r | sed 's/-generic//g'
+          register: current_version
+
+        - name: get the kernel software that needs to be uninstalled
+          shell: /usr/bin/dpkg -l | grep "linux-image\|linux-headers\|linux-modules" | awk '{print $2}' | grep -v "{{ current_version.stdout }}" | cat
+          register: before
+
+        - name: configure dpkg
+          shell: /usr/bin/dpkg --configure -a
+
+        - name: clean up useless kernels
+          shell: /usr/bin/dpkg -l | grep "linux-image\|linux-headers\|linux-modules" | awk '{print $2}' | grep -v "{{ current_version.stdout }}" | xargs apt-get -y purge
+          ignore_errors: yes
+          when: not (before.stdout == "")
+
+        - name: clean up residue
+          shell: apt-get autoremove --purge -y
+
+        - name: update grub
+          shell: /usr/sbin/update-grub
+
+        - name: get the cleaned kernel
+          shell: /usr/bin/dpkg -l | grep "linux-image\|linux-headers\|linux-modules" | awk '{print $2}'
+          register: after
+
+        - debug:
+            var: after.stdout_lines
+      when: ansible_distribution == "Ubuntu"
+  # }}}
