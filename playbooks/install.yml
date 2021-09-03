@@ -201,6 +201,7 @@
             - collectl                      # 同上
             - zstd                          # 压缩工具
             - moreutils                     # ts时间戳
+            - nvme-cli                      # nvme硬盘的终端工具
           ignore_errors: yes
       # }}}
 
