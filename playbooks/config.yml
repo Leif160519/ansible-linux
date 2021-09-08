@@ -349,7 +349,7 @@
           shell: /usr/bin/dpkg --configure -a
 
         - name: clean up useless kernels
-          shell: /usr/bin/dpkg -l | grep "linux-image\|linux-headers\|linux-modules" | awk '{print $2}' | grep -v "{{ current_version.stdout }}" | xargs apt-get -y purge
+          shell: /usr/bin/dpkg -l | grep "linux-image\|linux-headers\|linux-modules" | awk '{print $2}' | grep -v linux-image-generic | grep -v "{{ current_version.stdout }}" | xargs apt-get -y purge
           ignore_errors: yes
           when: not (before.stdout == "")
 
