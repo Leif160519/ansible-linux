@@ -202,6 +202,7 @@
             - zstd                          # 压缩工具
             - moreutils                     # ts时间戳
             - nvme-cli                      # nvme硬盘的终端工具
+            - unhide                        # 查看隐藏进程
           ignore_errors: yes
       # }}}
 
