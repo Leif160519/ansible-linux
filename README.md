@@ -14,18 +14,13 @@
 项目目录结构
 ```
 ansible-linux
+├── ansible.cfg
 ├── files
-│   ├── bash.d
-│   ├── loki
-│   ├── prometheus
-│   ├── repository
-│   └── vim
 ├── group_vars
-│   └── all
 ├── inventory
+├── LICENSE
 ├── playbooks
-│   ├── files -> ../files
-│   └── group_vars -> ../group_vars
+├── README.md
 └── roles
     ├── ahuffman.resolv
     ├── cloudalchemy.prometheus
