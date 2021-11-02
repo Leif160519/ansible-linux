@@ -1,15 +1,15 @@
-官方文档 : [Ansible Documentation](https://docs.ansible.com/)
+官方文档 : [Ansible Documentation][1]
 
 ## 一、说明
-本项目源自：[centos-script](https://github.com/Leif160519/centos-script) | [ubuntu-script](https://github.com/Leif160519/ubuntu-script)
+本项目源自：[centos-script][2] | [ubuntu-script][3]
 
 针对待执行脚本的主机数量众多的情况下，建议采用ansible刷入的方式统一配置这些机器，可以大大减少人工成本与时间成本
 
 由于本项目中使用众多systemctl特性，故墙裂推荐使用ubuntu 16.04 ，Debian 9 和Centos 7 及以上版本！！！
 
 ### 已知的问题(截止2021-02-01)
-- ansible中的service模块(systemd版本:245.4)与内核版本为5.8的linux不兼容，会报`FAILED! => {"changed": false, "msg": "Service is in unknown state", "status": {}}`，建议内核版本5.8基础上升级systemd版本至245.7及以上或降级Linux内核版本,详情参看:[Service is in unknown state #71528](https://github.com/ansible/ansible/issues/71528) | [ansible fails with systemd 245.4](https://bugs.launchpad.net/ubuntu/+source/systemd/+bug/1899232)
-- 当执行ntp.yml时，若远程机器是ubuntu20.04的系统请将ansible版本升级至2.9.8以上或使用2.10(使用pip3而不是apt安装)，详情参看:[Problems on Ubuntu 20.04 #86](https://github.com/geerlingguy/ansible-role-ntp/issues/86)
+- ansible中的service模块(systemd版本:245.4)与内核版本为5.8的linux不兼容，会报`FAILED! => {"changed": false, "msg": "Service is in unknown state", "status": {}}`，建议内核版本5.8基础上升级systemd版本至245.7及以上或降级Linux内核版本,详情参看:[Service is in unknown state #71528][4] | [ansible fails with systemd 245.4][5]
+- 当执行ntp.yml时，若远程机器是ubuntu20.04的系统请将ansible版本升级至2.9.8以上或使用2.10(使用pip3而不是apt安装)，详情参看:[Problems on Ubuntu 20.04 #86][6]
 
 项目目录结构
 ```
@@ -142,15 +142,15 @@ ansible-playbook -u root -i inventory playbooks/vim -e username=<username>
 
 ## 五、补充内容
 ### 5.1 配置vim
-- [Vim 配置入门](http://www.ruanyifeng.com/blog/2018/09/vimrc.html)
-- [Vim轻量高效插件管理神器vim-plug介绍-Vim插件(9)](https://vimjc.com/vim-plug.html)
-- [Airline & Themes](https://www.bookstack.cn/read/learn-vim/plugins-airline.md)
-- [在vim中配置最新YouCompleteMe代码自动补全插件](https://blog.csdn.net/qq_28584889/article/details/97131637)
-- [vi代码智能提示功能及相关配置](https://www.cnblogs.com/jxhd1/p/7806626.html)
+- [Vim 配置入门][7]
+- [Vim轻量高效插件管理神器vim-plug介绍-Vim插件(9)][8]
+- [Airline & Themes][9]
+- [在vim中配置最新YouCompleteMe代码自动补全插件][10]
+- [vi代码智能提示功能及相关配置][11]
 
 ### 5.2 配置zsh
-- [oh-my-fishy-zsh配置](https://leif.fun/articles/2020/09/02/1599028639385.html)
-- [iterm2下实现FBI WARNING](https://leif.fun/articles/2019/09/06/1567751175266.html)
+- [oh-my-fishy-zsh配置][12]
+- [iterm2下实现FBI WARNING][13]
 
 ### 5.3 更新oh-my-zsh及其主题和vim插件
 ```
@@ -163,7 +163,7 @@ ansible-playbook playbooks/github-pull.yml -l 'localhost' -e username=root
 - 下载svn库：`git-svn clone <svn_uri>`
 - 更新svn库：`git-svn rebase`
 
-#### 2) git代码图形化报表：[gitstats](http://gitstats.sourceforge.net/);[gitinspector](https://github.com/ejwa/gitinspector);git-bars
+#### 2) git代码图形化报表：[gitstats][14];[gitinspector][15];git-bars
 - 安装：
 ```
 apt-get install gitstats(ubuntu 20.04请先安装gnuplot-nox，之后可以去下载gitstats_2015.10.03-1_all.deb之后再安装)
@@ -176,3 +176,19 @@ gitstats <git_dir> <report_dir>
 gitinspector <git_dir> -HTLlrw --since="2021-01-01" -F html > index.html
 git-bars
  ```
+
+[1]:  https://docs.ansible.com/
+[2]:  https://github.com/Leif160519/centos-script
+[3]:  https://github.com/Leif160519/ubuntu-script
+[4]:  https://github.com/ansible/ansible/issues/71528
+[5]:  https://bugs.launchpad.net/ubuntu/+source/systemd/+bug/1899232
+[6]:  https://github.com/geerlingguy/ansible-role-ntp/issues/86
+[7]:  http://www.ruanyifeng.com/blog/2018/09/vimrc.html
+[8]:  https://vimjc.com/vim-plug.html
+[9]:  https://www.bookstack.cn/read/learn-vim/plugins-airline.md
+[10]: https://blog.csdn.net/qq_28584889/article/details/97131637
+[11]: https://www.cnblogs.com/jxhd1/p/7806626.html
+[12]: https://leif.fun/articles/2020/09/02/1599028639385.html
+[13]: https://leif.fun/articles/2019/09/06/1567751175266.html
+[14]: http://gitstats.sourceforge.net/
+[15]: https://github.com/ejwa/gitinspector
