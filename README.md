@@ -188,7 +188,7 @@ git-bars
 [9]:  https://www.bookstack.cn/read/learn-vim/plugins-airline.md
 [10]: https://blog.csdn.net/qq_28584889/article/details/97131637
 [11]: https://www.cnblogs.com/jxhd1/p/7806626.html
-[12]: https://leif.fun/articles/2020/09/02/1599028639385.html
-[13]: https://leif.fun/articles/2019/09/06/1567751175266.html
+[12]: https://github.icu/articles/2020/09/02/1599028639385.html
+[13]: https://github.icu/articles/2019/09/06/1567751175266.html
 [14]: http://gitstats.sourceforge.net/
 [15]: https://github.com/ejwa/gitinspector
