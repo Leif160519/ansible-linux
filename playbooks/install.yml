@@ -173,6 +173,7 @@
             - cloc                          # 代码统计工具，能够统计代码的空行数、注释行、编程语言
             - ccache                        # 高速C/C++编译缓存工具，反复编译内核非常有用
             - tmux                          # 终端复用工具，替代screen、nohup
+            - byobu                         # 文本窗口管理器、终端复用器、集成运维环境
             - neovim                        # 替代vim
             - mc                            # mcedit：终端下面的 NotePad++
             - powerman                      # pm：在 bash / zsh 中迅速切换项目目录
