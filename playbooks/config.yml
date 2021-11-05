@@ -363,7 +363,39 @@
           shell: /usr/bin/dpkg -l | grep "linux-image\|linux-headers\|linux-modules" | awk '{print $2}'
           register: after
 
+        - name: disable kernel update
+          shell: /usr/bin/dpkg -l | grep "linux-image\|linux-headers\|linux-modules" | awk '{print $2}' | xargs /usr/bin/apt-mark hold
+          register: hold_result
+
         - debug:
             var: after.stdout_lines
+
+        - debug:
+            var: hold_result.stdout_lines
       when: ansible_distribution == "Ubuntu"
   # }}}
+
+- name: 16.Disable system update # {{{
+  hosts: dist.ubuntu
+  tags: never, update
+  tasks:
+    - block:
+        - name: close Update-Package-Lists
+          shell: sed -i.bak 's/1/0/' /etc/apt/apt.conf.d/10periodic
+
+        - name: close unattended-upgrades (or `dpkg-reconfigure unattended-upgrades` choose `no`)
+          shell: sed -i.bak 's/1/0/' /etc/apt/apt.conf.d/20auto-upgrades
+
+        - name: disable unattended-upgrades service
+          service:
+            name: unattended-upgrades
+            state: stopped
+            enabled: false
+
+        - name: remove unattended-upgrades service
+          package:
+            name: unattended-upgrades
+            state: absent
+
+      when: ansible_distribution == "Ubuntu"
+# }}}
