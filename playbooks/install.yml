@@ -106,6 +106,7 @@
             - gpick                         # 取色器
             - flameshot                     # 截图工具
             - nnn                           # 终端文件管理器
+            - hardinfo                      # 类似hwinfo，硬件检查工具
           when: ansible_os_family == "Debian"
           ignore_errors: yes
       # }}}
