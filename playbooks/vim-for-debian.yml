@@ -122,6 +122,19 @@
        when: youcompleteme.stat.exists == false
        # }}}
 
+     - stat: # {{{ | 安装缩进线插件
+         path: ~{{ username }}/.vim/bundle/indentLine
+       register: indent_line
+
+     - git:
+         repo: https://github.com/Yggdroot/indentLine.git
+         dest: ~{{ username }}/.vim/bundle/indentLine
+         clone: yes
+         update: yes
+         recursive: yes
+       ignore_errors: true
+       when: indent_line.stat.exists == false
+
      - name: 配置vim # {{{
        template:
          src: files/vim/vimrc-for-debian.j2
