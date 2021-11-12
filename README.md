@@ -61,19 +61,17 @@ git clone https://github.com/Leif160519/ansible-linux
 > all: 所有机器
 > dist：根据系统版本进行分类
 
-- 5.ansible配置文件(使用pip3安装的ansible不会生成配置文件，可手动创建并配置，或者直接引用项目目录下的ansible.cfg)
+- 5.ansible配置文件-`ansible.cfg`(使用pip3安装的ansible不会生成配置文件，可手动创建并配置，或者直接引用项目目录下的ansible.cfg(执行时会优先生效))
+使用代理进行ssh远程主机:
 ```
-vi /etc/ansible/ansible.cfg
+vim ansible.cfg(/etc/ansible/ansible.cfg)
 
-[defaults]
-force_valid_group_names = ignore     # 忽略语法错误
-roles_path = ansible/roles           # 指定roles绝对路径
-host_key_checking = False            # 禁用检测host key，即首次连接不会提示输入`yes`
-private_key_file = /root/.ssh/id_rsa # 指定ansible用于ssh连接的私钥绝对路径
-command_warnings = False             # 不显示命名警告信息
-···
+[ssh_connection]
+ssh_args = -o ProxyCommand="nc -X connect -x 127.0.0.1:3128 %h %p"
 
 ```
+请将`127.0.0.1:3128`改为真实有效的代理地址
+
 - 6.开始刷入(若使用代理上网，请修改`group_vars/all/proxy_env.yml`里的内容)
 ```
 # all machine(prometheus.yml auto install node_exporter)
