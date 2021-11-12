@@ -236,16 +236,17 @@
             group: root
 
         - copy:
-            src: files/bash.d/bash-alias.sh
+            src: "{{ item }}"
             dest: /etc/bash.d/
             mode: 0755
             owner: root
             group: root
+          with_fileglob:
+            - "files/bash.d/*.sh"
 
         - blockinfile:
             dest: "~{{ item }}/.bashrc"
             create: yes
-            marker: '#{mark} ANSIBLE MANAGED BASHRC'
             owner: "{{ item }}"
             group: "{{ item }}"
             block: |
@@ -260,18 +261,6 @@
           with_items:
             - "{{ username }}"
 
-        - blockinfile:
-            dest: ~{{ item }}/.bashrc
-            create: yes
-            marker: '#{mark} ANSIBLE MANAGED HISTORY'
-            owner: "{{ item }}"
-            group: "{{ item }}"
-            block: |
-              shopt -s histappend
-              PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
-              export HISTTIMEFORMAT="%F %T "
-          with_items:
-            - "{{ username }}"
   # }}}
 
 - name: 11.Configure clock & time zone # {{{
