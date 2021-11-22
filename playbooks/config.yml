@@ -388,3 +388,20 @@
 
       when: ansible_distribution == "Ubuntu"
 # }}}
+
+- name: 17.Disable install snapd # {{{
+  hosts: dist.debian
+  tags: never, snap
+  tasks:
+    - block:
+        - blockinfile:
+            path: /etc/apt/preferences.d/nosnap.pref
+            block: |
+              Package: snap*
+              Pin: release a=*
+              Pin-Priority: -10
+            create: yes
+            mode: 0644
+            owner: root
+            group: root
+# }}}
