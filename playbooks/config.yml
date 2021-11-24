@@ -147,7 +147,7 @@
 
 - name: 7.Configure pip # {{{
   hosts: all
-  tags: config, pip, python
+  tags: never, pip, python
   vars:
     username: root
   tasks:
@@ -404,4 +404,19 @@
             mode: 0644
             owner: root
             group: root
+# }}}
+
+- name: 18.You have new mail. # {{{
+  hosts: all
+  tags: config, mail
+  tasks:
+    - block:
+        - shell: ls /var/mail/
+          register: file_list
+
+        - file:
+            path: "/var/mail/{{ item }}"
+            state: absent
+          with_items:
+            - "{{ file_list.stdout_lines }}"
 # }}}
