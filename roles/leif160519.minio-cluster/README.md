@@ -19,7 +19,7 @@
 | minio_cache_exclude    |  缓存排除文件列表，逗号分隔                       |
 
 ## 3.docker版本参考
-- [https://github.com/leif160519/minio-linux][1]
+- [minio-linux][1]
 
 ## 4.config.env参数解析
 
@@ -59,3 +59,6 @@
 | MINIO_CACHE_RANGE | 设置为“on”或“off”缓存每个对象的独立范围请求，默认为“on” |
 | MINIO_CACHE_WATERMARK_LOW | 缓存驱逐停止的缓存配额百分比 |
 | MINIO_CACHE_WATERMARK_HIGH | 缓存驱逐开始时的缓存配额百分比 |
+
+
+[1]: [https://github.com/leif160519/minio-linux]
