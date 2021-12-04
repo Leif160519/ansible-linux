@@ -61,4 +61,4 @@
 | MINIO_CACHE_WATERMARK_HIGH | 缓存驱逐开始时的缓存配额百分比 |
 
 
-[1]: [https://github.com/leif160519/minio-linux]
+[1]: https://github.com/leif160519/minio-linux
