@@ -1,0 +1,31 @@
+---
+- name: update hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+  with_items:
+    - "{{ hostvars['minio-proxy'].ansible_host }} minio-proxy"
+    - "{{ hostvars['minio-cluster-1'].ansible_host }} minio-cluster-1"
+    - "{{ hostvars['minio-cluster-2'].ansible_host }} minio-cluster-2"
+    - "{{ hostvars['minio-cluster-3'].ansible_host }} minio-cluster-3"
+    - "{{ hostvars['minio-cluster-4'].ansible_host }} minio-cluster-4"
+
+- name: install nginx
+  package:
+    name: nginx
+    state: latest
+
+- name: config nginx
+  template:
+    src: minio-cluster.conf.j2
+    dest: /etc/nginx/sites-enabled/minio-cluster.conf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: reload nginx service
+  service:
+    name: nginx
+    state: reloaded
+    enabled: true
+    daemon_reload: true

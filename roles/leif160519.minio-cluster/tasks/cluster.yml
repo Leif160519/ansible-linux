@@ -1,0 +1,54 @@
+---
+- name: download minio server & minio client
+  get_url:
+    url: "{{ item }}"
+    dest: "{{ bin_dir }}"
+    mode: 0755
+    owner: root
+    group: root
+  with_items:
+    - "{{ minio_server_url }}"
+    - "{{ minio_client_url }}"
+  ignore_errors: yes
+
+- name: update hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+  with_items:
+    - "{{ hostvars['minio-proxy'].ansible_host }} minio-proxy"
+    - "{{ hostvars['minio-cluster-1'].ansible_host }} minio-cluster-1"
+    - "{{ hostvars['minio-cluster-2'].ansible_host }} minio-cluster-2"
+    - "{{ hostvars['minio-cluster-3'].ansible_host }} minio-cluster-3"
+    - "{{ hostvars['minio-cluster-4'].ansible_host }} minio-cluster-4"
+
+- name: create minio config dir
+  file:
+    path: /etc/minio
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: copy env file
+  template:
+    dest: /etc/minio/config.env
+    src: config.env.j2
+    owner: root
+    group: root
+    mode: 0644
+
+- name: create minio service
+  template:
+    dest: /lib/systemd/system/minio.service
+    src: minio.service.j2
+    mode: 0644
+    owner: root
+    group: root
+
+- name: start minio service
+  service:
+    name: minio
+    state: started
+    daemon_reload: true
+    enabled: true

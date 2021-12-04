@@ -1,0 +1,9 @@
+---
+- include_tasks: cluster.yml
+  when: inventory_hostname != "minio-proxy"
+
+- include_tasks: proxy.yml
+  when: inventory_hostname == "minio-proxy"
+
+- include_tasks: prometheus.yml
+  when: inventory_hostname == "prometheus-server"

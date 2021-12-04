@@ -1,0 +1,11 @@
+[Unit]
+Description=Minio
+After=network.target
+
+[Service]
+EnvironmentFile=/etc/minio/config.env
+ExecStart=/usr/local/bin/minio server http://minio-cluster-{1...4}/mnt/disk{1...4} --console-address ":9001"
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

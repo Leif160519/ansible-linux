@@ -1,0 +1,17 @@
+- name: Install minio server
+  hosts: minio-proxy:minio-cluster-1:minio-cluster-2:minio-cluster-3:minio-cluster-4:prometheus-server
+  tags: minio
+  environment: "{{ proxy_env }}"
+  vars:
+    minio_root_user: admin
+    minio_root_password: password
+    minio_identity_ldap: off
+    ldap_server: ""
+    ldap_bind_dn: ""
+    ldap_bind_dn_password: ""
+    ldap_base_dn: ""
+    minio_job_name: minio-cluster
+    minio_cache_mnt: /mnt/cache
+    minio_cache_exclude: "*.jpg,*.png,*.jpg"
+  roles:
+    - role: roles/leif160519.minio-cluster

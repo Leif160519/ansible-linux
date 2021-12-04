@@ -1,0 +1,60 @@
+upstream minio_9001 {
+    server minio-cluster-1:9001;
+    server minio-cluster-2:9001;
+    server minio-cluster-3:9001;
+    server minio-cluster-4:9001;
+}
+
+upstream minio_9000 {
+    server minio-cluster-1:9000;
+    server minio-cluster-2:9000;
+    server minio-cluster-3:9000;
+    server minio-cluster-4:9000;
+}
+
+server {
+    listen       9001;
+    listen  [::]:9001;
+    server_name  localhost;
+
+    ignore_invalid_headers off;
+    client_max_body_size 0;
+    proxy_buffering off;
+
+    location / {
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_connect_timeout 300;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        chunked_transfer_encoding off;
+
+        proxy_pass http://minio_9001;
+    }
+}
+server {
+    listen       9000;
+    listen  [::]:9000;
+    server_name  localhost;
+
+    ignore_invalid_headers off;
+    client_max_body_size 0;
+    proxy_buffering off;
+
+    location / {
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_connect_timeout 300;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        chunked_transfer_encoding off;
+
+        proxy_pass http://minio_9000;
+    }
+}

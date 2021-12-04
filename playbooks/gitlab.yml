@@ -11,7 +11,7 @@
 ####
 ---
 - name: 安装gitlab
-  hosts: all
+  hosts: gitlab-server
   tags: [gitlab]
   environment: "{{ proxy_env }}"
   vars:

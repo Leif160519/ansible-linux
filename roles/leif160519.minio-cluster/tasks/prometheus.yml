@@ -1,0 +1,22 @@
+---
+- name: config prometheus-server
+  blockinfile:
+    path: /etc/prometheus/prometheus.yml
+    insertafter: "scrape_configs:"
+    owner: prometheus
+    group: prometheus
+    mode: 0644
+    block: |2
+        - job_name: minio-cluster
+          metrics_path: /minio/v2/metrics/cluster
+          scheme: http
+          static_configs:
+            - targets:
+                - {{ hostvars['prometheus-server'].ansible_host }}:9000
+
+- name: reload prometheus service
+  service:
+    name: prometheus
+    state: reloaded
+    enabled: yes
+    daemon_reload: yes
