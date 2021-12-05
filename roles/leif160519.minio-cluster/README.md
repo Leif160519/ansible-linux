@@ -5,7 +5,7 @@
 - 每个节点服务器准备四块大小一样的挂载点，挂载路径分别为`/mnt/disk1`到`/mnt/disk4`
 
 ## 2.用法
-|     vars               |                value                              |
+|     var                |                value                              |
 |------------------------|---------------------------------------------------|
 | minio_root_user        |  minio的root用户名                                |
 | minio_root_password    |  minio的root用户密码                              |
@@ -23,11 +23,11 @@
 
 ## 4.config.env参数解析
 
-- [environment-variables][14]
-- [active-directory-ldap-identity-management][15]
-- [metrics-and-logging][16]
-- [minio-disk-cache-guide][17]
-- [Disk Caching Design][18]
+- [environment-variables][2]
+- [active-directory-ldap-identity-management][3]
+- [metrics-and-logging][4]
+- [minio-disk-cache-guide][5]
+- [Disk Caching Design][6]
 
 
 | 变量名称 | 说明 |
@@ -62,3 +62,8 @@
 
 
 [1]: https://github.com/leif160519/minio-linux
+[2]: https://docs.min.io/minio/baremetal/reference/minio-server/minio-server.html#environment-variables
+[3]: https://docs.min.io/minio/baremetal/reference/minio-server/minio-server.html#active-directory-ldap-identity-management
+[4]: https://docs.min.io/minio/baremetal/reference/minio-server/minio-server.html#metrics-and-logging
+[5]: https://docs.min.io/docs/minio-disk-cache-guide.html
+[6]: https://github.com/minio/minio/blob/master/docs/disk-caching/DESIGN.md

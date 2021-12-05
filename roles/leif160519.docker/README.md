@@ -21,13 +21,14 @@ roles:
   - role: roles/leif160519.docker
 ```
 
-> 参数解释
-> - `docker_root_dir`: docker根目录
-> - `address`: docker网桥内网地址段
-> - `size`: docker内网子网掩码
-> - `mirrors*`: docker镜像源地址
-> - `log_max_file`: docker最大日志个数
-> - `log_max_size`: docker日志最大文件大小
+| var             | value                  |
+|-----------------|------------------------|
+| docker_root_dir | docker根目录           |
+| address         | docker网桥内网地址段   |
+| size            | docker内网子网掩码     |
+| mirrors*         | docker镜像源地址       |
+| log_max_file    | docker最大日志个数     |
+| log_max_size    | docker日志最大文件大小 |
 
 ## 解决docker配置源之后还是如法pull镜像的问题
 需要设置docker服务的网络代理,在`/lib/systemd/system/docker.service`文件中的`[Service]`下添加如下参数

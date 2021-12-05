@@ -15,6 +15,8 @@ vars:
 roles:
   - role: roles/leif160519.network
 ```
-> 参数解释
-> - `dns1/dns2`: dns解析地址，必须写
-> - `search`: 搜索域，如果没有就写`localdomain`
+
+| var       | value                          |
+|-----------|--------------------------------|
+| dns1/dns2 | dns解析地址，必须写            |
+| search    |搜索域，如果没有就写localdomain |
