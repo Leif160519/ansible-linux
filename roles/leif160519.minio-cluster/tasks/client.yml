@@ -1,0 +1,16 @@
+---
+- name: download minio client
+  get_url:
+    url: "{{ item }}"
+    dest: "{{ bin_dir }}"
+    mode: 0755
+    owner: root
+    group: root
+  with_items:
+    - "{{ minio_client_url }}"
+  ignore_errors: yes
+
+- name: config shell completion
+  lineinfile:
+    dest: /root/.bashrc
+    line: "mc --autocompletion"

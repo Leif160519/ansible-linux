@@ -1,5 +1,5 @@
 ---
-- name: download minio server & minio client
+- name: download minio server
   get_url:
     url: "{{ item }}"
     dest: "{{ bin_dir }}"
@@ -8,7 +8,6 @@
     group: root
   with_items:
     - "{{ minio_server_url }}"
-    - "{{ minio_client_url }}"
   ignore_errors: yes
 
 - name: update hosts
