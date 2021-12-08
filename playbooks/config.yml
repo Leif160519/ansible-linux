@@ -52,11 +52,17 @@
             regexp: '^#   StrictHostKeyChecking'
             line: '    StrictHostKeyChecking no'
 
-        - blockinfile:
+        - lineinfile:
             path: /etc/ssh/ssh_config
-            block: |2
-                  ServerAliveInterval 20
-                  ServerAliveCountMax 999
+            line: "{{ item }}"
+          with_items:
+            - "    ServerAliveInterval 20"
+            - "    ServerAliveCountMax 999"
+
+        - lineinfile:
+            dest: /etc/ssh/ssh_config
+            regexp: "    GSSAPIAuthentication yes"
+            line: "    GSSAPIAuthentication no"
 
         - service:
             name: sshd
