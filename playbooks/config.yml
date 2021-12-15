@@ -108,7 +108,8 @@
     username: root
   tasks:
     - block:
-        - lineinfile:
+        - name: config sudo privileges
+          lineinfile:
             dest: /etc/sudoers.d/{{ item }}
             create: yes
             line: '{{ item }} ALL=(ALL) NOPASSWD:ALL'
@@ -119,6 +120,31 @@
           with_items:
             - "{{ username }}"
           when: not ( item is match "root" )
+
+        - name: config sudo log
+          block:
+            - file:
+                path: /var/log/sudo.log
+                state: touch
+                owner: root
+                group: root
+                mode: 0644
+
+            - lineinfile:
+                path: /etc/rsyslog.conf
+                line: "local2.debug /var/log/sudo.log"
+
+            - lineinfile:
+                path: /etc/sudoers
+                line: "{{ item }}"
+              with_items:
+                - Defaults logfile=/var/log/sudo.log
+                - Defaults loglinelen=0
+                - Defaults !syslog
+
+            - service:
+                name: rsyslog
+                state: restarted
   # }}}
 
 - name: 5.Disable selinux # {{{
