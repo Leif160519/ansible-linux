@@ -14,42 +14,42 @@
     - block:
         - lineinfile:
             dest: /etc/ssh/sshd_config
-            regexp: '^#UseDNS'
+            regexp: '^(#|)UseDNS'
             line: 'UseDNS no'
 
         - lineinfile:
             dest: /etc/ssh/sshd_config
-            regexp: '^#GSSAPIAuthentication'
+            regexp: '^(#|)GSSAPIAuthentication'
             line: 'GSSAPIAuthentication no'
 
         - lineinfile:
             dest: /etc/ssh/sshd_config
-            regexp: '^#ClientAliveInterval'
+            regexp: '^(#|)ClientAliveInterval'
             line: 'ClientAliveInterval 60'
 
         - lineinfile:
             dest: /etc/ssh/sshd_config
-            regexp: '^#ClientAliveCountMax'
+            regexp: '^(#|)ClientAliveCountMax'
             line: 'ClientAliveCountMax 60'
 
         - lineinfile:
             dest: /etc/ssh/sshd_config
-            regexp: "^#PermitRootLogin"
+            regexp: "^(#|)PermitRootLogin"
             line: "PermitRootLogin without-password"
 
         - lineinfile:
             dest: /etc/ssh/sshd_config
-            regexp: "^#PasswordAuthentication"
+            regexp: "^(#|)PasswordAuthentication"
             line: "PasswordAuthentication yes"
 
         - lineinfile:
             dest: /etc/ssh/sshd_config
-            regexp: "^#PermitEmptyPasswords"
+            regexp: "^(#|)PermitEmptyPasswords"
             line: "PermitEmptyPasswords no"
 
         - lineinfile:
             dest: /etc/ssh/ssh_config
-            regexp: '^#   StrictHostKeyChecking'
+            regexp: '^(#|)   StrictHostKeyChecking'
             line: '    StrictHostKeyChecking no'
 
         - lineinfile:
@@ -216,12 +216,12 @@
     - block:
         - lineinfile:
             dest: /etc/systemd/system.conf
-            regexp: "^#DefaultTimeoutStartSec"
+            regexp: "^(#|)DefaultTimeoutStartSec"
             line: "DefaultTimeoutStartSec=10s"
 
         - lineinfile:
             dest: /etc/systemd/system.conf
-            regexp: "^#DefaultTimeoutStopSec"
+            regexp: "^(#|)DefaultTimeoutStopSec"
             line: "DefaultTimeoutStopSec=10s"
   # }}}
 
