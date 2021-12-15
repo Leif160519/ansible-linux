@@ -259,3 +259,315 @@
           ignore_errors: true
           when: ansible_os_family == "RedHat"
       # }}}
+
+## {{{ Install grafana
+# 官方下载地址:
+# https://grafana.com/grafana/download
+# https://github.com/grafana/grafana/releases
+###
+    - name: Install grafana
+      tags: [never, grafana]
+      vars:
+        grafana_deb_version: grafana_8.3.3_amd64
+        grafana_rpm_version: grafana-8.3.3-1.x86_64
+        grafana_deb_url: https://dl.grafana.com/oss/release/{{ grafana_deb_version }}.deb
+        grafana_rpm_url: https://dl.grafana.com/oss/release/{{ grafana_rpm_version }}.rpm
+      block:
+        - stat:
+            path: /usr/sbin/grafana-cli
+          register: grafana_cmd
+
+        - package:
+            name: "{{ item }}"
+          with_items:
+            - adduser
+            - libfontconfig1
+            - python-apt
+            - python3-apt
+          when: ansible_os_family == "Debian"
+
+        - apt:
+            deb: "{{ grafana_deb_url }}"
+            state: present
+          when: (ansible_os_family == "Debian") and (grafana_cmd.stat.exists == false)
+
+        - yum:
+            name: "{{ grafana_rpm_url }}"
+            state: present
+          when: (ansible_os_family == "RedHat") and (grafana_cmd.stat.exists == false)
+
+        - service:
+            name: grafana-server
+            state: started
+            enabled: yes
+    # }}}
+
+## {{{ Install gitlab
+# 官方包下载地址:https://packages.gitlab.com/gitlab/gitlab-ce
+# Quick install:
+#     curl -s https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash
+#     curl -s https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
+####
+    - name: Install gitlab
+      tags: [never, gitlab]
+      vars:
+        gitlab_rpm_version: gitlab-ce-14.5.2-ce.0.el7.x86_64
+        gitlab_rpm_url: https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/{{ gitlab_rpm_version }}.rpm/download.rpm
+        gitlab_deb_version: gitlab-ce_14.5.2-ce.0_amd64
+        gitlab_deb_url: https://packages.gitlab.com/gitlab/gitlab-ce/packages/{{ ansible_lsb.id | lower }}/{{ ansible_lsb.codename }}/{{ gitlab_deb_version }}.deb/download.deb
+      block:
+        - stat:
+            path: /bin/gitlab-ctl
+          register: gitlab_cmd
+
+        - yum:
+            name: "{{ gitlab_rpm_url }}"
+            state: present
+          when: (ansible_machine=="x86_64") and (gitlab_cmd.stat.exists == false) and (ansible_os_family == "RedHat")
+
+        - apt:
+            deb: "{{ gitlab_deb_url }}"
+            state: present
+          when: (ansible_machine=="x86_64") and (gitlab_cmd.stat.exists == false) and (ansible_os_family == "Debian")
+
+        - lineinfile:
+            dest: /etc/gitlab/gitlab.rb
+            regexp: '^external_url'
+            line: "external_url 'http://{{ ansible_host }}'"
+
+        - lineinfile:
+            dest: /etc/gitlab/gitlab.rb
+            regexp: "backup_keep_time"
+            state: absent
+
+        - lineinfile:
+            dest: /etc/gitlab/gitlab.rb
+            regexp: "backup_keep_time"
+            insertafter: "The duration in seconds to keep backups before they are allowed to be deleted"
+            line: "gitlab_rails['backup_keep_time'] = 604800"
+
+        - cron:
+            minute: 0
+            hour: 2
+            day: "*"
+            month: "*"
+            weekday: "*"
+            job: "/opt/gitlab/bin/gitlab-rake gitlab:backup:create CRON=1"
+            name: gitlab
+            state: present
+            user: root
+
+        - shell: |
+            gitlab-ctl reconfigure
+          ignore_errors: true
+    # }}}
+
+## {{{ upgrade git version
+# github地址：https://github.com/git/git/releases
+# 备用地址: https://mirrors.edge.kernel.org/pub/software/scm/git/
+###
+    - name: Upgrade git version for redhat
+      tags: [never, git]
+      vars:
+        git_version: git-2.34.1
+        git_url: https://mirrors.edge.kernel.org/pub/software/scm/git/{{ git_version }}.tar.xz
+      block:
+        - shell: git version | awk '{print $3}'
+          register: git_version_old
+
+        - debug:
+            msg: "当前机器并未安装git"
+          when: git_version_old is failed
+
+        - debug:
+            msg: "当前已安装git版本:{{ git_version_old.stdout }}"
+          when: not (git_version_old is failed)
+
+        - debug:
+            msg: "待安装git版本{{ git_version.split('-')[1] }}"
+
+        - block:
+            - unarchive:
+                copy: false
+                src: "{{ git_url }}"
+                dest: /tmp
+                owner: root
+                group: root
+                mode: 0755
+
+            - package:
+                name: "{{ item }}"
+                state: latest
+              with_items:
+                - curl-devel
+                - expat-devel
+                - gettext-devel
+                - openssl-devel
+                - zlib-devel
+                - asciidoc
+                - gcc
+                - perl-ExtUtils-MakeMaker
+                - perl
+                - cpio
+                - openssl
+                - zlib
+                - autoconf
+                - tk
+
+            - shell: |
+                cd /tmp/{{ git_version }}
+                autoconf
+                ./configure
+                make
+                make install
+              ignore_errors: true
+
+            - shell: git version
+              register: git_version_new
+
+            - debug:
+               msg: "{{ git_version_new.stdout }}"
+
+            - shell: echo "重新登录shell即可生效"
+
+          when: git_version_old.stdout is version(git_version.split('-')[1],"<")
+      when: ansible_distribution == "CentOS"
+
+    - name: Upgrade git version for ubuntu
+      tags: [never, git]
+      block:
+        - apt:
+            name: software-properties-common
+            state: latest
+
+        - apt_repository:
+            repo: git-core/ppa
+          ignore_errors: true
+
+        - apt:
+            name: git
+            state: latest
+
+        - apt:
+            autoclean: yes
+
+        - apt:
+            autoremove: yes
+
+        - shell: apt clean && apt autoclean
+          ignore_errors: yes
+      when: ansible_distribution == "Ubuntu"
+    # }}}
+
+    - name: Install ccat # {{{
+      tags: never, ccat
+      vars:
+        username: root
+        ccat_version: linux-amd64-1.1.0
+        ccat_url: https://github.com/jingweno/ccat/releases/download/v1.1.0/{{ ccat_version }}.tar.gz
+      block:
+        - stat:
+            path: /usr/local/bin/ccat
+          register: ccat_file
+
+        - stat:
+            path: ~{{ username }}/.zshrc
+          register: zsh_config
+
+        - name: download and unarchive
+          unarchive:
+            copy: false
+            src: "{{ ccat_url }}"
+            dest: /tmp
+            mode: 0755
+            owner: root
+            group: root
+          when: ccat_file.stat.exists == false
+
+        - name: copy ccat
+          shell: cp /tmp/linux-amd64-1.1.0/ccat /usr/local/bin
+          ignore_errors: true
+          when: ccat_file.stat.exists == false
+
+        - name: config bash
+          lineinfile:
+            dest: ~{{ username }}/.bashrc
+            line: 'alias cat=ccat'
+            owner: "{{ username }}"
+            group: "{{ username }}"
+          when: zsh_config.stat.exists == false
+
+        - name: config zsh
+          lineinfile:
+            dest: ~{{ username }}/.zshrc
+            line: 'alias cat=ccat'
+            owner: "{{ username }}"
+            group: "{{ username }}"
+          when: zsh_config.stat.exists == true
+
+        - name: 重新登录终端生效
+          shell: echo "重新登录终端生效"
+    # }}}
+
+    - name: Install rar # {{{
+      tags: never, rar
+      vars:
+        rar_version_x64: rarlinux-x64-5.7.1
+        rar_version_x32: rarlinux-5.7.1
+        rar_url_x64: http://www.rarlab.com/rar/{{ rar_version_x64 }}.tar.gz
+        rar_url_x32: http://www.rarlab.com/rar/{{ rar_version_x32 }}.tar.gz
+      block:
+        - stat:
+            path: /usr/local/bin/rar
+          register: rar_cmd
+
+        - unarchive:
+            copy: false
+            src: "{{ rar_url_x64 }}"
+            dest: /tmp
+            owner: root
+            group: root
+          when: (ansible_machine == "x86_64") and (rar_cmd.stat.exists == false)
+
+        - unarchive:
+            copy: false
+            src: "{{ rar_url_x32 }}"
+            dest: /tmp
+            owner: root
+            group: root
+          when: (not ansible_machine == "x86_64") and (rar_cmd.stat.exists == false)
+
+        - shell: |
+            cd /tmp/rar/
+            make
+          ignore_errors: yes
+          when: rar_cmd.stat.exists == false
+    # }}}
+
+    - name: Install nodejs # {{{
+      tags: never, nodejs
+      block:
+        - name: 安装nodejs和npm
+          package:
+            name: "{{ item }}"
+            state: latest
+          with_items:
+            - nodejs
+            - npm
+
+        - name: 设置淘宝源
+          shell: npm config set registry https://registry.npm.taobao.org
+          ignore_errors: yes
+
+        - name: 安装工具n
+          shell: npm install n -g
+          ignore_errors: yes
+
+        - name: 安装最新稳定版nodejs
+          shell: n stable
+          ignore_errors: yes
+
+        - name: 安装cnpm
+          shell: npm install -g cnpm
+          ignore_errors: yes
+        # }}}

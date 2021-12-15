@@ -72,7 +72,7 @@ ssh_args = -o ProxyCommand="nc -X connect -x 127.0.0.1:3128 %h %p"
 ```
 请将`127.0.0.1:3128`改为真实有效的代理地址
 
-- 6.开始刷入(若使用代理上网，请修改`group_vars/all/proxy_env.yml`里的内容)
+- 6.开始刷入(若使用代理上网，请添加参数`-e proxy_url="http://example.com:3128"`,支持http和socks5)
 ```
 # all machine(prometheus.yml auto install node_exporter)
 ansible-playbook -u root -i inventory/ playbooks/universal.yml
