@@ -10,7 +10,6 @@
 - name: 安装oh-my-zsh
   hosts: all
   tags: [zsh]
-  environment: "{{ proxy_env }}"
   vars:
     username: root
     zsh_theme: random  # oh-my-zsh主题，默认为random(随机),可以设置为其他，比如agnoster
@@ -82,6 +81,10 @@
     - stat:
         path: "{{ plugins_path.stdout }}/history-search-multi-word"
       register: history_search_multi_word
+
+    - stat:
+        path: "{{ plugins_path.stdout }}/fast-syntax-highlighting"
+      register: fast_syntax_highlighting
       # }}}
 
     - name: 安装zsh-syntax-highlighting:模仿fish命令行高亮的插件 # {{{
@@ -122,11 +125,20 @@
 
     - name: history-search-multi-word:ctrl+r搜索历史记录 # {{{
       git:
-        repo: https://github.com/zdharma/history-search-multi-word
+        repo: https://github.com/zdharma-continuum/history-search-multi-word
         dest: "{{ plugins_path.stdout }}/history-search-multi-word"
         clone: yes
         update: yes
       when: history_search_multi_word.stat.exists == false
+      # }}}
+
+    - name: fast-syntax-highlighting:丰富的语法高亮 # {{{
+      git:
+        repo: https://github.com/zdharma-continuum/fast-syntax-highlighting
+        dest: "{{ plugins_path.stdout }}/fast-syntax-highlighting"
+        clone: yes
+        update: yes
+      when: fast_syntax_highlighting.stat.exists == false
       # }}}
 
     - name: 修改zsh主题为随机 # {{{
@@ -164,6 +176,7 @@
                   colored-man-pages
                   extract
                   history-search-multi-word
+                  fast-syntax-highlighting
           )
       # }}}
 
