@@ -9,6 +9,8 @@
 - name: Install software
   hosts: all
   environment: "{{ proxy_env }}"
+  vars:
+    username: root
   tasks:
     - name: Update software # {{{
       tags: [update]
@@ -205,6 +207,7 @@
             - moreutils                     # ts时间戳
             - nvme-cli                      # nvme硬盘的终端工具
             - unhide                        # 查看隐藏进程
+            - highlight                     # 高亮显示
           ignore_errors: yes
       # }}}
 
@@ -460,9 +463,8 @@
     # }}}
 
     - name: Install ccat # {{{
-      tags: never, ccat
+      tags: never, alias, ccat
       vars:
-        username: root
         ccat_version: linux-amd64-1.1.0
         ccat_url: https://github.com/jingweno/ccat/releases/download/v1.1.0/{{ ccat_version }}.tar.gz
       block:
@@ -492,10 +494,9 @@
         - name: config bash
           lineinfile:
             dest: ~{{ username }}/.bashrc
-            line: 'alias cat=ccat'
+            line: 'alias ccat=ccat'
             owner: "{{ username }}"
             group: "{{ username }}"
-          when: zsh_config.stat.exists == false
 
         - name: config zsh
           lineinfile:
@@ -571,3 +572,81 @@
           shell: npm install -g cnpm
           ignore_errors: yes
         # }}}
+
+    - name: Install highlight # {{{
+      tags: never, alias, highlight
+      block:
+        - stat:
+            path: ~{{ username }}/.zshrc
+          register: zsh_config
+
+        - package:
+            name: highlight
+            state: latest
+
+        - lineinfile:
+            path: ~{{ username }}/.bashrc
+            line: "alias hcat='highlight -O ansi --force'"
+            owner: "{{ username }}"
+            group: "{{ username }}"
+
+        - lineinfile:
+            path: ~{{ username }}/.zshrc
+            line: "alias hcat='highlight -O ansi --force'"
+            owner: "{{ username }}"
+            group: "{{ username }}"
+          when: zsh_config.stat.exists == true
+    # }}}
+
+    - name: Install lolcat # {{{
+      tags: never, alias, logcat
+      block:
+        - stat:
+            path: ~{{ username }}/.zshrc
+          register: zsh_config
+
+        - package:
+            name: lolcat
+            state: latest
+
+        - lineinfile:
+            path: ~{{ username }}/.bashrc
+            line: 'alias lcat=lolcat'
+            owner: "{{ username }}"
+            group: "{{ username }}"
+
+        - lineinfile:
+            path: ~{{ username }}/.zshrc
+            line: 'alias lcat=lolcat'
+            owner: "{{ username }}"
+            group: "{{ username }}"
+          when: zsh_config.stat.exists == true
+      when: ansible_distribution == "Ubuntu"
+    # }}}
+
+    - name: Install pygmentize # {{{
+      tags: never, alias, pygmentize
+      block:
+        - stat:
+            path: ~{{ username }}/.zshrc
+          register: zsh_config
+
+        - package:
+            name: pygmentize
+            state: latest
+
+        - lineinfile:
+            path: ~{{ username }}/.bashrc
+            line: "alias pcat='pygmentize -g'"
+            owner: "{{ username }}"
+            group: "{{ username }}"
+
+        - lineinfile:
+            path: ~{{ username }}/.zshrc
+            line: "alias pcat='pygmentize -g'"
+            owner: "{{ username }}"
+            group: "{{ username }}"
+          when: zsh_config.stat.exists == true
+      when: ansible_distribution == "Ubuntu"
+    # }}}
+
