@@ -33,6 +33,10 @@ F() { # find
     find $1 -type f | xargs grep $2 --color=always
 }
 
+ssl () { # openssl
+    echo | openssl s_client -connect $1:443 -servername $1 2>/dev/null | openssl x509 -noout -dates
+}
+
 # archive {{{
 tgz() {
     name=$(echo $1 | /bin/sed 's/\/*$//g')
