@@ -354,7 +354,7 @@
   # }}}
 
 - name: 15.Uninstall useless kernel # {{{
-  hosts: dist.ubuntu
+  hosts: os.ubuntu
   tags: never, kernel
   tasks:
     - block:
@@ -397,7 +397,7 @@
   # }}}
 
 - name: 16.Disable system update # {{{
-  hosts: dist.ubuntu
+  hosts: os.ubuntu
   tags: never, update
   tasks:
     - block:
@@ -422,7 +422,7 @@
 # }}}
 
 - name: 17.Disable install snapd # {{{
-  hosts: dist.debian
+  hosts: os.debian
   tags: never, snap
   tasks:
     - block:

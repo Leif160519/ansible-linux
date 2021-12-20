@@ -4,9 +4,9 @@
   labels:
     {% for group in hostvars[item]['group_names'] -%}
     {%- if group | regex_search('dist\.(u\d+|[crf].*\d+)') -%}
-    {{ dist.append(group | regex_replace('^(.*)\.(.*)$','\\2')) }}
+    {{ os.append(group | regex_replace('^(.*)\.(.*)$','\\2')) }}
     {%- endif -%}
     {%- endfor -%}
     all: "{{ item }}"
-    dist: "{{ dist|unique|join('#') }}"
+    os: "{{ dist|unique|join('#') }}"
 {% endfor %}

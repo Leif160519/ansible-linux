@@ -59,7 +59,7 @@ git clone https://github.com/Leif160519/ansible-linux
 
 - 4.修改inventory下的主机hostname和IP地址
 > all: 所有机器
-> dist：根据系统版本进行分类
+> os：根据系统版本进行分类
 
 - 5.ansible配置文件-`ansible.cfg`(使用pip3安装的ansible不会生成配置文件，可手动创建并配置，或者直接引用项目目录下的ansible.cfg(执行时会优先生效))
 使用代理进行ssh远程主机:

@@ -7,7 +7,7 @@
 ####
 ---
 - name: Ubuntu LTS # {{{
-  hosts: dist.ubuntu.lts
+  hosts: os.ubuntu.lts
   tags: [ubuntu, lts]
   environment: "{{ proxy_env }}"
   vars:
@@ -21,7 +21,7 @@
 # }}}
 
 - name: Centos # {{{
-  hosts: dist.centos
+  hosts: os.centos
   tags: [centos]
   environment: "{{ proxy_env }}"
   tasks:
@@ -33,7 +33,7 @@
 # }}}
 
 - name: RedHat # {{{ 参考：https://blog.csdn.net/yangZHyu/article/details/80565032
-  hosts: dist.redhat:!dist.centos
+  hosts: os.redhat:!os.centos
   environment: "{{ proxy_env }}"
   vars:
     download_url: https://mirrors.aliyun.com/centos/7/os/x86_64/Packages
@@ -98,7 +98,7 @@
 # }}}
 
 - name: Debian # {{{
-  hosts: dist.debian:!dist.ubuntu
+  hosts: os.debian:!os.ubuntu
   tags: debian
   environment: "{{ proxy_env }}"
   vars:

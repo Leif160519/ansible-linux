@@ -1,6 +1,6 @@
 # 卸载ubuntu自带的mysql-8.0
 # Leif160519 @2020年11月2日
-- hosts: dist.ubuntu
+- hosts: os.ubuntu
   tags: mysql
   vars:
     mysql_root_dir: /var/lib/mysql
