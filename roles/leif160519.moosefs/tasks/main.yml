@@ -1,0 +1,11 @@
+---
+- include_tasks: update_repo.yml
+
+- include_tasks: master.yml
+  when: inventory_hostname is not match("^mfs-chunkserver-")
+
+- include_tasks: chunkserver.yml
+  when: inventory_hostname is match("^mfs-chunkserver-")
+
+- include_tasks: mount.yml
+  when: inventory_hostname is not match("^mfs-chunkserver-")

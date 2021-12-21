@@ -1,0 +1,60 @@
+---
+- name: config hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+  with_items:
+    - "{{ hostvars['mfsmaster'].ansible_host }} mfsmaster"
+    - "{{ hostvars['mfs-master'].ansible_host }} mfs-master"
+    - "{{ hostvars['mfs-slaver'].ansible_host }} mfs-slaver"
+    - "{{ hostvars['mfs-chunkserver-1'].ansible_host }} mfs-chunkserver-1"
+    - "{{ hostvars['mfs-chunkserver-2'].ansible_host }} mfs-chunkserver-2"
+    - "{{ hostvars['mfs-chunkserver-3'].ansible_host }} mfs-chunkserver-3"
+
+- name: install mfs master
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - moosefs-master
+    - moosefs-cgi
+    - moosefs-cgiserv
+    - moosefs-cli
+    - moosefs-metalogger
+    - moosefs-client
+    - keepalived
+
+- name: config keepalived
+  template:
+    dest: /etc/keepalived/keepalived.conf
+    src: keepalived.conf.j2
+    owner: root
+    group: root
+    mode: 0644
+
+- name: config metalogger
+  lineinfile:
+    path: /etc/mfs/mfsmetalogger.cfg
+    regexp: "^# MASTER_HOST"
+    line: "MASTER_HOST = mfsmaster"
+
+- name: start mfs master service
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - moosefs-master
+    - moosefs-cgiserv
+    - moosefs-metalogger
+    - keepalived
+
+- name: config firewalld for redhat
+  block:
+    - shell: firewall-cmd --add-port={{ item }}/tcp --permanent
+      with_items:
+        - 9421
+        - 9425
+
+    - shell: firewall-cmd --reload
+  when: ansible_os_family == "RedHat"

@@ -26,6 +26,7 @@ ansible-linux
     ├── cloudalchemy.prometheus
     ├── geerlingguy.ntp
     ├── leif160519.docker
+    ├── leif160519.moosefs
     ├── leif160519.mysql
     └── leif160519.network
 ```

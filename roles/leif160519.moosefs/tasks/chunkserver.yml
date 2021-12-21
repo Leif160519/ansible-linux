@@ -1,0 +1,48 @@
+---
+- name: config hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+  with_items:
+    - "{{ hostvars['mfsmaster'].ansible_host }} mfsmaster"
+    - "{{ hostvars['mfs-master'].ansible_host }} mfs-master"
+    - "{{ hostvars['mfs-slaver'].ansible_host }} mfs-slaver"
+    - "{{ hostvars['mfs-chunkserver-1'].ansible_host }} mfs-chunkserver-1"
+    - "{{ hostvars['mfs-chunkserver-2'].ansible_host }} mfs-chunkserver-2"
+    - "{{ hostvars['mfs-chunkserver-3'].ansible_host }} mfs-chunkserver-3"
+
+- name: install mfs chunkserver
+  package:
+    name: moosefs-chunkserver
+    state: latest
+
+- name: config chunkserver
+  lineinfile:
+    path: /etc/mfs/mfschunkserver.cfg
+    regexp: "^# MASTER_HOST"
+    line: "MASTER_HOST = mfsmaster"
+
+- name: config hdd
+  lineinfile:
+    path: /etc/mfs/mfshdd.cfg
+    line: "{{ item }}"
+  with_items:
+    - /mnt/mfs1
+    - /mnt/mfs2
+
+- name: chown hdd
+  file:
+    dest: "{{ item }}"
+    owner: mfs
+    group: mfs
+    mode: 0755
+    recurse: false
+  with_items:
+    - /mnt/mfs1
+    - /mnt/mfs2
+
+- name: start mfs service
+  service:
+    name: moosefs-chunkserver
+    state: started
+    enabled: yes

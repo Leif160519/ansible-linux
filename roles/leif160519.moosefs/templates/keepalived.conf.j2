@@ -1,0 +1,19 @@
+global_defs {
+    router_id moosefs
+}
+
+vrrp_instance VI_MFS {
+    state MASTER
+    interface {{ ansible_default_ipv4['interface'] }}
+    virtual_router_id 95
+    priority 9
+    advert_int 1
+    nopreempt
+    authentication {
+        auth_type PASS
+        auth_pass 0360
+    }
+    virtual_ipaddress {
+        {{ hostvars['mfsmaster'].ansible_host }}/24
+    }
+}

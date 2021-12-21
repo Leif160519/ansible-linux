@@ -1,0 +1,43 @@
+---
+- name: Debian
+  block:
+    - name: add key
+      apt_key:
+        url: "{{ moosefs_key_debian }}"
+        state: present
+
+    - name: list
+      template:
+        src: moosefs.list.j2
+        dest: /etc/apt/sources.list.d/moosefs.list
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: update
+      apt:
+        update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: RedHat
+  block:
+    - name: add key
+      get_url:
+        url: "{{ moosefs_key_redhat }}"
+        dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-MooseFS
+        mode: 0644
+        owner: root
+        group: root
+
+    - name: repo
+      template:
+        src: MooseFS-3-elx.repo.j2
+        dest: /etc/yum.repos.d/MooseFS.repo
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: update
+      yum:
+        update_cache: yes
+  when: ansible_os_family == "RedHat"

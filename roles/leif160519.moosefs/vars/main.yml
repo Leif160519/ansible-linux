@@ -1,0 +1,3 @@
+---
+moosefs_key_debian: https://ppa.moosefs.com/moosefs.key
+moosefs_key_redhat: https://ppa.moosefs.com/RPM-GPG-KEY-MooseFS

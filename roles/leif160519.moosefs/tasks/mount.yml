@@ -1,0 +1,16 @@
+---
+- name: create mount dir
+  file:
+    path: /mnt/mfs
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: mount mfs
+  mount:
+    src: "{{ hostvars['mfsmaster'].ansible_host }}:/"
+    state: present
+    fstype: moosefs
+    path: /mnt/mfs
+    opts: defaults,mfsdelayedinit
