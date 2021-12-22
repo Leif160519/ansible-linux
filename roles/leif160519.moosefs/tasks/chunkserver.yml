@@ -22,21 +22,22 @@
     regexp: "^# MASTER_HOST"
     line: "MASTER_HOST = mfsmaster"
 
-- name: config hdd
-  lineinfile:
-    path: /etc/mfs/mfshdd.cfg
-    line: "{{ item }}"
-  with_items:
-    - /mnt/mfs1
-    - /mnt/mfs2
-
-- name: chown hdd
+- name: create hdd dir
   file:
-    dest: "{{ item }}"
+    path: "{{ item }}"
+    state: directory
     owner: mfs
     group: mfs
     mode: 0755
     recurse: false
+  with_items:
+    - /mnt/mfs1
+    - /mnt/mfs2
+
+- name: config hdd
+  lineinfile:
+    path: /etc/mfs/mfshdd.cfg
+    line: "{{ item }}"
   with_items:
     - /mnt/mfs1
     - /mnt/mfs2

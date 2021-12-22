@@ -10,7 +10,7 @@
 - name: mount mfs
   mount:
     src: "{{ hostvars['mfsmaster'].ansible_host }}:/"
-    state: present
+    state: mounted
     fstype: moosefs
     path: /mnt/mfs
     opts: defaults,mfsdelayedinit
