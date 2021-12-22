@@ -47,3 +47,12 @@
     name: moosefs-chunkserver
     state: started
     enabled: yes
+
+- name: config firewalld for redhat
+  block:
+    - shell: firewall-cmd --add-port={{ item }}/tcp --permanent
+      with_items:
+        - 9422
+
+    - shell: firewall-cmd --reload
+  when: ansible_os_family == "RedHat"

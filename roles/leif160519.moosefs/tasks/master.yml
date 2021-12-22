@@ -53,6 +53,8 @@
   block:
     - shell: firewall-cmd --add-port={{ item }}/tcp --permanent
       with_items:
+        - 9419
+        - 9420
         - 9421
         - 9425
 
