@@ -14,6 +14,8 @@
 
 ## 参考
 - [MFS(二)---mfs使用 数据恢复 StorageClass详解][2]
+- [Centos下MooseFS（MFS）分布式存储共享环境部署记录][3]
 
 [1]: https://moosefs.com/download/
 [2]: https://blog.csdn.net/qq_35887546/article/details/106973960
+[3]: https://www.cnblogs.com/kevingrace/p/5707164.html
