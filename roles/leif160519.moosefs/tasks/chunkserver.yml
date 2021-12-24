@@ -6,7 +6,7 @@
   with_items:
     - "{{ hostvars['mfsmaster'].ansible_host }} mfsmaster"
     - "{{ hostvars['mfs-master'].ansible_host }} mfs-master"
-    - "{{ hostvars['mfs-slaver'].ansible_host }} mfs-slaver"
+    - "{{ hostvars['mfs-metalogger'].ansible_host }} mfs-metalogger"
     - "{{ hostvars['mfs-chunkserver-1'].ansible_host }} mfs-chunkserver-1"
     - "{{ hostvars['mfs-chunkserver-2'].ansible_host }} mfs-chunkserver-2"
     - "{{ hostvars['mfs-chunkserver-3'].ansible_host }} mfs-chunkserver-3"

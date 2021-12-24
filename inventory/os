@@ -52,7 +52,7 @@ minio-cluster-4
 [os.u2004] # {{{3
 mfsmaster
 mfs-master
-mfs-slaver
+mfs-metalogger
 mfs-chunkserver-1
 mfs-chunkserver-2
 mfs-chunkserver-3

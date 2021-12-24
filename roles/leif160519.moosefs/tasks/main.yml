@@ -2,7 +2,10 @@
 - include_tasks: update_repo.yml
 
 - include_tasks: master.yml
-  when: inventory_hostname is not match("^mfs-chunkserver-")
+  when: inventory_hostname is match("^mfs-master")
+
+- include_tasks: metalogger.yml
+  when: inventory_hostname is match("^mfs-metalogger")
 
 - include_tasks: chunkserver.yml
   when: inventory_hostname is match("^mfs-chunkserver-")

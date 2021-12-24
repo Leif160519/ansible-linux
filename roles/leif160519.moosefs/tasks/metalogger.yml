@@ -16,12 +16,9 @@
     name: "{{ item }}"
     state: latest
   with_items:
-    - moosefs-master
-    - moosefs-cgi
-    - moosefs-cgiserv
     - moosefs-cli
+    - moosefs-metalogger
     - moosefs-client
-    - keepalived
 
 - name: config keepalived
   template:
@@ -43,18 +40,4 @@
     state: started
     enabled: yes
   with_items:
-    - moosefs-master
-    - moosefs-cgiserv
-    - keepalived
-
-- name: config firewalld for redhat
-  block:
-    - shell: firewall-cmd --add-port={{ item }}/tcp --permanent
-      with_items:
-        - 9419
-        - 9420
-        - 9421
-        - 9425
-
-    - shell: firewall-cmd --reload
-  when: ansible_os_family == "RedHat"
+    - moosefs-metalogger
