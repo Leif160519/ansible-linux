@@ -11,14 +11,18 @@
     - "{{ hostvars['mfs-chunkserver-2'].ansible_host }} mfs-chunkserver-2"
     - "{{ hostvars['mfs-chunkserver-3'].ansible_host }} mfs-chunkserver-3"
 
-- name: install mfs master
+- name: install mfs master and metalogger
   package:
     name: "{{ item }}"
     state: latest
   with_items:
+    - moose-master
     - moosefs-cli
     - moosefs-metalogger
     - moosefs-client
+    - moosefs-cgi
+    - moosefs-cgiserv
+    - keepalived
 
 - name: config keepalived
   template:
@@ -40,4 +44,24 @@
     state: started
     enabled: yes
   with_items:
+    - moosefs-cgiserv
     - moosefs-metalogger
+    - keepalived
+
+- name: keep mfs master servce stop and disable
+  service:
+    name: moosefs-master
+    state: stopped
+    enabled: false
+
+- name: config firewalld for redhat
+  block:
+    - shell: firewalld-cmd --add-port={{ item }}/tcp --permanent
+      with_items:
+        - 9419
+        - 9420
+        - 9421
+        - 9425
+
+    - shell: firewalld-cmd --reload
+  when: ansible_os_family == "RedHat"
