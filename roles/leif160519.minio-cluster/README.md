@@ -1,4 +1,5 @@
 # 使用ansible安装minio集群
+docker 部署minio: [leif160519/docker-script/minio][7]
 
 ## 1.前提条件
 - 准备四个节点服务器，配置一样，时区和系统时间保持一致
@@ -67,3 +68,4 @@
 [4]: https://docs.min.io/minio/baremetal/reference/minio-server/minio-server.html#metrics-and-logging
 [5]: https://docs.min.io/docs/minio-disk-cache-guide.html
 [6]: https://github.com/minio/minio/blob/master/docs/disk-caching/DESIGN.md
+[7]: https://github.com/Leif160519/docker-script/tree/master/minio

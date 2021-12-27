@@ -1,6 +1,8 @@
 ## Moosefs+keepalived 高可用开源分布式文件系统(基本型)
 [官方安装教程][1]
 
+docker 部署moosefs集群: [leif160519/docker-script/moosefs][5]
+
 ## 1.集群组成
 - 10.1.2.140 虚拟ip
 - 10.1.2.141 master节点
@@ -41,3 +43,4 @@ master启动后，metalogger、chunker、client三个元素都能自动与master
 [2]: https://blog.csdn.net/qq_35887546/article/details/106973960
 [3]: https://www.cnblogs.com/kevingrace/p/5707164.html
 [4]: https://blog.51cto.com/u_15127621/2770922
+[5]: https://github.com/Leif160519/docker-script/tree/master/moosefs
