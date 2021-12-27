@@ -5,8 +5,8 @@ docker 部署moosefs集群: [leif160519/docker-script/moosefs][5]
 
 ## 1.集群组成
 - 10.1.2.140 虚拟ip
-- 10.1.2.141 master节点
-- 10.1.2.142 metalogger节点(可接替master节点)
+- 10.1.2.141 master节点,也作客户端
+- 10.1.2.142 metalogger节点(可接替master节点),也作客户端
 - 10.1.2.(151-153) chunkserver节点(1-3)
 - /mnt/mfs(1-2) 底层存储盘
 - /mnt/mfs 挂载点

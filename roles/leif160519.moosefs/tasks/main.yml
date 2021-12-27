@@ -10,5 +10,5 @@
 - include_tasks: chunkserver.yml
   when: inventory_hostname is match("^mfs-chunkserver-")
 
-- include_tasks: mount.yml
+- include_tasks: client.yml
   when: inventory_hostname is not match("^mfs-chunkserver-")
