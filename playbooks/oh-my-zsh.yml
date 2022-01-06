@@ -9,6 +9,7 @@
 ---
 - name: 安装oh-my-zsh
   hosts: all
+  environment: "{{ proxy_env }}"
   tags: [zsh]
   vars:
     username: root
@@ -149,6 +150,32 @@
         owner: "{{ username }}"
         group: "{{ username }}"
         # }}}
+
+    - name: 夹带点私货O(∩_∩)O哈哈哈~ # {{{
+      tags: never,leif
+      block:
+        - lineinfile:
+            dest: ~{{ username }}/.zshrc
+            regexp: '^ZSH_THEME='
+            line: 'ZSH_THEME=agnoster'
+            owner: "{{ username }}"
+            group: "{{ username }}"
+
+        - lineinfile:
+            path: ~{{ username }}/.zshrc
+            line: "{{ item }}"
+            owner: "{{ username }}"
+            group: "{{ username }}"
+          with_items:
+            - DEFAULT_USER=$USER
+            - CURRENT_BG=""
+            - DALLAS_CURRENT_TIME_="%{$fg[yellow]%}%* %{$fg[red]%}%h%%%{$reset_color%}"
+            - PS1="${DALLAS_CURRENT_TIME_}${PS1}"
+            - HISTSIZE=100000
+            - SAVEHIST=100000
+            - HISTFILESIZE=100000
+      when: username is not match("root")
+      # }}}
 
     - name: 删除zsh默认插件配置 # {{{ | 配置zsh插件
       lineinfile:
