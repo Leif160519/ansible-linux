@@ -30,7 +30,7 @@ W() { # wget
 }
 
 F() { # find
-    find $1 -type f | xargs grep $2 --color=always
+    find $1 -type f | xargs grep -s $2 --color=always
 }
 
 ssl () { # openssl
