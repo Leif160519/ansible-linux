@@ -1,0 +1,25 @@
+##
+# 更新ansible-linux项目代码
+#
+#
+#
+##
+# @leif160519 @2022.01.19
+#
+####
+---
+- hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    username: root
+  tags: update
+  tasks:
+    - block:
+        - shell: |
+            git switch master
+            git pull origin master
+          register: msg
+
+        - debug:
+            var: msg.stdout_lines
