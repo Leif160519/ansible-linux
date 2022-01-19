@@ -1,7 +1,7 @@
-# 卸载ubuntu自带的mysql-8.0
+# 卸载ubuntu自带的mysql-8.0 {{{
 # Leif160519 @2020年11月2日
 - hosts: os.ubuntu
-  tags: mysql
+  tags: never, mysql
   vars:
     mysql_root_dir: /var/lib/mysql
     mysql_config_dir: /etc/mysql
@@ -64,3 +64,46 @@
     - name: 清理缓存程序安装包
       shell: apt clean && apt autoclean
       ignore_errors: yes
+# }}}
+
+# 载Ubuntu的gnome桌面环境 {{{
+#
+#
+##
+# @leif160519 @2020.08.29
+####
+- name: 卸载gnome环境
+  hosts: os.ubuntu.lts
+  tags: never, gnome
+  tasks:
+    - name: 卸载gnome-shell主程序
+      apt:
+        name: gnome-shell
+        state: absent
+
+    - name: 卸载gnome
+      apt:
+        name: gnome
+        state: absent
+
+    - name: 卸载不需要的依赖关系
+      apt:
+        autoremove: yes
+
+    - name: 彻底删除gnome的相关配置文件
+      shell: apt-get purge gnome
+      ignore_errors: yes
+
+    - name: 彻底删除残留gnome相关组件
+      shell: |
+        dpkg -l | grep gnome  | awk '{print $2}' | xargs apt-get remove --purge -y
+        dpkg -l | grep gnome  | awk '{print $2}' | xargs apt-get autoremove --purge -y
+      ignore_errors: yes
+
+    - name: 清理安装gnome时留下的缓存程序软件包
+      shell: apt clean && apt autoclean
+      ignore_errors: yes
+
+    - name: 重启生效
+      shell: echo "重启生效"
+# }}}

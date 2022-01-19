@@ -1,6 +1,0 @@
-- name: Install moosefs
-  hosts: pro.moosefs:!mfsmaster
-  environment: "{{ proxy_env }}"
-  tags: moosefs
-  roles:
-    - role: roles/leif160519.moosefs

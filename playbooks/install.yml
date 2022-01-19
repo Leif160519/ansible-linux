@@ -650,3 +650,61 @@
       when: ansible_distribution == "Ubuntu"
     # }}}
 
+- name: Install docker & docker-compose # {{{
+  hosts: all
+  tags: never, docker
+  environment: "{{ proxy_env }}"
+  vars:
+    docker_root_dir: /var/lib/docker
+    address: 198.18.0.0/16
+    size: 24
+    mirrors1: http://hub-mirror.c.163.com
+    mirrors2: https://registry.cn-hangzhou.aliyuncs.com
+    mirrors3: http://docker.mirrors.ustc.edu.cn
+    mirrors4: https://registry.docker-cn.com
+    log_max_file: 3
+    log_max_size: 10m
+  roles:
+    - role: roles/leif160519.docker
+  # }}}
+
+- name: Install moosefs # {{{
+  hosts: pro.moosefs:!mfsmaster
+  environment: "{{ proxy_env }}"
+  tags: never, moosefs
+  roles:
+    - role: roles/leif160519.moosefs
+# }}}
+
+- name: Install minio server # {{{
+  hosts: pro.minio
+  tags: never, minio
+  environment: "{{ proxy_env }}"
+  vars:
+    minio_root_user: admin
+    minio_root_password: password
+    minio_identity_ldap: off
+    ldap_server: ""
+    ldap_bind_dn: ""
+    ldap_bind_dn_password: ""
+    ldap_base_dn: ""
+    minio_job_name: minio-cluster
+    minio_cache_mnt: /mnt/cache
+    minio_cache_exclude: "*.jpg,*.png,*.jpg"
+  roles:
+    - role: roles/leif160519.minio-cluster
+# }}}
+
+- name: Install mysql-5.7.28 # {{{
+  hosts: all
+  tags: never, mysql
+  environment: "{{ proxy_env }}"
+  vars:
+    mysql_root_dir: /var/lib/mysql
+    mysql_config_file: /etc/my.cnf
+    mysql_log_dir: /var/log/mysql
+    mysql_run_dir: /var/run/mysql
+    mysql_pre_dir: /usr/share/mysql
+  roles:
+    - role: roles/leif160519.mysql
+# }}}

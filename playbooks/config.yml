@@ -452,3 +452,73 @@
           with_items:
             - "{{ file_list.stdout_lines }}"
 # }}}
+
+- name: 19.create sshkey # {{{
+  hosts: all
+  vars:
+    username: root
+  tags: never, sshkey
+  tasks:
+    - block:
+        - user:
+            name: "{{ item }}"
+            comment: "{{ item }}"
+            group: "{{ item }}"
+            generate_ssh_key: yes
+            ssh_key_file: ~{{ item }}/.ssh/id_rsa
+            state: present
+          with_items:
+            - "{{ username }}"
+          ignore_errors: yes
+# }}}
+
+- name: 20.config resolv # {{{
+  hosts: all
+  tags: never, resolv
+  environment: "{{ proxy_env }}"
+  roles:
+    - role: roles/ahuffman.resolv
+      resolv_nameservers:
+        - 180.76.76.76
+        - 114.114.114.114
+      resolv_domain: localdomain
+      resolv_search:
+        - localdomain
+      resolv_options:
+        - timeout:2
+        - rotate
+# }}}
+
+- name: 21.config static ip address # {{{
+  hosts: all
+  tags: network
+  environment: "{{ proxy_env }}"
+  vars:
+    dns1: 180.76.76.76
+    dns2: 114.114.114.114
+    search: localdomain
+  roles:
+    - role: roles/leif160519.network
+# }}}
+
+- name: 22.config ntp # {{{
+  # 注意：ubuntu20.04的系统请将ansible版本升级至2.9.8以上或使用2.10(使用pip3而不是apt)，详情参看：https://github.com/geerlingguy/ansible-role-ntp/issues/86
+  hosts: all
+  tags: ntp
+  environment: "{{ proxy_env }}"
+  roles:
+    - role: roles/geerlingguy.ntp
+      ntp_enabled: true
+      ntp_timezone: "Asia/Shanghai"
+      ntp_manage_config: true
+      ntp_servers:
+        - "ntp{{ '.' + ntp_area if ntp_area else '' }}.aliyun.com"
+        - "ntp1{{ '.' + ntp_area if ntp_area else '' }}.aliyun.com"
+        - "ntp2{{ '.' + ntp_area if ntp_area else '' }}.aliyun.com"
+        - "ntp3{{ '.' + ntp_area if ntp_area else '' }}.aliyun.com"
+      ntp_restrict:
+        - "127.0.0.1"
+        - "::1"
+      ntp_cron_handler_enabled: true
+      ntp_tinker_panic: true
+# }}}
