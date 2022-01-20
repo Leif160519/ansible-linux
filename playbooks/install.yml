@@ -81,12 +81,14 @@
             - pktstat                       # 网络监控工具
             - netdiag                       # 同上
             - ripgrep                       # 通过正则快速查找文件内容工具
+            - gdebi                         # 安装deb包，类似dpkg
+            - whohas                        # 在发行版中查找软件包
           when: ansible_os_family == "Debian"
           ignore_errors: yes
       # }}}
 
-    - name: Install special software # {{{
-      tags: [never, special]
+    - name: Install gui software # {{{
+      tags: [never, gui]
       block:
         - package:
             name: "{{ item }}"
@@ -236,7 +238,7 @@
       # }}}
 
     - name: Clean up dependent packages # {{{
-      tags: [common, general, special]
+      tags: [common, general, gui]
       block:
         - apt:
             autoremove: yes
@@ -248,7 +250,7 @@
       # }}}
 
     - name: Clean up the installation package (cache) # {{{
-      tags: [common, general, special]
+      tags: [common, general, gui]
       block:
         - apt:
             autoclean: yes
