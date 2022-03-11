@@ -23,3 +23,11 @@
     state: restarted
     enabled: yes
 
+- name: Install ctop
+  get_url:
+    url: https://github.com/bcicen/ctop/releases/download/0.7.6/ctop-0.7.6-linux-amd64
+    dest: /usr/local/bin/ctop
+    mode: 0755
+    owner: root
+    group: root
+
