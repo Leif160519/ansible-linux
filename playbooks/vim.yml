@@ -198,9 +198,9 @@
        ignore_errors: yes
        when: youcompleteme.stat.exists == false
 
-     - shell: ~{{ username }}/.vim/bundle/YouCompleteMe/install.py --all
+     - shell: ~{{ username }}/.vim/bundle/YouCompleteMe/install.py --all --verbose
        ignore_errors: yes
-       when: youcompleteme.stat.exists == false
+       when: youcompleteme.stat.exists == true
        # }}}
 
      - stat: # {{{ | 安装缩进线插件
