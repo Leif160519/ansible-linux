@@ -9,7 +9,6 @@
 - name: 安装oh-my-fish
   hosts: all
   tags: [fish]
-  environment: "{{ proxy_env }}"
   tasks:
     - name: 安装fish包 # {{{
       package:

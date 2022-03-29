@@ -475,7 +475,6 @@
 - name: 20.config resolv # {{{
   hosts: all
   tags: never, resolv
-  environment: "{{ proxy_env }}"
   roles:
     - role: roles/ahuffman.resolv
       resolv_nameservers:
@@ -491,8 +490,7 @@
 
 - name: 21.config static ip address # {{{
   hosts: all
-  tags: network
-  environment: "{{ proxy_env }}"
+  tags: never, network
   vars:
     dns1: 180.76.76.76
     dns2: 114.114.114.114
@@ -504,8 +502,7 @@
 - name: 22.config ntp # {{{
   # 注意：ubuntu20.04的系统请将ansible版本升级至2.9.8以上或使用2.10(使用pip3而不是apt)，详情参看：https://github.com/geerlingguy/ansible-role-ntp/issues/86
   hosts: all
-  tags: ntp
-  environment: "{{ proxy_env }}"
+  tags: never, ntp
   roles:
     - role: roles/geerlingguy.ntp
       ntp_enabled: true

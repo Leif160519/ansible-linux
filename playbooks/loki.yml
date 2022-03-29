@@ -1,6 +1,5 @@
 ## 官方下载地址: https://github.com/grafana/loki/releases
 - hosts: all
-  environment: "{{ proxy_env }}"
   vars:
     loki_version: v2.4.1
     promtail_version: v2.4.1
