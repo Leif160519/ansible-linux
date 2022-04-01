@@ -1,0 +1,18 @@
+---
+- stat:
+    path: ~{{ username }}/.oh-my-zsh
+  register: oh_my_zsh
+
+- name: Download install.sh
+  get_url:
+    url: "{{ zsh_installer_url }}"
+    dest: /tmp/install.sh
+    mode: 0755
+    owner: "{{ username }}"
+    group: "{{ username }}"
+  when: oh_my_zsh.stat.exists == false
+
+- name: Install oh-my-zsh
+  shell: su - "{{ username }}" -s /bin/bash /tmp/install.sh
+  ignore_errors: true
+  when: oh_my_zsh.stat.exists == false

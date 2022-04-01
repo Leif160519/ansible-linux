@@ -706,6 +706,47 @@
     - role: roles/leif160519.mysql
 # }}}
 
+- name: Install oh-my-zsh # {{{
+  hosts: all
+  tags: never, zsh, oh-my-zsh
+  vars:
+    username: root
+    zsh_theme: random
+  roles:
+    - role: roles/leif160519.oh-my-zsh
+
+- name: 夹带点私货O(∩_∩)O哈哈哈~
+  hosts: all
+  tags: never, leif
+  vars:
+    username: root
+    zsh_theme: agnoster
+  tasks:
+    - block:
+        - lineinfile:
+            dest: ~{{ username }}/.zshrc
+            regexp: '^ZSH_THEME='
+            line: 'ZSH_THEME={{ zsh_theme }}'
+            owner: "{{ username }}"
+            group: "{{ username }}"
+
+        - lineinfile:
+            path: ~{{ username }}/.zshrc
+            line: "{{ item }}"
+            owner: "{{ username }}"
+            group: "{{ username }}"
+          with_items:
+            - DEFAULT_USER=$USER
+            - CURRENT_BG=""
+            - DALLAS_CURRENT_TIME_="%{$fg[yellow]%}%* %{$fg[red]%}%h%%%{$reset_color%}"
+            - PS1="${DALLAS_CURRENT_TIME_}${PS1}"
+            - HISTSIZE=100000
+            - SAVEHIST=100000
+            - HISTFILESIZE=100000
+            - prompt_context() {}
+      when: username is not match("root")
+# }}}
+
 - name: Install loki & promtail # {{{
   hosts: all
   vars:

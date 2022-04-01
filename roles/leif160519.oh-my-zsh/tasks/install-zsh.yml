@@ -1,0 +1,23 @@
+---
+- name: Install zsh & autojump
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - zsh
+    - autojump
+    - fortune-mod  # oh-my-zsh theme
+
+- name: Clean the installer cache(Debian)
+  shell: apt clean && apt autoclean
+  ignore_errors: true
+  when: ansible_os_family == "Debian"
+
+- name: Clean the installer cache(RedHat)
+  shell: yum clean all
+  ignore_errors: true
+  when: ansible_os_family == "RedHat"
+
+- name: Switch the default shell to zsh
+  shell: usermod -s /bin/zsh "{{ username }}"
+  ignore_errors: true

@@ -1,0 +1,39 @@
+---
+- name: config oh-my-zsh theme # {{{
+  lineinfile:
+    dest: ~{{ username }}/.zshrc
+    regexp: '^ZSH_THEME='
+    line: 'ZSH_THEME="{{ zsh_theme }}"'
+    owner: "{{ username }}"
+    group: "{{ username }}"
+  # }}}
+
+- name: Remove oh-my-zsh default plugin configuration # {{{ | 配置zsh插件
+  lineinfile:
+    dest: ~{{ username }}/.zshrc
+    regexp: '^plugins='
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: absent
+
+- name: Configure the list of plugins loaded by zsh
+  blockinfile:
+    path: ~{{ username }}/.zshrc
+    insertbefore: "^source"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    block: |
+      plugins=(
+              git
+              zsh-autosuggestions
+              zsh-syntax-highlighting
+              zsh-completions
+              z
+              history-substring-search
+              command-not-found
+              colored-man-pages
+              extract
+              history-search-multi-word
+              fast-syntax-highlighting
+      )
+  # }}}
