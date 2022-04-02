@@ -1,6 +1,6 @@
 ---
-- include_tasks: install.yml
+- include_tasks: install-vim.yml
 
-- include_tasks: plugins.yml
+- include_tasks: install-plugins.yml
 
-- include_tasks: config.yml
+- include_tasks: config-vim.yml
