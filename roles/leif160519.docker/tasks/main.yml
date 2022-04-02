@@ -16,12 +16,11 @@
     src: daemon.json.j2
     dest: /etc/docker/daemon.json
     mode: 0644
+  notify: restart docker service
 
-- name: Restart docker service
-  service:
-    name: docker
-    state: restarted
-    enabled: yes
+- stat:
+    path: /usr/local/bin/ctop
+  register: ctop_path
 
 - name: Install ctop
   get_url:
@@ -30,4 +29,5 @@
     mode: 0755
     owner: root
     group: root
+  when: ctop_path.stat.exists == false
 
