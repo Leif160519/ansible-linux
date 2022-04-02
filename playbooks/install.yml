@@ -747,6 +747,42 @@
       when: username is not match("root")
 # }}}
 
+- name: Install oh-my-fish # {{{
+  hosts: all
+  tags: never, fish
+  tasks:
+    - name: 安装fish包
+      package:
+        name: fish
+        state: latest
+
+    - name: 清理下载的安装包缓存(Debian)
+      shell: apt clean && apt autoclean
+      ignore_errors: yes
+      when: ansible_os_family == "Debian"
+
+    - name: 清理下载的安装包缓存(RedHat)
+      shell: yum clean all
+      ignore_errors: true
+      when: ansible_os_family == "RedHat"
+
+    - name: 切换默认shell为fish
+      shell: chsh -s /bin/fish
+      ignore_errors: yes
+
+    - name: 安装oh-my-fish # git 版本需要在1.9.5以上，否则会报错
+      shell: curl -L https://github.com/oh-my-fish/oh-my-fish/raw/master/bin/install | fish
+      ignore_errors: yes
+
+    - name: 安装主题agnoster
+      shell: omf install agnoster
+      ignore_errors: yes
+
+    - name: 安装autojump插件
+      shell: omf install autojump
+      ignore_errors: yes
+# }}}
+
 - name: Install loki & promtail # {{{
   hosts: all
   vars:
