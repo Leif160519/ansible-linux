@@ -1,0 +1,8 @@
+---
+- name: configure vimrc
+  template:
+    src: vimrc.j2
+    dest: "~{{ username }}/.vimrc"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0644

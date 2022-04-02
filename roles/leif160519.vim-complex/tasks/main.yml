@@ -1,0 +1,8 @@
+---
+- include_tasks: install.yml
+
+- include_tasks: upgrade.yml
+
+- include_tasks: plugins.yml
+
+- include_tasks: config.yml

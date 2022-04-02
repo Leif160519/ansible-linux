@@ -1,0 +1,17 @@
+---
+- name: upgrade vim
+  apt_repository:
+      repo: jonathonf/vim
+  ignore_errors: yes
+  when: vim_installed_version.stdout is version(vim_version,"<")
+
+- name: install latest vim
+  package:
+    name: vim
+    state: latest
+  when: vim_installed_version.stdout is version(vim_version,"<")
+
+- name: config g++ env
+  shell: update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+  ignore_errors: yes
+  when: gcc_installed_version.stdout is version(gcc_version,"<")

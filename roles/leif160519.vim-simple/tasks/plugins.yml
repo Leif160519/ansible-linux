@@ -1,0 +1,49 @@
+---
+- name: 准备vim插件文件夹 # {{{
+  file:
+    path: ~{{ username }}/.vim/{{ item }}
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0755
+  with_items:
+    - plugged
+    - autoload
+  # }}}
+
+- name: 安装vim-plug插件管理器 # {{{
+  stat:
+    path: ~{{ username }}/.vim/autoload/plug.vim
+  register: plug_vim
+
+- get_url:
+    url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    dest: ~{{ username }}/.vim/autoload/plug.vim
+    mode: 0644
+    owner: "{{ username }}"
+    group: "{{ username }}"
+  when: plug_vim.stat.exists == false
+  # }}}
+
+- stat: # {{{ | 安装airline插件
+    path: ~{{ username }}/.vim/plugged/vim-airline
+  register: vim_airline
+
+- stat:
+    path: ~{{ username }}/.vim/plugged/vim-airline-themes
+  register: vim_airline_themes
+
+- git:
+    repo: https://github.com/vim-airline/vim-airline
+    dest: ~{{ username }}/.vim/plugged/vim-airline
+    clone: yes
+    update: yes
+  when: vim_airline.stat.exists == false
+
+- git:
+    repo: https://github.com/vim-airline/vim-airline-themes
+    dest: ~{{ username }}/.vim/plugged/vim-airline-themes
+    clone: yes
+    update: yes
+  when: vim_airline_themes.stat.exists == false
+  # }}}

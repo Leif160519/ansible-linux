@@ -747,6 +747,24 @@
       when: username is not match("root")
 # }}}
 
+- name: Install vim with smart tips # {{{
+  hosts: all
+  tags: never, vim-complex
+  vars:
+    username: root
+  roles:
+    - role: roles/leif160519.vim-complex
+# }}}
+
+- name: Install vim without smart tips # {{{
+  hosts: all
+  tags: never, vim-simple
+  vars:
+    username: root
+  roles:
+    - role: roles/leif160519.vim-simple
+# }}}
+
 - name: Install oh-my-fish # {{{
   hosts: all
   tags: never, fish
