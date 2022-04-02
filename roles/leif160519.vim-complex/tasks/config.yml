@@ -4,5 +4,5 @@
     src: vimrc.j2
     dest: "~{{ username }}/.vimrc"
     owner: "{{ username }}"
-    group: "{{ username }}"
+    group: "{{ groupname }}"
     mode: 0644

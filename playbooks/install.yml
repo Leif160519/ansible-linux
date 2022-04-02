@@ -10,6 +10,7 @@
   hosts: all
   vars:
     username: root
+    groupnme: root
   tasks:
     - name: Update software # {{{
       tags: [update]
@@ -497,14 +498,14 @@
             dest: ~{{ username }}/.bashrc
             line: 'alias ccat=ccat'
             owner: "{{ username }}"
-            group: "{{ username }}"
+            group: "{{ groupname }}"
 
         - name: config zsh
           lineinfile:
             dest: ~{{ username }}/.zshrc
             line: 'alias cat=ccat'
             owner: "{{ username }}"
-            group: "{{ username }}"
+            group: "{{ groupname }}"
           when: zsh_config.stat.exists == true
 
         - name: 重新登录终端生效
@@ -589,13 +590,13 @@
             path: ~{{ username }}/.bashrc
             line: "alias hcat='highlight -O ansi --force'"
             owner: "{{ username }}"
-            group: "{{ username }}"
+            group: "{{ groupname }}"
 
         - lineinfile:
             path: ~{{ username }}/.zshrc
             line: "alias hcat='highlight -O ansi --force'"
             owner: "{{ username }}"
-            group: "{{ username }}"
+            group: "{{ groupname }}"
           when: zsh_config.stat.exists == true
     # }}}
 
@@ -614,13 +615,13 @@
             path: ~{{ username }}/.bashrc
             line: 'alias lcat=lolcat'
             owner: "{{ username }}"
-            group: "{{ username }}"
+            group: "{{ groupname }}"
 
         - lineinfile:
             path: ~{{ username }}/.zshrc
             line: 'alias lcat=lolcat'
             owner: "{{ username }}"
-            group: "{{ username }}"
+            group: "{{ groupname }}"
           when: zsh_config.stat.exists == true
       when: ansible_distribution == "Ubuntu"
     # }}}
@@ -640,13 +641,13 @@
             path: ~{{ username }}/.bashrc
             line: "alias pcat='pygmentize -g'"
             owner: "{{ username }}"
-            group: "{{ username }}"
+            group: "{{ groupname }}"
 
         - lineinfile:
             path: ~{{ username }}/.zshrc
             line: "alias pcat='pygmentize -g'"
             owner: "{{ username }}"
-            group: "{{ username }}"
+            group: "{{ groupname }}"
           when: zsh_config.stat.exists == true
       when: ansible_distribution == "Ubuntu"
     # }}}
@@ -711,6 +712,7 @@
   tags: never, zsh, oh-my-zsh
   vars:
     username: root
+    groupname: root
     zsh_theme: random
   roles:
     - role: roles/leif160519.oh-my-zsh
@@ -720,6 +722,7 @@
   tags: never, leif
   vars:
     username: root
+    groupname: root
     zsh_theme: agnoster
   tasks:
     - block:
@@ -728,13 +731,13 @@
             regexp: '^ZSH_THEME='
             line: 'ZSH_THEME={{ zsh_theme }}'
             owner: "{{ username }}"
-            group: "{{ username }}"
+            group: "{{ groupname }}"
 
         - lineinfile:
             path: ~{{ username }}/.zshrc
             line: "{{ item }}"
             owner: "{{ username }}"
-            group: "{{ username }}"
+            group: "{{ groupname }}"
           with_items:
             - DEFAULT_USER=$USER
             - CURRENT_BG=""
@@ -752,6 +755,7 @@
   tags: never, vim-complex
   vars:
     username: root
+    groupname: root
   roles:
     - role: roles/leif160519.vim-complex
 # }}}
@@ -761,6 +765,7 @@
   tags: never, vim-simple
   vars:
     username: root
+    groupname: root
   roles:
     - role: roles/leif160519.vim-simple
 # }}}

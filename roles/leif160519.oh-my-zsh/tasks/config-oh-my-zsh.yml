@@ -5,7 +5,7 @@
     regexp: '^ZSH_THEME='
     line: 'ZSH_THEME="{{ zsh_theme }}"'
     owner: "{{ username }}"
-    group: "{{ username }}"
+    group: "{{ groupname }}"
   # }}}
 
 - name: Remove oh-my-zsh default plugin configuration # {{{ | 配置zsh插件
@@ -13,7 +13,7 @@
     dest: ~{{ username }}/.zshrc
     regexp: '^plugins='
     owner: "{{ username }}"
-    group: "{{ username }}"
+    group: "{{ groupname }}"
     state: absent
 
 - name: Configure the list of plugins loaded by zsh
@@ -21,7 +21,7 @@
     path: ~{{ username }}/.zshrc
     insertbefore: "^source"
     owner: "{{ username }}"
-    group: "{{ username }}"
+    group: "{{ groupname }}"
     block: |
       plugins=(
               git
@@ -42,7 +42,7 @@
   lineinfile:
     dest: ~{{ username }}/.zshrc
     owner: "{{ username }}"
-    group: "{{ username }}"
+    group: "{{ groupname }}"
     line: "{{ item }}"
   with_items:
     - '# key bindings'

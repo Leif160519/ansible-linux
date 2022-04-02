@@ -9,7 +9,7 @@
     dest: /tmp/install.sh
     mode: 0755
     owner: "{{ username }}"
-    group: "{{ username }}"
+    group: "{{ groupname }}"
   when: oh_my_zsh.stat.exists == false
 
 - name: Install oh-my-zsh

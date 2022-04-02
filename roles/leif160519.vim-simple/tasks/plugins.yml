@@ -4,7 +4,7 @@
     path: ~{{ username }}/.vim/{{ item }}
     state: directory
     owner: "{{ username }}"
-    group: "{{ username }}"
+    group: "{{ groupname }}"
     mode: 0755
   with_items:
     - plugged
@@ -21,7 +21,7 @@
     dest: ~{{ username }}/.vim/autoload/plug.vim
     mode: 0644
     owner: "{{ username }}"
-    group: "{{ username }}"
+    group: "{{ groupname }}"
   when: plug_vim.stat.exists == false
   # }}}
 

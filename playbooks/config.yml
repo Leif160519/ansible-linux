@@ -4,7 +4,7 @@
 #
 ##
 # @leif160519 @2020.08.29
-# 默认配置用户为root，其他用户请跟参数-e username=ubuntu
+# 默认配置用户为root，其他用户请跟参数-e username=ubuntu -e groupname=root
 ####
 ---
 - name: 1.Configure ssh  # {{{
@@ -106,20 +106,19 @@
   tags: config, sudo
   vars:
     username: root
+    groupname: root
   tasks:
     - block:
         - name: config sudo privileges
           lineinfile:
-            dest: /etc/sudoers.d/{{ item }}
+            dest: /etc/sudoers.d/{{ username }}
             create: yes
-            line: '{{ item }} ALL=(ALL) NOPASSWD:ALL'
+            line: '{{ username }} ALL=(ALL) NOPASSWD:ALL'
             mode: 0440
             owner: root
             group: root
             validate: /usr/sbin/visudo -cf %s
-          with_items:
-            - "{{ username }}"
-          when: not ( item is match "root" )
+          when: not ( username is match "root" )
 
         - name: config sudo log
           block:
@@ -182,31 +181,28 @@
   tags: never, pip, python
   vars:
     username: root
+    groupname: root
   tasks:
     - block:
         - name: create .pip directory
           file:
-            path: ~{{ item }}/.pip
+            path: ~{{ username }}/.pip
             state: directory
-            owner: "{{ item }}"
-            group: "{{ item }}"
+            owner: "{{ username }}"
+            group: "{{ groupname }}"
             mode: 0755
-          with_items:
-            - "{{ username }}"
 
         - name: generate configuration file
           blockinfile:
-            path: ~{{ item }}/.pip/pip.conf
+            path: ~{{ username }}/.pip/pip.conf
             create: yes
-            owner: "{{ item }}"
-            group: "{{ item }}"
+            owner: "{{ username }}"
+            group: "{{ groupname }}"
             block: |
               [global]
               index-url = http://mirrors.aliyun.com/pypi/simple/
               [install]
               trusted-host=mirrors.aliyun.com
-          with_items:
-            - "{{ username }}"
   # }}}
 
 - name: 8.Configure shutdown wait time  # {{{
@@ -253,6 +249,7 @@
   tags: config, bash
   vars:
     username: root
+    groupname: root
   tasks:
     - block:
         - file:
@@ -277,10 +274,10 @@
             - "files/bash.d/*.sh"
 
         - blockinfile:
-            dest: "~{{ item }}/.bashrc"
+            dest: "~{{ username }}/.bashrc"
             create: yes
-            owner: "{{ item }}"
-            group: "{{ item }}"
+            owner: "{{ username }}"
+            group: "{{ groupname }}"
             block: |
               if [ -d /etc/bash.d ]; then
                 for i in /etc/bash.d/*.sh; do
@@ -290,8 +287,6 @@
                 done
                 unset i
               fi
-          with_items:
-            - "{{ username }}"
 
   # }}}
 
@@ -310,18 +305,17 @@
   tags: config, editor
   vars:
     username: root
+    groupname: root
   tasks:
     - block:
         - lineinfile:
-            dest: "~{{ item }}/.selected_editor"
+            dest: "~{{ username }}/.selected_editor"
             create: yes
             mode: 0644
-            owner: "{{ item }}"
-            group: "{{ item }}"
+            owner: "{{ username }}"
+            group: "{{ groupname }}"
             line: 'SELECTED_EDITOR="/usr/bin/vim.basic"'
             state: present
-          with_items:
-            - "{{ username }}"
           # }}}
 
 - name: 13.Rewrite cron templates  # {{{
@@ -329,16 +323,15 @@
   tags: config, cron
   vars:
     username: root
+    groupname: root
   tasks:
     - block:
         - template:
-            dest: "/var/spool/cron/crontabs/{{ item }}"
+            dest: "/var/spool/cron/crontabs/{{ username }}"
             src: files/crontab
             mode: 0644
-            owner: "{{ item }}"
+            owner: "{{ username }}"
             group: crontab
-          with_items:
-            - "{{ username }}"
           ignore_errors: yes
          # }}}
 
@@ -457,18 +450,17 @@
   hosts: all
   vars:
     username: root
+    groupname: root
   tags: never, sshkey
   tasks:
     - block:
         - user:
-            name: "{{ item }}"
-            comment: "{{ item }}"
-            group: "{{ item }}"
+            name: "{{ username }}"
+            comment: "{{ username }}"
+            group: "{{ groupname }}"
             generate_ssh_key: yes
             ssh_key_file: ~{{ item }}/.ssh/id_rsa
             state: present
-          with_items:
-            - "{{ username }}"
           ignore_errors: yes
 # }}}
 
