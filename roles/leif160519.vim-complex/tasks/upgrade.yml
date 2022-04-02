@@ -1,14 +1,14 @@
 ---
-- name: upgrade vim
-  apt_repository:
-      repo: jonathonf/vim
-  ignore_errors: yes
-  when: vim_installed_version.stdout is version(vim_version,"<")
+- block:
+    - name: upgrade vim
+      apt_repository:
+          repo: jonathonf/vim
+      ignore_errors: yes
 
-- name: install latest vim
-  package:
-    name: vim
-    state: latest
+    - name: install latest vim
+      package:
+        name: vim
+        state: latest
   when: vim_installed_version.stdout is version(vim_version,"<")
 
 - name: config g++ env
