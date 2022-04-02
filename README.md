@@ -140,29 +140,14 @@ ansible-playbook -u root -i inventory playbooks/vim -e username=<username>
 ```
 
 ## 五、补充内容
-### 5.1 配置vim
-- [Vim 配置入门][7]
-- [Vim轻量高效插件管理神器vim-plug介绍-Vim插件(9)][8]
-- [Airline & Themes][9]
-- [在vim中配置最新YouCompleteMe代码自动补全插件][10]
-- [vi代码智能提示功能及相关配置][11]
 
-### 5.2 配置zsh
-- [oh-my-fishy-zsh配置][12]
-- [iterm2下实现FBI WARNING][13]
-
-### 5.3 更新oh-my-zsh及其主题和vim插件
-```
-ansible-playbook playbooks/github-pull.yml -l 'localhost' -e username=root
-```
-
-### 5.2 git代码统计工具
+### 5.1 git代码统计工具
 #### 1) svn转化为git:git-svn
 - 安装：`apt-get install git-svn`
 - 下载svn库：`git-svn clone <svn_uri>`
 - 更新svn库：`git-svn rebase`
 
-#### 2) git代码图形化报表：[gitstats][14];[gitinspector][15];git-bars
+#### 2) git代码图形化报表：[gitstats][7];[gitinspector][8];git-bars
 - 安装：
 ```
 apt-get install gitstats(ubuntu 20.04请先安装gnuplot-nox，之后可以去下载gitstats_2015.10.03-1_all.deb之后再安装)
@@ -182,12 +167,5 @@ git-bars
 [4]:  https://github.com/ansible/ansible/issues/71528
 [5]:  https://bugs.launchpad.net/ubuntu/+source/systemd/+bug/1899232
 [6]:  https://github.com/geerlingguy/ansible-role-ntp/issues/86
-[7]:  http://www.ruanyifeng.com/blog/2018/09/vimrc.html
-[8]:  https://vimjc.com/vim-plug.html
-[9]:  https://www.bookstack.cn/read/learn-vim/plugins-airline.md
-[10]: https://blog.csdn.net/qq_28584889/article/details/97131637
-[11]: https://www.cnblogs.com/jxhd1/p/7806626.html
-[12]: https://github.icu/articles/2020/09/02/1599028639385.html
-[13]: https://github.icu/articles/2019/09/06/1567751175266.html
-[14]: http://gitstats.sourceforge.net/
-[15]: https://github.com/ejwa/gitinspector
+[7]: http://gitstats.sourceforge.net/
+[8]: https://github.com/ejwa/gitinspector
