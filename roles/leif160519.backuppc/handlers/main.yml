@@ -1,0 +1,7 @@
+---
+
+- name: reload backuppc
+# https://sourceforge.net/p/backuppc/mailman/message/26339186/
+  shell: docker exec -u backuppc backuppc /usr/local/BackupPC/bin/BackupPC_serverMesg server reload
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html#handlers-running-operations-on-change
+  listen: "reload"

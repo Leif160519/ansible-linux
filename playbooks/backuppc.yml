@@ -1,0 +1,19 @@
+---
+- hosts: all
+  vars_files:
+    - files/backuppc_vars.yml
+  vars:
+    backuppc_instance: '{{ extension | selectattr("hostname","equalto", inventory_hostname) | list }}'
+  tasks:
+    - block: # {{{ debug
+      - name: 配置南京备份服务器 (亚洲)
+        tags: never, debug
+        debug:
+          msg: '{{ backuppc_instance }}'
+        delegate_to: backuppc-server
+     # }}}
+
+    - name: 配置备份服务器
+      import_role:
+        name: roles/leif160519.backuppc
+      delegate_to: backuppc-server

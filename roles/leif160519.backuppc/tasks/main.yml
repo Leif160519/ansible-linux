@@ -1,0 +1,50 @@
+---
+
+- name: TEMPLATE | Put host specific config on BackupPC server
+  tags: client
+  template:
+    src: host_config.pl.j2
+    dest: '/etc/backuppc/pc/{{ item.hostname }}.pl'
+    owner: backuppc
+    group: backuppc
+    mode: 0640
+  with_items: "{{ backuppc_instance }}"
+  when: item.state is not defined or item.state == 'present'
+
+- name: TEMPLATE | Put host specific config on BackupPC server
+  tags: client
+  template:
+    src: host_config.pl.j2
+    dest: '/etc/backuppc/pc/{{ inventory_hostname }}.pl'
+    owner: backuppc
+    group: backuppc
+    mode: 0640
+  when: backuppc_instance | length == 0
+
+- name: FILE | Delete config if needed
+  tags: client
+  file:
+    path: '/etc/backuppc/pc/{{ item.hostname }}.pl'
+    state: absent
+  with_items: "{{ backuppc_instance }}"
+  when: item.state is defined and item.state == 'absent'
+  notify: reload
+
+- name: LINEINFILE | Add host to BackupPC server
+  tags: client
+  lineinfile:
+    dest: /etc/backuppc/hosts
+    line: "{{ item.hostname }}\t0"
+    regexp: "^{{ item.hostname }}"
+    state: item.state if item.state is defined else 'present'
+  with_items: "{{ backuppc_instance }}"
+  notify: reload
+
+- name: LINEINFILE | Add host to BackupPC server
+  tags: client
+  lineinfile:
+    dest: /etc/backuppc/hosts
+    line: "{{ inventory_hostname }}\t0"
+    regexp: "^{{ inventory_hostname }}"
+  when: backuppc_instance | length == 0
+  notify: reload

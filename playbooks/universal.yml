@@ -27,3 +27,6 @@
 
 # 安装node_exporter
 - import_playbook: prometheus.yml
+
+# 配置backuppc
+- import_playbook: backuppc.yml

@@ -50,6 +50,7 @@ minio-cluster-4
 # }}}3
 
 [os.u2004] # {{{3
+backuppc-server
 mfsmaster
 mfs-master
 mfs-metalogger

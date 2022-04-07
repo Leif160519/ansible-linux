@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  author: Emilien Mantel
+  description: Install and manage BackupPC
+  company:
+  license: GPLv2
+  min_ansible_version: 1.9
+  platforms:
+  - name: Debian
+    versions:
+    - jessie
+  galaxy_tags:
+  - backup
+  - restore
+  - rsync
+  - security
+  - debian
+  - networking
+  - system
+  - web
+dependencies: []

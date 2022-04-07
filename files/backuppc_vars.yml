@@ -1,0 +1,20 @@
+---
+extension:
+  - hostname: prometheus-server
+    include_files:
+      - "/etc/prometheus/"
+  - hostname: gitlab-server
+    include_files:
+      - "/etc/gitlab/"
+  - hostname: mfsmaster
+    include_files:
+      - "/etc/mfs/"
+      - "/opt/mfs/"
+  - hostname: mfs-master
+    include_files:
+      - "/etc/mfs/"
+      - "/opt/mfs/"
+  - hostname: mfs-metalogger
+    include_files:
+      - "/etc/mfs/"
+      - "/opt/mfs/"

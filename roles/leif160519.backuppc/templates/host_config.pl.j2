@@ -1,0 +1,70 @@
+$Conf{ClientNameAlias} = ['{{ ansible_host }}'];
+$Conf{XferMethod} = '{{ item.xfermethod | default("rsync") }}';
+$Conf{ClientCharsetLegacy} = 'utf-8';
+
+$Conf{BackupFilesOnly} = {
+  '*' => [
+     '/root/.ssh/'
+    ,'/etc/fstab'
+    ,'/etc/ssh/ssh*_config'
+    ,'/etc/profile'
+    ,'/etc/passwd'
+    ,'/etc/group'
+    ,'/etc/shadow'
+    ,'/etc/gshadow'
+    ,'/etc/sudoers'
+    ,'/etc/sudoers.d/'
+    ,'/etc/default/grub'
+    ,'/etc/crontab'
+    ,'/var/backups/'
+    ,'/var/spool/cron/'
+{% if ansible_os_family == "Debian" %}
+    ,'/boot/grub/grub.cfg'
+{% endif %}
+{% if ansible_os_family == "Debian" %}
+{% if ansible_distribution_version is version('16.04', '<=') %}
+    ,'/etc/network/interfaces'
+{% endif %}
+{% endif %}
+{% if ansible_distribution == "Ubuntu" %}
+{% if ansible_distribution_version is version('18.04', '>=') %}
+    ,'/etc/netplan/'
+{% endif %}
+{% endif %}
+{% if ansible_os_family == "RedHat" %}
+    ,'/etc/sysconfig/network-scripts/ifcfg-*'
+{% endif %}
+{% if item.include_files is defined %}
+{% for item in item.include_files %}
+    ,'{{ item }}'
+{% endfor %}
+{% endif %}
+  ]
+};
+
+{% if item.exclude_files is defined %}
+$Conf{BackupFilesExclude} = {
+  '*' => [
+     '/tmp/'
+{% for item in item.exclude_files %}
+    ,'{{ item }}'
+{% endfor %}
+  ]
+};
+{% endif %}
+
+{% if item.more is defined %}
+# More options...
+{% for key, value in item.more.items() %}
+{% if value is string %}
+$Conf{{ '{' }}{{ key }}{{ '}' }} = '{{ value }}';
+{% else %}
+$Conf{{ '{' }}{{ key }}{{ '}' }} = [
+  {% for i in value %}'{{ i }}'{% if not loop.last %}, {% endif %}
+{% endfor %}
+
+];
+
+{% endif %}
+{% endfor %}
+{% endif %}
