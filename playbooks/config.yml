@@ -363,7 +363,7 @@
           shell: /usr/bin/dpkg --configure -a
 
         - name: clean up useless kernels
-          shell: /usr/bin/dpkg -l | grep "linux-image\|linux-headers\|linux-modules" | awk '{print $2}' | grep -v linux-image-generic | grep -v "{{ current_version.stdout }}" | xargs apt-get -y purge
+          shell: /usr/bin/dpkg -l | grep "linux-image\|linux-headers\|linux-modules" | awk '{print $2}' | grep -v linux-image-generic | grep -v linux-headers-generic | grep -v "{{ current_version.stdout }}" | xargs apt-get -y purge
           ignore_errors: yes
           when: not (before.stdout == "")
 
@@ -380,6 +380,22 @@
         - name: disable kernel update
           shell: /usr/bin/dpkg -l | grep "linux-image\|linux-headers\|linux-modules" | awk '{print $2}' | xargs /usr/bin/apt-mark hold
           register: hold_result
+
+        - name: disable auto upgrades
+          file:
+            src: /usr/share/unattended-upgrades/20auto-upgrades-disabled
+            dest: /etc/apt/apt.conf.d/20auto-upgrades-disabled
+            state: link
+        - blockinfile:
+            create: true
+            path: /etc/apt/apt.conf.d/50package-blacklist
+            block: |
+              Unattended-Upgrade::Package-Blacklist {
+                      "linux-headers*";
+                      "linux-image*";
+                      "linux-generic*";
+                      "linux-modules*";
+              }
 
         - debug:
             var: after.stdout_lines
