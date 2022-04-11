@@ -12,16 +12,19 @@
     alertmanager_root_dir: /opt/alertmanager
     node_exporter_root_dir: /opt/node_exporter
     blackbox_exporter_root_dir: /opt/black_exporter
+    prometheusalert_root_dir: /opt/prometheusalert
 
     prometheus_version: prometheus-2.19.2.linux-amd64
     alertmanager_version: alertmanager-0.21.0.linux-amd64
     node_exporter_version: node_exporter-1.0.1.linux-amd64
     blackbox_exporter_version: blackbox_exporter-0.17.0.linux-amd64
+    prometheusalert_version: v4.7
 
     prometheus_url: https://github.com/prometheus/prometheus/releases/download/v2.19.2/{{ prometheus_version }}.tar.gz
     alertmanager_url: https://github.com/prometheus/alertmanager/releases/download/v0.21.0/{{ alertmanager_version }}.tar.gz
     node_exporter_url: https://github.com/prometheus/node_exporter/releases/download/v1.0.1/{{ node_exporter_version }}.tar.gz
     blackbox_exporter_url: https://github.com/prometheus/blackbox_exporter/releases/download/v0.17.0/{{ blackbox_exporter_version }}.tar.gz
+    prometheusalert_url: https://github.com/feiyu563/PrometheusAlert/releases/download/{{ prometheusalert_version }}/linux.zip
 
   tasks:
     - name: user and group and directories
@@ -163,6 +166,52 @@
           name: alertmanager
           enabled: true
         # }}}
+
+    - name: prometheusalert # {{{
+      tags: never, prometheusalert
+      block:
+      - name: stat prometheusalert
+        stat:
+          path: "{{ prometheusalert_root_dir }}"
+        register: pa
+
+      - name: 解压prometheusalert安装包
+        unarchive:
+          src: "{{ prometheusalert_url }}"
+          dest: /opt
+          owner: prometheus
+          group: prometheus
+          remote_src: yes
+        when: pa.stat.exists == false
+
+      - name: 重命名prometheusalert目录
+        command: mv /opt/linux {{ prometheusalert_root_dir }}
+        when: pa.stat.exists == false
+
+      - name: 创建prometheusalert软连接
+        file:
+          src: "{{ prometheusalert_root_dir }}/PrometheusAlert"
+          dest: "/usr/local/bin/PrometheusAlert"
+          state: link
+          force: true
+          mode: 0755
+
+      - name: 创建prometheusalert服务
+        template:
+          src: files/prometheus/service/prometheusalert.service.j2
+          dest: /lib/systemd/system/prometheusalert.service
+          mode: 0644
+
+      - name: 重新载入alertmanager
+        systemd:
+          daemon_reload: true
+
+      - name: 启动prometheusalert服务
+        systemd:
+          name: prometheusalert
+          state: started
+          enabled: true
+      # }}}
 
     - name: blackbox_exporter # {{{
       tags: [never, blackbox]
@@ -334,9 +383,9 @@
         scrape_interval: 25s
         scrape_timeout: 15s
         evaluation_interval: 25s
-      prometheus_alert_rules: []
-      prometheus_alert_rules_files: [ "files/prometheus/alert/rules/*.rules" ]
-      prometheus_alertmanager_config:
+      prometheusalert_rules: []
+      prometheusalert_rules_files: [ "files/prometheus/alert/rules/*.rules" ]
+      prometheusalertmanager_config:
         - static_configs:
             - targets:
                 - "{{ ansible_host }}:9093"
