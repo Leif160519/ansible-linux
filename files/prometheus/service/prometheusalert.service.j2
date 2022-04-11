@@ -11,7 +11,8 @@ Environment="GOMAXPROCS={{ ansible_processor_vcpus|default(ansible_processor_cou
 User=prometheus
 Group=prometheus
 ExecReload=/bin/kill -HUP $MAINPID
-ExecStart=/opt/prometheusalert/PrometheusAlert \
+ExecStart=/opt/prometheusalert/PrometheusAlert
+WorkingDirectory=/opt/prometheusalert
 
 ProtectSystem=full
 
