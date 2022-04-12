@@ -13,4 +13,4 @@
 - name: config shell completion
   lineinfile:
     dest: /root/.bashrc
-    line: "mc --autocompletion"
+    line: "complete -C /usr/local/bin/mc mc"
