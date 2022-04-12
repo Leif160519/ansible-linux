@@ -1,4 +1,4 @@
 ---
-minio_server_url: http://dl.minio.org.cn/client/mc/release/linux-amd64/mc
-minio_client_url: http://dl.minio.org.cn/server/minio/release/linux-amd64/minio
+minio_server_url: https://dl.min.io/server/minio/release/linux-amd64/minio
+minio_client_url: https://dl.min.io/client/mc/release/linux-amd64/mc
 bin_dir: /usr/local/bin/

@@ -38,7 +38,7 @@ docker 部署minio: [leif160519/docker-script/minio][7]
 | MINIO_ROOT_USER | root用户的用户名 |
 | MINIO_ROOT_PASSWORD | root用户的访问密钥|
 | MINIO_IDENTITY_LDAP_SERVER_ADDR | 指定 Active Directory/LDAP 服务器的主机名 |
-| MINIO_IDENTITY_LDAP_STS_EXPIRY | 设定回话过期时间 |
+| MINIO_IDENTITY_LDAP_STS_EXPIRY | 设定会话过期时间 |
 | MINIO_IDENTITY_LDAP_SERVER_STARTTLS | 指定on启用 到 AD/LDAP 服务器的StartTLS连接 |
 | MINIO_IDENTITY_LDAP_SERVER_INSECURE | 指定on以允许与 AD/LDAP 服务器的不安全（非 TLS 加密）连接 |
 | MINIO_IDENTITY_LDAP_LOOKUP_BIND_DN | 指定 MinIO 在查询 AD/LDAP 服务器时使用的 AD/LDAP 帐户的专有名称 (DN) |
