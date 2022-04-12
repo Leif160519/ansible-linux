@@ -24,3 +24,10 @@ roles:
 | mysql_log_dir     | mysql日志目录                       |
 | mysql_run_dir     | mysql sock和pid文件存放目录         |
 | mysql_pre_dir     | mysql服务启动前预先执行的脚本目录   |
+
+## 补充
+若想安装mysql 8.0版本，直接修改`vars/main.yml`中的如下内容
+```
+mysql_version: mysql-8.0.28-linux-glibc2.12-x86_64
+mysql_url: https://cdn.mysql.com//Downloads/MySQL-8.0/{{ mysql_version }}.tar.xz
+```
