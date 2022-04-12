@@ -15,13 +15,23 @@
     name: nginx
     state: latest
 
-- name: config nginx
+- name: config debian nginx
   template:
     src: minio-cluster.conf.j2
     dest: /etc/nginx/sites-enabled/minio-cluster.conf
     mode: 0644
     owner: root
     group: root
+  when: ansible_os_family == "Debian"
+
+- name: config redhat nginx
+  template:
+    src: minio-cluster.conf.j2
+    dest: /etc/nginx/conf.d/minio-cluster.conf
+    mode: 0644
+    owner: root
+    group: root
+  when: ansible_os_family == "RedHat"
 
 - name: reload nginx service
   service:
