@@ -7,7 +7,19 @@
     - libncurses5
     - numactl
     - libaio1
+    - libaio-dev
   ignore_errors: yes
+  when: ansible_os_family == "Debian"
+
+- name: Install dependencies RedHat
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - libaio
+    - numactl
+  ignore_errors: true
+  when: ansible_os_family == "RedHat"
 
 - name: Create mysql group
   group:
