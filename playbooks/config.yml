@@ -539,4 +539,6 @@
           with_items:
             - "*　　soft　　nofile　　65536"
             - "*　　hard　　nofile　　65536"
+            - "*    soft    noproc    65535"
+            - "*    hard    noproc    65535"
 # }}}
