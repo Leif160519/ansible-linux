@@ -1,0 +1,46 @@
+---
+- name: config redis service file
+  templates:
+    dest: /lib/systemd/system/redis.service
+    src: redis.service.j2
+    owner: root
+    group: root
+    mode: 0644
+
+- name: create redis config file
+  templates:
+    dest: "{{ redis_conf_dir }}/redis.conf"
+    src: redis.conf.j2
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart redis service
+
+- name: config redis cluster
+  shell: |
+      "{{ redis_root_dir }}"/src/redis-cli --cluster create \
+      "{{ hostvars['redis-cluster-master-1'].ansible_host }}":"{{ redis_port }}" \
+      "{{ hostvars['redis-cluster-master-2'].ansible_host }}":"{{ redis_port }}" \
+      "{{ hostvars['redis-cluster-master-3'].ansible_host }}":"{{ redis_port }}" \
+      "{{ hostvars['redis-cluster-slaver-1'].ansible_host }}":"{{ redis_port }}" \
+      "{{ hostvars['redis-cluster-slaver-2'].ansible_host }}":"{{ redis_port }}" \
+      "{{ hostvars['redis-cluster-slaver-3'].ansible_host }}":"{{ redis_port }}"
+  register: result
+  delegate_to: redis-cluster-master-1
+
+- debug:
+    var: result.stdout_lines
+
+- name: output cluster nodes
+  shell: "{{ redis_root_dir }}"/src/redis-cli cluster nodes
+  register: nodes_info
+
+- debug:
+    var: result.stdout_lines
+
+- name: output cluster info
+  shell: "{{ redis_root_dir }}"/src/redis-cli cluster info
+  register: cluster_info
+
+- debug:
+    var: cluster_info.stdout_lines

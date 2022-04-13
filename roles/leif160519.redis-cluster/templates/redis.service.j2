@@ -1,0 +1,10 @@
+[Unit]
+Description=Redis
+After=network.target
+
+[Service]
+ExecStart={{ redis_root_dir }}/src/redis-server {{ redis_conf_dir }}/redis.conf
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

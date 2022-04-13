@@ -707,6 +707,19 @@
     - role: roles/leif160519.mysql
 # }}}
 
+- name: Install redis cluster 6.0 # {{{
+  hosts: pro.redis
+  tags: never, redis-cluster
+  vars:
+    redis_port: 6379
+    redis_version: redis-6.2.6
+    redis_root_dir: /opt/{{ redis_version }}
+    redis_data_dir: /opt/{{ redis_version }}/data
+    redis_conf_dir: /opt/{{ redis_version }}/conf
+  roles:
+    - role: roles/leif160519.redis-cluster
+# }}}
+
 - name: Install oh-my-zsh # {{{
   hosts: all
   tags: never, zsh, oh-my-zsh

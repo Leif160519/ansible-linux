@@ -1,0 +1,54 @@
+port {{ redis_port }}
+daemonize redis
+protected-mode no
+
+dir {{ redis_data_dir }}
+logfile redis-{{ redis_port }}.log
+loglevel notice
+
+timeout 1800
+tcp-keepalive 0
+
+maxmemory 4gb
+maxmemory-policy volatile-lfu
+lfu-log-factor 10
+lfu-decay-time 1
+
+dbfilename redis-{{ redis_port }}.rdb
+rdbcompression yes
+stop-writes-on-bgsave-error yes
+rdbchecksum yes
+
+appendonly yes
+appendfsync everysec
+auto-aof-rewrite-min-size 64mb
+auto-aof-rewrite-percentage 100
+no-appendfsync-on-rewrite yes
+appendfilename redis-{{ redis_port }}.aof
+
+
+hash-max-ziplist-entries 512
+hash-max-ziplist-value 64
+list-max-ziplist-size -2
+list-compress-depth 0
+set-max-intset-entries 512
+zset-max-ziplist-entries 128
+zset-max-ziplist-value 64
+
+
+slowlog-max-len 1000
+slowlog-log-slower-than 1000
+
+cluster-enabled yes
+cluster-config-file redis-nodes.conf
+cluster-require-full-coverage no
+cluster-node-timeout 15000
+
+client-output-buffer-limit normal 0 0 0
+client-output-buffer-limit replica 512mb 128mb 60
+client-output-buffer-limit pubsub 32mb 8mb 60
+
+replica-lazy-flush yes
+lazyfree-lazy-eviction yes
+lazyfree-lazy-expire yes
+lazyfree-lazy-server-del yes

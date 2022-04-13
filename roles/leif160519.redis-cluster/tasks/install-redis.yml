@@ -1,0 +1,35 @@
+---
+- name: install dependencies
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - make
+    - gcc
+
+- name: download and unarchive redis package
+  unarchive:
+    copy: false
+    src: "{{ redis_url }}"
+    dest: /opt
+    owner: root
+    group: root
+    mode: 0755
+
+- name: create dir
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "{{ redis_root_dir }}"
+    - "{{ redis_data_dir }}"
+    - "{{ redis_conf_dir }}"
+
+- name: make redis
+  shell: |
+    cd "{{ redis_root_dir }}"
+    make
+  ignore_errors: false

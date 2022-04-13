@@ -1,7 +1,8 @@
 [pro]
 [pro:children]
-[pro.minio]
-[pro.moosefs]
+pro.minio
+pro.moosefs
+pro.redis
 
 [pro.minio]
 minio-proxy
@@ -17,3 +18,11 @@ mfs-metalogger
 mfs-chunkserver-1
 mfs-chunkserver-2
 mfs-chunkserver-3
+
+[pro.redis]
+redis-cluster-master-1
+redis-cluster-master-2
+redis-cluster-master-3
+redis-cluster-slaver-1
+redis-cluster-slaver-2
+redis-cluster-slaver-3

@@ -26,6 +26,12 @@ os.centos7
 # }}}3
 
 [os.centos7] # {{{3
+redis-cluster-master-1
+redis-cluster-master-2
+redis-cluster-master-3
+redis-cluster-slaver-1
+redis-cluster-slaver-2
+redis-cluster-slaver-3
 gitlab-server
 # }}}3
 # }}}2

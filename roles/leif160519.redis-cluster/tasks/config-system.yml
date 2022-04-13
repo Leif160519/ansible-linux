@@ -1,0 +1,8 @@
+---
+- name: config system
+  shell: |
+    sysctl vm.overcommit_memory=1
+    sysctl vm.swappiness=0
+    echo never > /sys/kernel/mm/transparent_hugepage/enabled
+    echo 511 > /proc/sys/net/core/somaxconn
+  ignore_errors: true

@@ -1,0 +1,6 @@
+---
+- include_tasks: config-system.yml
+
+- include_tasks: install-redis.yml
+
+- include_tasks: start-redis.yml
