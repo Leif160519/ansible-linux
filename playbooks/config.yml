@@ -527,3 +527,16 @@
       ntp_cron_handler_enabled: true
       ntp_tinker_panic: true
 # }}}
+
+- name: 23.config ulimit # {{{
+  hosts: all
+  tags: config, ulimit
+  tasks:
+    - block:
+        - lineinfile:
+            dest: /etc/security/limits.conf
+            line: "{{ item }}"
+          with_items:
+            - "*　　soft　　nofile　　65536"
+            - "*　　hard　　nofile　　65536"
+# }}}
