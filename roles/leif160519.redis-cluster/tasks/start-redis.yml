@@ -24,7 +24,8 @@
       "{{ hostvars['redis-cluster-master-3'].ansible_host }}":"{{ redis_port }}" \
       "{{ hostvars['redis-cluster-slaver-1'].ansible_host }}":"{{ redis_port }}" \
       "{{ hostvars['redis-cluster-slaver-2'].ansible_host }}":"{{ redis_port }}" \
-      "{{ hostvars['redis-cluster-slaver-3'].ansible_host }}":"{{ redis_port }}"
+      "{{ hostvars['redis-cluster-slaver-3'].ansible_host }}":"{{ redis_port }}" \
+      --cluster-replicas 1
   register: result
   delegate_to: redis-cluster-master-1
 
