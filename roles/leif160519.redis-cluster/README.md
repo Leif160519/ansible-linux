@@ -65,3 +65,4 @@ echo 511 > /proc/sys/net/core/somaxconn
 
 ## 参考
 [搭建redis集群-超详细的配置](https://juejin.cn/post/6844904083321536526)
+[Redis 6.0 集群搭建实践](https://segmentfault.com/a/1190000038995016)
