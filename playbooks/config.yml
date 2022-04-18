@@ -542,3 +542,31 @@
             - "*    soft    noproc    65535"
             - "*    hard    noproc    65535"
 # }}}
+
+- name: 24.config sysctl
+  hosts: all
+  tags: config, sysctl
+  tasks:
+    - block:
+        - lineinfile:
+            path: /etc/sysctl.conf
+            line: "{{ item }}"
+          with_items:
+            - fs.file-max = 1000000
+            - net.ipv4.tcp_tw_reuse = 1
+            - net.ipv4.tcp_keepalive_time = 600
+            - net.ipv4.tcp_fin_timeout = 30
+            - net.ipv4.tcp_max_tw_buckets = 5000
+            - net.ipv4.ip_local_port_range = 1024 6500
+            - net.ipv4.tcp_rmem = 10240 87380 12582912
+            - net.ipv4.tcp_wmem = 10240 87380 12582912
+            - net.core.netdev_max_backlog = 8096
+            - net.core.rmem_default = 6291456
+            - net.core.wmem_default = 6291456
+            - net.core.rmem_max = 12582912
+            - net.core.wmem_max = 12582912
+            - net.ipv4.tcp_syncookies = 1
+            - net.ipv4.tcp_max_syn_backlog = 8192
+            - net.ipv4.tcp_tw_recycle = 1
+            - net.core.somaxconn=262114
+            - net.ipv4.tcp_max_orphans=262114
