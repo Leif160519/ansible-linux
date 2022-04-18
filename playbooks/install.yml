@@ -939,3 +939,42 @@
       when: inventory_hostname is match ("^prometheus-server")
       # }}}
 # }}}
+
+- name: Install nginx # {{{
+  hosts: all
+  tags: never,nginx
+  handlers:
+    - name: reload nginx service
+      service:
+        name: nginx
+        state: reloaded
+        daemon_reload: yes
+        enabled: true
+  tasks:
+    - block:
+        - name: install nginx
+          package:
+            name: nginx
+            state: latest
+
+        - name: config nginx.conf-RedHat
+          template:
+            dest: /etc/nginx/nginx.conf
+            src: files/nginx/RedHat.conf.j2
+            owner: root
+            group: root
+            mode: 0644
+          when: ansible_os_family == "RedHat"
+          notify: reload nginx service
+
+        - name: config nginx.conf-Debian
+          template:
+            dest: /etc/nginx/nginx.conf
+            src: files/nginx/Debian.conf.j2
+            owner: root
+            group: root
+            mode: 0644
+          when: ansible_os_family == "Debian"
+          notify: reload nginx service
+
+# }}}
