@@ -1,0 +1,19 @@
+version: '3'
+services:
+  {{ inventory_hostname }}:
+    image: {{ zookeeper_image }}
+    restart: always
+    hostname: {{ inventory_hostname }}
+    container_name: {{ inventory_hostname }}
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - {{ zookeeper_root_dir }}/data:/data
+      - {{ zookeeper_root_dir }}/datalog:/datalog
+      - {{ zookeeper_root_dir }}/conf/zoo.cfg:/conf/zoo.cfg
+    environment:
+      ZOO_MY_ID: {{ inventory_hostname.split("-")[-1] }}
+      TZ: Asia/Shanghai

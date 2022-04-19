@@ -4,6 +4,8 @@ pro.minio
 pro.moosefs
 pro.redis
 pro.nacos
+pro.kafka
+pro.zookeeper
 
 [pro.minio]
 minio-proxy
@@ -33,3 +35,13 @@ nacos-proxy
 nacos-cluster-1
 nacos-cluster-2
 nacos-cluster-3
+
+[pro.kafka]
+kafka-cluster-1
+kafka-cluster-2
+kafka-cluster-3
+
+[pro.zookeeper]
+zookeeper-cluster-1
+zookeeper-cluster-2
+zookeeper-cluster-3

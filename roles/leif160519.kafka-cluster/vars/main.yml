@@ -1,0 +1,2 @@
+---
+kafka_image: schrbr/kafka:2.13-2.6.0

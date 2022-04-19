@@ -721,6 +721,24 @@
     - role: roles/leif160519.nacos-cluster
 # }}}
 
+- name: Install zookeeper cluster # {{{
+  hosts: pro.zookeeper
+  tags: never,zookeeper-cluster
+  vars:
+    zookeeper_root_dir: /opt/applications/zookeeper
+  roles:
+    - role: roles/leif160519.zookeeper-cluster
+# }}}
+
+- name: Install kafka cluster # {{{
+  hosts: pro.kafka
+  tags: never, kafka-cluster
+  vars:
+    kafka_root_dir: /opt/applications/kafka
+  roles:
+    - role: roles/leif160519.kafka-cluster
+# }}}
+
 - name: Install redis cluster 6.0 # {{{
   hosts: pro.redis
   tags: never, redis-cluster

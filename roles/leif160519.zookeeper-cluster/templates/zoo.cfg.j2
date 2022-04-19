@@ -1,0 +1,12 @@
+tickTime=2000
+dataDir=/data
+dataLogDir=/datalog
+clientPort=2181
+quorumListenOnAllIPs=true
+autopurge.purgeInterval=30
+autopurge.snapRetainCount=72
+initLimit=5
+syncLimit=2
+server.{{ hostvars['zookeeper-cluster-1'].inventory_hostname.split('-')[-1] }}={{ hostvars['zookeeper-cluster-1'].ansible_host }}:2888:3888
+server.{{ hostvars['zookeeper-cluster-2'].inventory_hostname.split('-')[-1] }}={{ hostvars['zookeeper-cluster-2'].ansible_host }}:2888:3888
+server.{{ hostvars['zookeeper-cluster-3'].inventory_hostname.split('-')[-1] }}={{ hostvars['zookeeper-cluster-3'].ansible_host }}:2888:3888

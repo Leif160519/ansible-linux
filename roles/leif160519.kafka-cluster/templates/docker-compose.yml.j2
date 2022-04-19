@@ -1,0 +1,24 @@
+version: '3'
+services:
+  {{ inventory_hostname }}:
+    image: {{ kafka_image }}
+    restart: always
+    container_name: {{ inventory_hostname }}
+    privileged: true
+    ports:
+     - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: {{ inventory_hostname.split("-")[-1] }}
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://{{ ansible_host }}:9092
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: {{ hostvars['zookeeper-cluster-1'].ansible_host }}:2181,{{ hostvars['zookeeper-cluster-2'].ansible_host }}:2181,{{ hostvars['zookeeper-cluster-3'].ansible_host }}:2181
+      KAFKA_LOG_DIRS: /data/kafka-data
+      KAFKA_LOG_RETENTION_HOURS: 168
+      TZ: Asia/Shanghai
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - {{ kafka_root_dir }}/config/:/opt/kafka/config
+      - /var/run/docker.sock:/var/run/docker.sock
+      - {{ kafka_root_dir }}/data/:/data/kafka-data
+      - {{ kafka_root_dir }}/logs:/opt/kafka/logs

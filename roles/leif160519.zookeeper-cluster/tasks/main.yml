@@ -1,0 +1,42 @@
+---
+- name: mkdir
+  file:
+    dest: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "{{ zookeeper_root_dir }}"
+    - "{{ zookeeper_root_dir }}/data"
+    - "{{ zookeeper_root_dir }}/datalog"
+    - "{{ zookeeper_root_dir }}/conf"
+
+- name: config docker-compose.yml
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ zookeeper_root_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: config zoo.conf
+  template:
+    src: zoo.cfg.j2
+    dest: "{{ zookeeper_root_dir }}/conf/zoo.cfg"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: start docker container
+  shell: docker-compose -f {{ zookeeper_root_dir }}/docker-compose.yml up -d
+  ignore_errors: false
+
+- name: check zookeeper status
+  shell: docker exec  {{ inventory_hostname }} /apache-zookeeper-3.5.9-bin/bin/zkServer.sh status
+  register: result
+  ignore_errors: false
+
+- debug:
+    msg: "{{ inventory_hostname }}:{{ result.stdout_lines }}"
+  failed_when: result.stdout_lines | length == 0

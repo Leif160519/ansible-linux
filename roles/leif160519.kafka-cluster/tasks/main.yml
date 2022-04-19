@@ -1,0 +1,41 @@
+---
+- name: mkdir
+  file:
+    path: "{{ kafka_root_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: config docker-compose.yml
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ kafka_root_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: start kafka cluster
+  shell: docker-compose -f {{ kafka_root_dir }}/docker-compose.yml up -d
+  ignore_errors: false
+  register: docker_status
+
+- debug:
+    var: docker_status.stderr_lines
+  failed_when: docker_status.stderr_lines | length == 0
+
+- name: show docker containers status
+  shell: docker ps -a | grep kafka-cluster
+  register: docker_status
+
+- debug:
+    msg: "{{ inventory_hostname }}:{{ docker_status.stdout_lines }}"
+  failed_when: docker_status.stdout_lines | length == 0
+
+- name: close auto create topic
+  lineinfile:
+    path: "{{ kafka_root_dir }}/config/server.properties"
+    line: "auto.create.topics.enable=false"
+    create: false
+  ignore_errors: false
+  notify: restart kafka container

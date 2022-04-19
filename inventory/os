@@ -26,6 +26,12 @@ os.centos7
 # }}}3
 
 [os.centos7] # {{{3
+zookeeper-cluster-1
+zookeeper-cluster-2
+zookeeper-cluster-3
+kafka-cluster-1
+kafka-cluster-2
+kafka-cluster-3
 nacos-proxy
 nacos-cluster-1
 nacos-cluster-2
