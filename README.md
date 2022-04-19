@@ -35,6 +35,7 @@ ansible-linux
     ├── geerlingguy.ntp                   ------ 安装和配置ntp时间同步
     ├── leif160519.backuppc               ------ 配置backuppc服务器(不包含安装)
     ├── leif160519.docker                 ------ 安装和配置docker
+    ├── leif160519.kafka-cluster          ------ 安装kafka集群2.x
     ├── leif160519.minio-cluster          ------ 安装minio集群
     ├── leif160519.moosefs                ------ 安装moosefs分布式存储集群
     ├── leif160519.mysql                  ------ 安装和配置mysql5.7.28
@@ -43,7 +44,8 @@ ansible-linux
     ├── leif160519.oh-my-zsh              ------ 安装和配置oh-my-zsh
     ├── leif160519.redis-cluster          ------ 编译安装和配置redis集群6.x
     ├── leif160519.vim-complex            ------ 配置vim-简单版
-    └── leif160519.vim-simple             ------ 配置vim-复杂版，带智能语法提示
+    ├── leif160519.vim-simple             ------ 配置vim-复杂版，带智能语法提示
+    └── leif160519.zookeeper-cluster      ------ 安装zookeeper集群3.5.9
 ```
 
 ## 四、如何使用
