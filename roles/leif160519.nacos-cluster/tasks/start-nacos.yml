@@ -21,7 +21,7 @@
 
 - name: show docker container status
   block:
-    - shell: docker ps -a
+    - shell: docker ps -a | grep "nacos-app|nacos-mysql"
       register: docker_status
 
     - debug:
