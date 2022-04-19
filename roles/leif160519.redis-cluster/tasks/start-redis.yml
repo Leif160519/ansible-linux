@@ -1,6 +1,6 @@
 ---
 - name: config redis service file
-  templates:
+  template:
     dest: /lib/systemd/system/redis.service
     src: redis.service.j2
     owner: root
@@ -8,7 +8,7 @@
     mode: 0644
 
 - name: create redis config file
-  templates:
+  template:
     dest: "{{ redis_conf_dir }}/redis.conf"
     src: redis.conf.j2
     owner: root
