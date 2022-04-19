@@ -38,6 +38,7 @@ ansible-linux
     ├── leif160519.minio-cluster          ------ 安装minio集群
     ├── leif160519.moosefs                ------ 安装moosefs分布式存储集群
     ├── leif160519.mysql                  ------ 安装和配置mysql5.7.28
+    ├── leif160519.nacos-cluster          ------ 安装nacos集群2.0
     ├── leif160519.network                ------ 配置静态ip地址
     ├── leif160519.oh-my-zsh              ------ 安装和配置oh-my-zsh
     ├── leif160519.redis-cluster          ------ 编译安装和配置redis集群6.x

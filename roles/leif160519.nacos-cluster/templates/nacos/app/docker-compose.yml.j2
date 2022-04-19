@@ -1,0 +1,23 @@
+version: "3"
+services:
+  nacos-app:
+    image: {{ nacos_app_image }}
+    container_name: nacos-app
+    env_file:
+      - nacos.env
+    volumes:
+      - /etc/localtime:/etc/localtime:rw
+      - {{ nacos_app_root_dir }}/logs/:/home/nacos/logs
+    ports:
+      - 8848:8848
+      - 9848:9848
+      - 9849:9849
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - nacos_net
+
+networks:
+  nacos_net:
+    driver: bridge

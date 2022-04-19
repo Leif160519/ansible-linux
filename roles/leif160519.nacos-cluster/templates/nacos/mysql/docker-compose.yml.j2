@@ -1,0 +1,18 @@
+version: "3"
+services:
+  nacos-mysql:
+    container_name: nacos-mysql
+    image: {{ nacos_mysql_image }}
+    networks:
+      - nacos_net
+    env_file:
+      - mysql.env
+    volumes:
+      - /etc/localtime:/etc/localtime:rw
+      - {{ nacos_mysql_root_dir }}/data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+networks:
+  nacos_net:
+    driver: bridge

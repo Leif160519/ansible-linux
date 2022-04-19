@@ -1,0 +1,30 @@
+---
+- name: start nacos-mysql
+  block:
+    - shell: docker-compose -f {{ nacos_mysql_root_dir }}/docker-compose.yml up -d
+      register: nacos_mysql_result
+
+    - debug:
+        var: nacos_mysql_result.stdout_lines
+      failed_when: nacos_mysql_result.stdout_lines | length == 0
+  when: inventory_hostname == "nacos-cluster-1"
+
+- name: start nacos-app
+  block:
+    - shell: docker-compose -f {{ nacos_app_root_dir }}/docker-compose.yml up -d
+      register: nacos_app_result
+
+    - debug:
+        var: nacos_app_result.stdout_lines
+      failed_when: nacos_app_result.stdout_lines | length == 0
+  when: not inventory_hostname == "nacos-proxy"
+
+- name: show docker container status
+  block:
+    - shell: docker ps -a
+      register: docker_status
+
+    - debug:
+        msg: "{{ inventory_hostname }}:{{ docker_status.stdout_lines }}"
+      failed_when: docker_status.stdout_lines | length == 0
+  when: not inventory_hostname == "nacos-proxy"

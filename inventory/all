@@ -20,3 +20,7 @@ redis-cluster-master-3  ansible_host=192.168.0.13
 redis-cluster-slaver-1  ansible_host=192.168.0.14
 redis-cluster-slaver-2  ansible_host=192.168.0.15
 redis-cluster-slaver-3  ansible_host=192.168.0.16
+nacos-proxy             ansible_host=192.168.0.100
+nacos-cluster-1         ansible_host=192.168.0.101
+nacos-cluster-2         ansible_host=192.168.0.102
+nacos-cluster-3         ansible_host=192.168.0.103

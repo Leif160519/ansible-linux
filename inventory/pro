@@ -3,6 +3,7 @@
 pro.minio
 pro.moosefs
 pro.redis
+pro.nacos
 
 [pro.minio]
 minio-proxy
@@ -26,3 +27,9 @@ redis-cluster-master-3
 redis-cluster-slaver-1
 redis-cluster-slaver-2
 redis-cluster-slaver-3
+
+[pro.nacos]
+nacos-proxy
+nacos-cluster-1
+nacos-cluster-2
+nacos-cluster-3

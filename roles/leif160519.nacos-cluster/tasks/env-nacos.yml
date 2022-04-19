@@ -1,0 +1,34 @@
+---
+- name: detect docker & docker-compose environment-Debian
+  block:
+    - shell: dpkg -l | grep docker
+      register: docker_env_debian
+
+    - shell: dpkg -l | grep docker-compose
+      register: compose_env_debian
+
+    - debug:
+        msg: "docker已安装"
+      failed_when: docker_env_debian.stdout_lines | length == 0
+
+    - debug:
+        msg: "docker-compose已安装"
+      failed_when: compose_env_debian.stdout_lines | length == 0
+  when: ansible_os_family == "Debian" and (not inventory_hostname == "nacos-proxy")
+
+- name: detect docker & docker-compose environment-RedHat
+  block:
+    - shell: rpm -qa | grep docker
+      register: docker_env_redhat
+
+    - shell: rpm -qa | grep docker-compose
+      register: compose_env_redhat
+
+    - debug:
+        msg: "未安装docker"
+      failed_when: docker_env_redhat.stdout_lines | length == 0
+
+    - debug:
+        msg: "未安装docker-compose"
+      failed_when: compose_env_redhat.stdout_lines | length == 0
+  when: ansible_os_family == "RedHat" and (not inventory_hostname == "nacos-proxy")

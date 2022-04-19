@@ -26,6 +26,10 @@ os.centos7
 # }}}3
 
 [os.centos7] # {{{3
+nacos-proxy
+nacos-cluster-1
+nacos-cluster-2
+nacos-cluster-3
 redis-cluster-master-1
 redis-cluster-master-2
 redis-cluster-master-3

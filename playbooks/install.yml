@@ -707,6 +707,20 @@
     - role: roles/leif160519.mysql
 # }}}
 
+- name: Install nacos cluster # {{{
+  hosts: pro.nacos
+  tags: never, nacos-cluster
+  vars:
+    mysql_user: nacos
+    mysql_password: nacos-123
+    mysql_root_password: root
+    mysql_database: nacos_config
+    nacos_app_root_dir: /opt/applications/nacos/app
+    nacos_mysql_root_dir: /opt/applications/nacos/mysql
+  roles:
+    - role: roles/leif160519.nacos-cluster
+# }}}
+
 - name: Install redis cluster 6.0 # {{{
   hosts: pro.redis
   tags: never, redis-cluster

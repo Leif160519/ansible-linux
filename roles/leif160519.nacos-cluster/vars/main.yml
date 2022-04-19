@@ -1,0 +1,3 @@
+---
+nacos_app_image: nacos/nacos-server:v2.0.4
+nacos_mysql_image: nacos/nacos-mysql:8.0.16

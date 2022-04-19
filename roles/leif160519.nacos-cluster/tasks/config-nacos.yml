@@ -1,0 +1,69 @@
+---
+- name: mkdir
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "{{ nacos_app_root_dir }}"
+    - "{{ nacos_mysql_root_dir }}"
+  when: not inventory_hostname == "nacos-proxy"
+
+- name: distribution profile - nacos docker-compose
+  template:
+    src: nacos/app/docker-compose.yml.j2
+    dest: "{{ nacos_app_root_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: 0644
+  when: not inventory_hostname == "nacos-proxy"
+
+- name: distribution profile - nacos env
+  template:
+    src: nacos/app/nacos.env.j2
+    dest: "{{ nacos_app_root_dir }}/nacos.env"
+    owner: root
+    group: root
+    mode: 0644
+  when: not inventory_hostname == "nacos-proxy"
+
+- name: distribution profile - mysql docker-compose
+  template:
+    src: nacos/mysql/docker-compose.yml.j2
+    dest: "{{ nacos_mysql_root_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: 0644
+  when: inventory_hostname == "nacos-cluster-1"
+
+- name: distribution profile - mysql env
+  template:
+    src: nacos/mysql/mysql.env.j2
+    dest: "{{ nacos_mysql_root_dir }}/mysql.env"
+    owner: root
+    group: root
+    mode: 0644
+  when: inventory_hostname == "nacos-cluster-1"
+
+- name: distribution profile - nginx redhat
+  template:
+    src: nacos/nginx/nacos.conf.j2
+    dest: /etc/nginx/conf.d/nacos.conf
+    owner: root
+    group: root
+    mode: 0644
+  delegate_to: nacos-proxy
+  when: ansible_os_family == "RedHat"
+
+- name: distribution profile - nginx debian
+  template:
+    src: nacos/nginx/nacos.conf.j2
+    dest: /etc/nginx/sites-enabled/nacos.conf
+    owner: root
+    group: root
+    mode: 0644
+  delegate_to: nacos-proxy
+  when: ansible_os_family == "Debian"
+  notify: reload nginx service
