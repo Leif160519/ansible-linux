@@ -735,6 +735,7 @@
   tags: never, kafka-cluster
   vars:
     kafka_root_dir: /opt/applications/kafka
+    auto_create_topic: false
   roles:
     - role: roles/leif160519.kafka-cluster
 # }}}

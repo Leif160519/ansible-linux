@@ -39,3 +39,4 @@
     create: false
   ignore_errors: false
   notify: restart kafka container
+  when: auto_create_topic == false
