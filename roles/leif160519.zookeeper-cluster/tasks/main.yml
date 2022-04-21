@@ -33,7 +33,7 @@
   ignore_errors: false
 
 - name: check zookeeper status
-  shell: docker exec  {{ inventory_hostname }} /apache-zookeeper-3.5.9-bin/bin/zkServer.sh status
+  shell: sleep 10 && docker exec  {{ inventory_hostname }} /apache-zookeeper-3.5.9-bin/bin/zkServer.sh status
   register: result
   ignore_errors: false
 
