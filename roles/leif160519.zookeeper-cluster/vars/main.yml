@@ -1,2 +1,2 @@
 ---
-zookeeper_image: zookeeper:3.5.9
+zookeeper_image: zookeeper:3.5.8
