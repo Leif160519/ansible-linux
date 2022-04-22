@@ -18,7 +18,6 @@ services:
       TZ: Asia/Shanghai
     volumes:
       - /etc/localtime:/etc/localtime
-      - {{ kafka_root_dir }}/config:/opt/kafka/config
       - /var/run/docker.sock:/var/run/docker.sock
       - {{ kafka_root_dir }}/data:/data/kafka-data
       - {{ kafka_root_dir }}/logs:/opt/kafka/logs

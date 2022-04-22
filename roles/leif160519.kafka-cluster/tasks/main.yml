@@ -32,11 +32,28 @@
     msg: "{{ inventory_hostname }}:{{ docker_status.stdout_lines }}"
   failed_when: docker_status.stdout_lines | length == 0
 
-- name: close auto create topic
-  lineinfile:
-    path: "{{ kafka_root_dir }}/config/server.properties"
-    line: "auto.create.topics.enable=false"
-    create: false
+- name: config kafka server.properties
+  block:
+    - name: copy server.properties to /tmp
+      shell: docker cp {{ inventory_hostname }}:/opt/kafka/config/server.properties /tmp/server.properties
+
+    - name: set zookeeper connect timeout
+      lineinfile:
+        path: /tmp/server.properties
+        line: "{{ item }}"
+        create: false
+      with_items:
+        - zookeeper.connection.timeout.ms=6000000
+
+    - name: close auto create topic
+      lineinfile:
+        path: "{{ kafka_root_dir }}/config/server.properties"
+        line: "auto.create.topics.enable=false"
+        create: false
+      when: auto_create_topic == false
+
+    - name: reload kafka container
+      shell: |
+        docker cp /tmp/server.properties {{ inventory_hostname }}:/opt/kafka/config/server.properties
+        docker restart {{ inventory_hostname }}
   ignore_errors: false
-  notify: restart kafka container
-  when: auto_create_topic == false

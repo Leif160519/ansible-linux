@@ -1,4 +1,0 @@
----
-- name: restart kafka container
-  shell: docker-compose -f {{ kafka_root_dir }}/docker-compose.yml restart
-  ignore_errors: false
