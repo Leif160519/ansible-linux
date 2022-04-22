@@ -1,0 +1,10 @@
+---
+- include_tasks: install_clickhouse.yml
+
+- include_tasks: config_clickhouse.yml
+
+- name: start clickhouse server
+  service:
+    name: clickhouse-server
+    state: started
+    enabled: true

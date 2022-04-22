@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<yandex>
+    <profiles>
+        <default>
+            <max_memory_usage>10000000000</max_memory_usage>
+            <use_uncompressed_cache>0</use_uncompressed_cache>
+            <load_balancing>random</load_balancing>
+        </default>
+        <readonly>
+            <max_memory_usage>10000000000</max_memory_usage>
+            <use_uncompressed_cache>0</use_uncompressed_cache>
+            <load_balancing>random</load_balancing>
+            <readonly>1</readonly>
+        </readonly>
+    </profiles>
+    <quotas>
+        <!-- Name of quota. -->
+        <default>
+            <interval>
+                <duration>3600</duration>
+                <queries>0</queries>
+                <errors>0</errors>
+                <result_rows>0</result_rows>
+                <read_rows>0</read_rows>
+                <execution_time>0</execution_time>
+            </interval>
+        </default>
+    </quotas>
+    <users>
+        <default>
+            <password_sha256_hex>4ea5bef9bb2e06ddec2c3bedf2ed95928965e7a66ffb2e7c78f66554b9aa73a7</password_sha256_hex>
+            <networks incl="networks" replace="replace">
+                <ip>::/0</ip>
+            </networks>
+            <profile>default</profile>
+            <quota>default</quota>
+        </default>
+        <ck>
+            <password_sha256_hex>4ea5bef9bb2e06ddec2c3bedf2ed95928965e7a66ffb2e7c78f66554b9aa73a7</password_sha256_hex>
+            <networks incl="networks" replace="replace">
+                <ip>::/0</ip>
+            </networks>
+            <profile>readonly</profile>
+            <quota>default</quota>
+        </ck>
+    </users>
+</yandex>

@@ -26,6 +26,8 @@ os.centos7
 # }}}3
 
 [os.centos7] # {{{3
+clickhouse-cluster-1
+clickhouse-cluster-2
 zookeeper-cluster-1
 zookeeper-cluster-2
 zookeeper-cluster-3

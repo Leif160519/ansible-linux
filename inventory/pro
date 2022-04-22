@@ -1,47 +1,60 @@
 [pro]
-[pro:children]
+[pro:children] # {{{ 项目/集群 分类
 pro.minio
 pro.moosefs
 pro.redis
 pro.nacos
 pro.kafka
 pro.zookeeper
+pro.clickhouse
+# }}}
 
-[pro.minio]
+[pro.minio] # {{{ minio 集群
 minio-proxy
 minio-cluster-1
 minio-cluster-2
 minio-cluster-3
 minio-cluster-4
+# }}}
 
-[pro.moosefs]
+[pro.moosefs]  # {{{ moosefs 集群
 mfsmaster
 mfs-master
 mfs-metalogger
 mfs-chunkserver-1
 mfs-chunkserver-2
 mfs-chunkserver-3
+# }}}
 
-[pro.redis]
+[pro.redis] # {{{ redis 集群
 redis-cluster-master-1
 redis-cluster-master-2
 redis-cluster-master-3
 redis-cluster-slaver-1
 redis-cluster-slaver-2
 redis-cluster-slaver-3
+# }}}
 
-[pro.nacos]
+[pro.nacos] # {{{ nacos 集群
 nacos-proxy
 nacos-cluster-1
 nacos-cluster-2
 nacos-cluster-3
+# }}}
 
-[pro.kafka]
+[pro.kafka]  # {{{ kafka 集群
 kafka-cluster-1
 kafka-cluster-2
 kafka-cluster-3
+# }}}
 
-[pro.zookeeper]
+[pro.zookeeper] # {{{ zookeeper 集群
 zookeeper-cluster-1
 zookeeper-cluster-2
 zookeeper-cluster-3
+# }}}
+
+[pro.clickhouse] # {{{ clickhouse 集群
+clickhouse-cluster-1
+clickhouse-cluster-2
+# }}}

@@ -740,6 +740,28 @@
     - role: roles/leif160519.kafka-cluster
 # }}}
 
+- name: Install clickhouse cluster # {{{
+  hosts: pro.clickhouse
+  tags: never, clickhouse-cluster
+  vars:
+    clickhouse_log_dir: /var/log/clickhouse-server
+    clickhouse_log_size: 100M
+    clickhouse_log_count: 10
+    clickhouse_http_port: 8123
+    clickhouse_tcp_port: 9000
+    clickhouse_interserver_http_port: 9009
+    clickhouse_max_connections: 4096
+    clickhouse_keep_alive_timeout: 3
+    clickhouse_max_concurrent_queries: 100
+    clickhouse_dir: /var/lib/clickhouse/
+    clickhouse_tmp_dir: /var/lib/clickhouse/tmp/
+    clickhouse_config_dir: /etc/clickhouse-server
+    clickhouse_password: clickhouse-123
+    clickhouse_cluster_name: clickhouse_cluster
+  roles:
+    - role: roles/leif160519.clickhouse-cluster
+# }}}
+
 - name: Install redis cluster 6.0 # {{{
   hosts: pro.redis
   tags: never, redis-cluster

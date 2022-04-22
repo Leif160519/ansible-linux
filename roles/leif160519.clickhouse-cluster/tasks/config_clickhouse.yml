@@ -1,0 +1,24 @@
+---
+- name: mkdir
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: clickhouse
+    group: clickhouse
+    mode: 0755
+  with_items:
+    - "{{ clickhouse_log_dir }}"
+    - "{{ clickhouse_data_dir }}"
+    - "{{ clickhouse_tmp_dir }}"
+
+- name: config clickhouse
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - {src: "etc/clickhouse-server/config.xml.j2", dest: "{{ clickhouse_config_dir }}/config.xml"}
+    - {src: "etc/clickhouse-server/metrika.xml.j2", dest: "{{ clickhouse_config_dir }}/metrika.xml"}
+    - {src: "etc/clickhouse-server/users.xml.j2", dest: "{{ clickhouse_config_dir }}/users.xml"}

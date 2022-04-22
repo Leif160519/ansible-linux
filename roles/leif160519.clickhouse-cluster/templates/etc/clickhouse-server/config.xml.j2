@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<yandex>
+   <!-- 日志 -->
+   <logger>
+       <level>trace</level>
+       <log>{{ clickhouse_log_dir }}/clickhouse-server.log</log>
+       <errorlog>{{ clickhouse_log_dir }}/clickhouse-server.err.log</errorlog>
+       <size>{{ clickhouse_log_size }}</size>
+       <count>{{ clickhouse_log_count }}</count>
+   </logger>
+   <!-- 端口 -->
+   <http_port>8123</http_port>
+   <tcp_port>9000</tcp_port>
+   <interserver_http_port>{{ clickhouse_interserver_http_port }}</interserver_http_port>
+   <!-- 本机域名 -->
+   <interserver_http_host>{{ ansible_host }}</interserver_http_host>
+   <!-- 监听IP -->
+   <listen_host>0.0.0.0</listen_host>
+   <!-- 最大连接数 -->
+   <max_connections>{{ clickhouse_max_connections }}</max_connections>
+   <keep_alive_timeout>{{ clickhouse_keep_alive_timeout }}</keep_alive_timeout>
+   <!-- 最大并发查询数 -->
+   <max_concurrent_queries>{{ clickhouse_max_concurrent_queries }}</max_concurrent_queries>
+   <uncompressed_cache_size>8589934592</uncompressed_cache_size>
+   <mark_cache_size>10737418240</mark_cache_size>
+   <!-- 存储路径 -->
+   <path>{{ clickhouse_dir }}</path>
+   <tmp_path>{{ clickhouse_tmp_dir }}</tmp_path>
+   <!-- user配置 -->
+   <users_config>users.xml</users_config>
+   <default_profile>default</default_profile>
+   <!-- log_queries>1</log_queries -->
+   <default_database>default</default_database>
+   <remote_servers incl="remote_servers" />
+   <zookeeper incl="zookeeper-servers" optional="true" />
+   <macros incl="macros" optional="true" />
+   <builtin_dictionaries_reload_interval>3600</builtin_dictionaries_reload_interval>
+   <!-- 控制大表的删除 -->
+   <max_table_size_to_drop>0</max_table_size_to_drop>
+   <include_from>{{ clickhouse_config_dir }}/metrika.xml</include_from>
+<query_log>
+  <database>system</database>
+  <table>query_log</table>
+  <partition_by>toMonday(event_date)</partition_by>
+  <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+</query_log>
+<metric_log>
+  <database>system</database>
+  <table>metric_log</table>
+  <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+  <collect_interval_milliseconds>1000</collect_interval_milliseconds>
+</metric_log>
+</yandex>

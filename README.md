@@ -10,42 +10,43 @@
 ## 三、项目目录结构
 ```
 ansible-linux
-├── ansible.cfg                         ------ ansible 配置文件，优先级最高，其次为/etc/ansible/ansible.cfg
-├── files                               ------ 模板文件，非roles中的
-├── group_vars                          ------ 全局环境变量
-├── inventory                           ------ 机器分组列表
-│   ├── all                               ------ 所有机器，不分组
-│   ├── os                                ------ 按操作系统版本分类
-│   └── pro                               ------ 按项目或集群分类
-├── LICENSE                             ------ 开源许可证
-├── playbooks                           ------ 各种剧本
-│   ├── backuppc.yml                      ------ backuppc配置剧本
-│   ├── config.yml                        ------ 系统配置剧本
+├── ansible.cfg                         // ansible 配置文件，优先级最高，其次为/etc/ansible/ansible.cfg
+├── files                               // 模板文件，非roles中的
+├── group_vars                          // 全局环境变量
+├── inventory                           // 机器分组列表
+│   ├── all                               // 所有机器，不分组
+│   ├── os                                // 按操作系统版本分类
+│   └── pro                               // 按项目或集群分类
+├── LICENSE                             // 开源许可证
+├── playbooks                           // 各种剧本
+│   ├── backuppc.yml                      // backuppc配置剧本
+│   ├── config.yml                        // 系统配置剧本
 │   ├── files -> ../files
 │   ├── group_vars -> ../group_vars
-│   ├── install.yml                       ------ 软件安装剧本
-│   ├── prometheus.yml                    ------ p8s配置剧本
-│   ├── repository.yml                    ------ 仓库源配置剧本
-│   ├── uninstall.yml                     ------ 软件卸载剧本
-│   └── universal.yml                     ------ 集合，通用剧本
-├── README.md                           ------ 自述文件
-└── roles                               ------ 角色
-    ├── ahuffman.resolv                   ------ 配置/etc/resolved.conf
-    ├── cloudalchemy.prometheus           ------ 安装和配置prometheus服务器
-    ├── geerlingguy.ntp                   ------ 安装和配置ntp时间同步
-    ├── leif160519.backuppc               ------ 配置backuppc服务器(不包含安装)
-    ├── leif160519.docker                 ------ 安装和配置docker
-    ├── leif160519.kafka-cluster          ------ 安装kafka集群2.x
-    ├── leif160519.minio-cluster          ------ 安装minio集群
-    ├── leif160519.moosefs                ------ 安装moosefs分布式存储集群
-    ├── leif160519.mysql                  ------ 安装和配置mysql5.7.28
-    ├── leif160519.nacos-cluster          ------ 安装nacos集群2.0
-    ├── leif160519.network                ------ 配置静态ip地址
-    ├── leif160519.oh-my-zsh              ------ 安装和配置oh-my-zsh
-    ├── leif160519.redis-cluster          ------ 编译安装和配置redis集群6.x
-    ├── leif160519.vim-complex            ------ 配置vim-简单版
-    ├── leif160519.vim-simple             ------ 配置vim-复杂版，带智能语法提示
-    └── leif160519.zookeeper-cluster      ------ 安装zookeeper集群3.5.9
+│   ├── install.yml                       // 软件安装剧本
+│   ├── prometheus.yml                    // p8s配置剧本
+│   ├── repository.yml                    // 仓库源配置剧本
+│   ├── uninstall.yml                     // 软件卸载剧本
+│   └── universal.yml                     // 集合，通用剧本
+├── README.md                           // 自述文件
+└── roles                               // 角色
+    ├── ahuffman.resolv                   // 配置/etc/resolved.conf
+    ├── cloudalchemy.prometheus           // 安装和配置prometheus服务器
+    ├── geerlingguy.ntp                   // 安装和配置ntp时间同步
+    ├── leif160519.backuppc               // 配置backuppc服务器(不包含安装)
+    ├── leif160519.clickhouse-cluster     // 安装配置clickhouse集群
+    ├── leif160519.docker                 // 安装和配置docker
+    ├── leif160519.kafka-cluster          // 安装kafka集群2.x
+    ├── leif160519.minio-cluster          // 安装minio集群
+    ├── leif160519.moosefs                // 安装moosefs分布式存储集群
+    ├── leif160519.mysql                  // 安装和配置mysql5.7.28
+    ├── leif160519.nacos-cluster          // 安装nacos集群2.0
+    ├── leif160519.network                // 配置静态ip地址
+    ├── leif160519.oh-my-zsh              // 安装和配置oh-my-zsh
+    ├── leif160519.redis-cluster          // 编译安装和配置redis集群6.x
+    ├── leif160519.vim-complex            // 配置vim-简单版
+    ├── leif160519.vim-simple             // 配置vim-复杂版，带智能语法提示
+    └── leif160519.zookeeper-cluster      // 安装zookeeper集群3.5.9
 ```
 
 ## 四、如何使用

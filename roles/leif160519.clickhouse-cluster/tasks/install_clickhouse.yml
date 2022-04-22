@@ -1,0 +1,22 @@
+---
+- name: install clickhouse - RedHat
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ clickhouse_client_rpm_url }}"
+    - "{{ clickhouse_common_static_rpm_url }}"
+    - "{{ clickhouse_common_static_dbg_rpm_url }}"
+    - "{{ clickhouse_server_rpm_url }}"
+  when: ansible_os_family == "RedHat"
+
+- name: install clickhouse - Debian
+  apt:
+    deb: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ clickhouse_client_deb_url }}"
+    - "{{ clickhouse_common_static_deb_url }}"
+    - "{{ clickhouse_common_static_dbg_deb_url }}"
+    - "{{ clickhouse_server_deb_url }}"
+  when: ansible_os_family == "Debian"

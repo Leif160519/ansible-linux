@@ -1,0 +1,12 @@
+---
+clickhouse_rpm_version: 20.7.2.30-2
+clickhouse_client_rpm_url: https://repo.yandex.ru/clickhouse/rpm/stable/x86_64/clickhouse-client-{{ clickhouse_rpm_version }}.noarch.rpm
+clickhouse_common_static_rpm_url: https://repo.yandex.ru/clickhouse/rpm/stable/x86_64/clickhouse-common-static-{{ clickhouse_rpm_version }}.x86_64.rpm
+clickhouse_common_static_dbg_rpm_url: https://repo.yandex.ru/clickhouse/rpm/stable/x86_64/clickhouse-common-static-dbg-{{ clickhouse_rpm_version }}.x86_64.rpm
+clickhouse_server_rpm_url: https://repo.yandex.ru/clickhouse/rpm/stable/x86_64/clickhouse-server-{{ clickhouse_rpm_version }}.noarch.rpm
+
+clickhouse_deb_version: 20.7.2.30
+clickhouse_client_deb_url: https://repo.yandex.ru/clickhouse/deb/stable/main/clickhouse-client_{{ clickhouse_deb_version }}_all.deb
+clickhouse_common_static_deb_url: https://repo.yandex.ru/clickhouse/deb/stable/main/clickhouse-common-static_{{ clickhouse_deb_version }}_amd64.deb
+clickhouse_common_static_dbg_deb_url: https://repo.yandex.ru/clickhouse/deb/stable/main/clickhouse-common-static-dbg_{{ clickhouse_deb_version }}_amd64.deb
+clickhouse_server_deb_url: https://repo.yandex.ru/clickhouse/deb/stable/main/clickhouse-server_{{ clickhouse_deb_version }}_all.deb
