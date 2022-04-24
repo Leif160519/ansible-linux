@@ -543,7 +543,7 @@
             - "*    hard    noproc    65535"
 # }}}
 
-- name: 24.config sysctl
+- name: 24.config sysctl # {{{
   hosts: all
   tags: config, sysctl
   tasks:
@@ -570,3 +570,4 @@
             - net.ipv4.tcp_tw_recycle = 1
             - net.core.somaxconn=262114
             - net.ipv4.tcp_max_orphans=262114
+# }}}
