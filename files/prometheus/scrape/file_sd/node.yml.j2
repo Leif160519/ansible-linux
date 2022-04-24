@@ -1,12 +1,12 @@
 {% for item in prometheus_targets_node %}
-{%- set dist = [] -%}
+{%- set os = [] -%}
 - targets: ['{{ hostvars[item]['ansible_host'] }}:9100']
   labels:
     {% for group in hostvars[item]['group_names'] -%}
-    {%- if group | regex_search('dist\.(u\d+|[crf].*\d+)') -%}
+    {%- if group | regex_search('os\.(u\d+|[crf].*\d+)') -%}
     {{ os.append(group | regex_replace('^(.*)\.(.*)$','\\2')) }}
     {%- endif -%}
     {%- endfor -%}
     all: "{{ item }}"
-    os: "{{ dist|unique|join('#') }}"
+    os: "{{ os|unique|join('#') }}"
 {% endfor %}
