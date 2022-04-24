@@ -13,18 +13,6 @@
 # 系统配置
 - import_playbook: config.yml
 
-# 生成ssh-key
-- import_playbook: ssh-key.yml
-
-# 设置ntp时间同步
-- import_playbook: ntp.yml
-
-# 设置静态IP地址
-- import_playbook: network.yml
-
-# 设置域名解析
-- import_playbook: resolv.yml
-
 # 安装node_exporter
 - import_playbook: prometheus.yml
 
