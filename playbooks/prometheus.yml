@@ -172,20 +172,24 @@
       block:
       - name: stat prometheusalert
         stat:
-          path: "{{ prometheusalert_root_dir }}"
+          path: "{{ prometheusalert_root_dir }}/PrometheusAlert"
         register: pa
+
+      - name: 创建解压文件夹
+        file:
+          path: /opt/prometheusalert
+          state: directory
+          owner: prometheus
+          group: prometheus
+          mode: 0755
 
       - name: 解压prometheusalert安装包
         unarchive:
           src: "{{ prometheusalert_url }}"
-          dest: /opt
+          dest: /opt/prometheusalert
           owner: prometheus
           group: prometheus
           remote_src: yes
-        when: pa.stat.exists == false
-
-      - name: 重命名prometheusalert目录
-        command: mv /opt/linux {{ prometheusalert_root_dir }}
         when: pa.stat.exists == false
 
       - name: 创建prometheusalert软连接
