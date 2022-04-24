@@ -206,7 +206,7 @@
           dest: /lib/systemd/system/prometheusalert.service
           mode: 0644
 
-      - name: 重新载入alertmanager
+      - name: 重新载入systemd
         systemd:
           daemon_reload: true
 
