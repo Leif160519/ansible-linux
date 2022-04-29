@@ -32,3 +32,5 @@ kafka-cluster-2         ansible_host=192.168.0.122
 kafka-cluster-3         ansible_host=192.168.0.123
 clickhouse-cluster-1    ansible_host=192.168.0.131
 clickhouse-cluster-2    ansible_host=192.168.0.132
+nginx-web-01            ansible_host=192.168.0.141
+nginx-web-02            ansible_host=192.168.0.142

@@ -26,6 +26,8 @@ os.centos7
 # }}}3
 
 [os.centos7] # {{{3
+nginx-web-01
+nginx-web-02
 clickhouse-cluster-1
 clickhouse-cluster-2
 zookeeper-cluster-1

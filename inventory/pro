@@ -7,6 +7,7 @@ pro.nacos
 pro.kafka
 pro.zookeeper
 pro.clickhouse
+pro.nginx
 # }}}
 
 [pro.minio] # {{{ minio 集群
@@ -57,4 +58,9 @@ zookeeper-cluster-3
 [pro.clickhouse] # {{{ clickhouse 集群
 clickhouse-cluster-1
 clickhouse-cluster-2
+# }}}
+
+[pro.nginx] # {{{ nginx节点
+nginx-web-01
+nginx-web-02
 # }}}
