@@ -329,10 +329,20 @@
         - template:
             dest: "/var/spool/cron/crontabs/{{ username }}"
             src: files/crontab
-            mode: 0644
+            mode: 0600
             owner: "{{ username }}"
             group: crontab
           ignore_errors: yes
+          when: ansible_os_family == "Debian"
+
+        - template:
+            dest: "/var/spool/cron/{{ username }}"
+            src: files/crontab
+            mode: 0600
+            owner: "{{ username }}"
+            group: "{{ username }}"
+          ignore_errors: yes
+          when: ansible_os_family == "RedHat"
          # }}}
 
 - name: 14.Configure git #{{{

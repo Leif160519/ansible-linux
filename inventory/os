@@ -26,6 +26,8 @@ os.centos7
 # }}}3
 
 [os.centos7] # {{{3
+emqx-cluster-1
+emqx-cluster-2
 nginx-web-01
 nginx-web-02
 clickhouse-cluster-1

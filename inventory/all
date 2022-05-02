@@ -34,3 +34,5 @@ clickhouse-cluster-1    ansible_host=192.168.0.131
 clickhouse-cluster-2    ansible_host=192.168.0.132
 nginx-web-01            ansible_host=192.168.0.141
 nginx-web-02            ansible_host=192.168.0.142
+emqx-cluster-1          ansible_host=192.168.0.151
+emqx-cluster-2          ansible_host=192.168.0.152
