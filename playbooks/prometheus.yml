@@ -352,6 +352,12 @@
       - set_fact:
           nginx_targets_node: "{{ groups['pro.nginx'] }}"
       - template:
+          src: files/nginx/stub_status.conf.j2
+          dest: /etc/nginx/conf.d/stub_status.conf
+          owner: root
+          group: root
+          mode: 0644
+      - template:
           src: files/prometheus/scrape/file_sd/nginx.yml.j2
           dest: /etc/prometheus/file_sd/nginx.yml
         delegate_to: "prometheus-server"
