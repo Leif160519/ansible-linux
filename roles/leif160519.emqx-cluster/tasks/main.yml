@@ -1,0 +1,8 @@
+---
+- include_tasks: install_emqx.yml
+
+- include_tasks: config_os.yml
+
+- include_tasks: config_emqx.yml
+
+- include_tasks: start_emqx.yml

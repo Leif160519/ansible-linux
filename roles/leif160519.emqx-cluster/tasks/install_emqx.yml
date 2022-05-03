@@ -1,0 +1,12 @@
+---
+- name: install emqx redhat
+  - yum:
+      name: "{{ emqx_rpm_url }}"
+      state: present
+    when: ansible_os_family == "RedHat"
+
+- name: install emqx debian
+  apt:
+    deb: "{{ emqx_deb_url }}"
+    state: present
+  when: ansible_os_family == "Debian"

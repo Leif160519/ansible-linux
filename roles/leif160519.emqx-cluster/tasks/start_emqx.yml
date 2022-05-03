@@ -1,0 +1,46 @@
+---
+- name: start emqx server
+  service:
+    name: emqx
+    state: started
+    enabled: true
+
+- name: config plugin
+  shell: /usr/bin/emqx_ctl plugins load emqx_auth_username
+  ignore_errors: false
+
+- name: create user
+  shell: /usr/bin/emqx_ctl users add {{ emqx_username }} {{ emqx_password }}
+  ignore_errors: false
+
+- name: config acl.conf
+  lineinfile:
+    path: /etc/emqx/acl.conf
+    line: '{allow, {user, "{{ emqx_username }}"}, subscribe, ["$SYS/#"]}.'
+    insertafter: '{allow, {ipaddr, "127.0.0.1"}, pubsub, ["$SYS/#", "#"]}.'
+
+- name: config node name
+  lineinfile:
+    path: /etc/emqx/emqx.conf
+    regexp: "^node.name"
+    line: "node.name = emqx@{{ ansible_host }}"
+
+- name: restart emqx server
+  service:
+    name: emqx
+    state: restarted
+    enabled: true
+
+- name: join cluster
+  shell: /usr/bin/emqx_ctl cluster join emqx@{{ hostvars['emqx-cluster-2']['ansible_host'] }}
+  ignore_errors: false
+  when: inventory_hostname == "emqx-cluster-1"
+
+- name: check cluster status
+  block:
+    - shell: /usr/bin/emqx_ctl status
+      register: cluster_status
+
+    - debug:
+        var: cluster_status.stdout_lines
+  ignore_errors: false

@@ -775,6 +775,16 @@
     - role: roles/leif160519.redis-cluster
 # }}}
 
+- name: Install emqx cluster # {{{
+  hosts: pro.emqx
+  tags: never, emqx-cluster
+  vars:
+    emqx_username: test
+    emqx_password: test@123
+  roles:
+    - role: roles/leif160519.emqx-cluster
+# }}}
+
 - name: Install oh-my-zsh # {{{
   hosts: all
   tags: never, zsh, oh-my-zsh

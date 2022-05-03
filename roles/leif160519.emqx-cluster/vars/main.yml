@@ -1,0 +1,4 @@
+---
+emqx_version: 4.3.5
+emqx_rpm_url: https://repos.emqx.io/emqx-ce/redhat/centos/{{ ansible_distribution_major_version }}/stable/emqx-centos{{ ansible_distribution_major_version }}-{{ emqx_version }}-amd64.rpm
+emqx_deb_url: https://repos.emqx.io/emqx-ce/deb/{{ ansible_distribution | lower }}/dists/{{ ansible_lsb.codename }}/pool/stable/amd64/emqx-{{ ansible_lsb.id | lower }}{{ ansible_lsb.release }}-{{ emqx_version }}-amd64.deb

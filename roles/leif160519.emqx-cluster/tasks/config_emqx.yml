@@ -1,0 +1,152 @@
+---
+- name: node.process_limit  # {{{
+  block:
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "^## node.process_limit"
+        line: "node.process_limit = 2097152"
+        backrefs: yes
+# }}}
+
+- name: node.max_ports  # {{{
+  block:
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "^## node.max_ports"
+        line: "## node.max_ports = 1048576"
+        backrefs: yes
+# }}}
+
+- name: listener.tcp.external  # {{{
+  block:
+    - shell: sed -i '/listener.tcp.external/s/## //g' /etc/emqx/emqx.conf
+
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "^listener.tcp.external.acceptors"
+        line: "listener.tcp.external.acceptors = 64"
+
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "^listener.tcp.internal.acceptors"
+        line: "listener.tcp.internal.acceptors = 64"
+
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "^listener.tcp.external.max_connections"
+        line: "listener.tcp.external.max_connections = 1024000"
+
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "^listener.tcp.internal.max_connections"
+        line: "listener.tcp.internal.max_connections = 1024000"
+# }}}
+
+- name: listener.ws  # {{{
+  block:
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "listener.ws.external.acceptors"
+        line: "listener.ws.external.acceptors = 64"
+
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "listener.ws.external.max_connections"
+        line: "listener.ws.external.max_connections = 1024000"
+
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "listener.ws.external.max_conn_rate"
+        line: "listener.ws.external.max_conn_rate = 1000000"
+# }}}
+
+- name: listener.wss  # {{{
+  block:
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "listener.wss.external.acceptors"
+        line: "listener.wss.external.acceptors = 64"
+
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "listener.wss.external.max_connections"
+        line: "listener.wss.external.max_connections = 1024000"
+
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "listener.wss.external.max_conn_rate"
+        line: "listener.wss.external.max_conn_rate = 1000000"
+# }}}
+
+- name: zone.internal  # {{{
+  block:
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "zone.internal.max_inflight"
+        line: "zone.internal.max_inflight = 128"
+
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "zone.external.await_rel_timeout"
+        line: "zone.external.await_rel_timeout = 300"
+
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "zone.internal.max_mqueue_len"
+        line: "zone.internal.max_mqueue_len = 0"
+# }}}
+
+- name: listener.tcp  # {{{
+  block:
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "listener.tcp.external.max_conn_rate"
+        line: "listener.tcp.external.max_conn_rate = 1000000"
+
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "listener.tcp.internal.max_conn_rate"
+        line: "listener.tcp.internal.max_conn_rate = 1000000"
+# }}}
+
+- name: listener.ssl  # {{{
+  block:
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "listener.ssl.external.max_connections"
+        line: "listener.ssl.external.max_connections = 1000000"
+
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "listener.ssl.external.max_conn_rate"
+        line: "listener.ssl.external.max_conn_rate = 1000000"
+# }}}
+
+- name: allow_anonymous  # {{{
+  block:
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "^allow_anonymous"
+        line: "allow_anonymous = false"
+# }}}
+
+- name: mqtt.max_topic_alias  # {{{
+  block:
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: "^mqtt.max_topic_alias"
+        line: "mqtt.max_topic_alias = 0"
+# }}
+
+- name: log.info  # {{{
+  block:
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: '^#log.info.file'
+        line: 'log.info.file  = info.log'
+
+    - lineinfile:
+        path: /etc/emqx/emqx.conf
+        regexp: '^#log.error.file'
+        line: 'log.error.file = error.log'
+# }}}
