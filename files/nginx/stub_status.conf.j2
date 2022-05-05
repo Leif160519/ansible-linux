@@ -1,5 +1,5 @@
 server {
-    listen 8080;
+    listen 80;
     location /stub_status {
         stub_status on;
         allow {{ hostvars['prometheus-server']['ansible_host'] }};
