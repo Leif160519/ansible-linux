@@ -458,9 +458,9 @@
         scrape_interval: 25s
         scrape_timeout: 15s
         evaluation_interval: 25s
-      prometheusalert_rules: []
-      prometheusalert_rules_files: [ "files/prometheus/alert/rules/*.rules" ]
-      prometheusalertmanager_config:
+      prometheus_alert_rules: []
+      prometheus_alert_rules_files: [ "files/prometheus/alert/rules/*.rules" ]
+      prometheus_alertmanager_config:
         - static_configs:
             - targets:
                 - "{{ ansible_host }}:9093"
