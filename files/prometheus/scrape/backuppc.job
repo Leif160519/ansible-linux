@@ -1,0 +1,17 @@
+- job_name: 'backuppc'
+  metrics_path: "/BackupPC_Admin"
+  params:
+    action: ['metrics']
+    format: ['prometheus']
+  basic_auth:
+    username: backuppc
+    password: backuppc
+  static_configs:
+    - targets: ['{{ hostvars['backuppc-server']['ansible_host'] }}:8080']
+      labels:
+        all: {{ hostvars['backuppc-server']['inventory_hostname'] }}
+  metric_relabel_configs:
+    - source_labels: [host]
+      target_label: all
+    - action: labeldrop
+      regex: host
