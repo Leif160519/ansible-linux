@@ -29,11 +29,11 @@ route:
       repeat_interval: 4h
 
 receivers:
-- name: "blackhole"
-- name: '@linux/feishu'
-  webhook_configs:
-    - url: 'http://10.1.1.24:8080/prometheusalert?type=fs&tpl=prometheus-fsv2'
-      send_resolved: true
+  - name: "blackhole"
+  - name: '@linux/feishu'
+    webhook_configs:
+      - url: 'http://10.1.1.24:8080/prometheusalert?type=fs&tpl=prometheus-fsv2'
+        send_resolved: true
 inhibit_rules:
   - source_match:
       severity: 'critical'
