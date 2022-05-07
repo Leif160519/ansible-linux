@@ -202,9 +202,8 @@ server {
 ```
 
 ### 十、Grafana所需Dashboard一览表
-|      |      |
-|------|------|
 |                    监控点               |               Dashboard                                 |
+|-----------------------------------------|---------------------------------------------------------|
 | 所有Linux服务器状态 | [1 Node Exporter Dashboard 22/04/17 通用Job分组版][9] |
 | 自动发现的腾讯云所有Linux服务器状态 | [1 Node Exporter Dashboard 22/04/13 ConsulManager自动同步版][10] |
 | Alertmanager告警总览 | [Alertmanager告警总览][11] |
