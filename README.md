@@ -201,11 +201,48 @@ server {
 }
 ```
 
+### 十、Grafana所需Dashboard一览表
+|      |      |
+|------|------|
+|                    监控点               |               Dashboard                                 |
+| 所有Linux服务器状态 | [1 Node Exporter Dashboard 22/04/17 通用Job分组版][9] |
+| 自动发现的腾讯云所有Linux服务器状态 | [1 Node Exporter Dashboard 22/04/13 ConsulManager自动同步版][10] |
+| Alertmanager告警总览 | [Alertmanager告警总览][11] |
+| Prometehus Alerts | [Prometheus Alerts][12] |
+| 所有业务http监控 | [1 Blackbox Exporter Dashboard 2022/04/12][13] |
+| Backuppc监控 | [Backuppc][14] |
+| prometehus数据持久化监控 | [VictoriaMetrics][15] |
+
+### 十一、参考
+- [ConsulManager][16]
+- [prometheus对接飞书告警][17]
+- [PrometheusAlert][18]
+- [Awesome Prometheus Alerts][19]
+- [Prometheus AlertManager][20]
+- [prometheus监控nginx][21]
+- [Prometheus 监控 nginx][22]
+- [prometheus远端存储之VictoriaMetrics][23]
+
 [1]:  https://docs.ansible.com/
 [2]:  https://github.com/Leif160519/centos-script
 [3]:  https://github.com/Leif160519/ubuntu-script
 [4]:  https://github.com/ansible/ansible/issues/71528
 [5]:  https://bugs.launchpad.net/ubuntu/+source/systemd/+bug/1899232
 [6]:  https://github.com/geerlingguy/ansible-role-ntp/issues/86
-[7]: http://gitstats.sourceforge.net/
-[8]: https://github.com/ejwa/gitinspector
+[7]:  http://gitstats.sourceforge.net/
+[8]:  https://github.com/ejwa/gitinspector
+[9]:  https://grafana.com/grafana/dashboards/16098
+[10]: https://grafana.com/grafana/dashboards/8919
+[11]: https://grafana.com/grafana/dashboards/9741/revisions
+[12]: https://grafana.com/grafana/dashboards/11098
+[13]: https://grafana.com/grafana/dashboards/9965
+[14]: https://grafana.com/grafana/dashboards/13628
+[15]: https://grafana.com/grafana/dashboards/10229
+[16]: https://github.com/starsliao/ConsulManager
+[17]: https://www.cnblogs.com/lixinliang/p/16045115.html
+[18]: https://feiyu563.github.io/index.html
+[19]: https://awesome-prometheus-alerts.grep.to/
+[20]: https://grafana.com/grafana/plugins/camptocamp-prometheus-alertmanager-datasource/?tab=installation
+[21]: https://blog.csdn.net/qq_45464560/article/details/119490479
+[22]: https://blog.csdn.net/u010953609/article/details/121988480
+[23]: https://www.cnblogs.com/zhrx/p/16028078.html
