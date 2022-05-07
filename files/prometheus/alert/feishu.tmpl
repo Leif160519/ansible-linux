@@ -1,0 +1,22 @@
+{{ $var := .externalURL}}{{ range $k,$v:=.alerts }}
+{{if eq $v.status "resolved"}}
+**[Prometheus恢复信息]({{$v.generatorURL}})**
+*✅[{{$v.labels.alertname}}]({{$var}})*
+故障地址：{{$v.labels.instance}}
+故障主机：{{$v.labels.all}}
+开始时间：{{GetCSTtime $v.startsAt }}
+结束时间：{{GetCSTtime $v.endsAt }}
+当前时间 {{GetCSTtime ""}}
+摘要信息: {{ $v.annotations.summary }}
+
+{{else}}
+**[Prometheus告警信息]({{$v.generatorURL}})**
+*⛔[{{$v.labels.alertname}}]({{$var}})*
+故障地址：{{$v.labels.instance}}
+故障主机：{{$v.labels.all}}
+开始时间：{{GetCSTtime $v.startsAt }}
+结束时间：{{GetCSTtime $v.endsAt }}
+当前时间 {{GetCSTtime ""}}
+摘要信息: {{ $v.annotations.summary }}
+{{end}}
+{{ end }}

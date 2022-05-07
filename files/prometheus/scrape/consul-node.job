@@ -1,0 +1,28 @@
+- job_name: 'consul-node'
+  scrape_interval: 15s
+  scrape_timeout: 5s
+  consul_sd_configs:
+    - server: '{{ hostvars['prometheus-server']['ansible_host'] }}:8500'
+      token: 'd90e9f60-8fc1-9579-2e96-1b536ff095a3'
+      refresh_interval: 30s
+      services: ['tencent_cloud_fisher.luo_ecs']
+      tags: ['linux']
+  relabel_configs:
+    - source_labels: ['__meta_consul_service_metadata_vendor']
+      target_label: vendor
+    - source_labels: ['__meta_consul_service_metadata_region']
+      target_label: region
+    - source_labels: ['__meta_consul_service_metadata_group']
+      target_label: group
+    - source_labels: ['__meta_consul_service_metadata_account']
+      target_label: account
+    - source_labels: ['__meta_consul_service_metadata_name']
+      target_label: name
+    - source_labels: ['__meta_consul_service_metadata_iid']
+      target_label: iid
+    - source_labels: ['__meta_consul_service_metadata_exp']
+      target_label: exp
+    - source_labels: ['__meta_consul_service_metadata_instance']
+      target_label: instance
+    - source_labels: [instance]
+      target_label: __address__

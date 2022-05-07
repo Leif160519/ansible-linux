@@ -1,0 +1,13 @@
+advertise_addr = "{{ ansible_host }}"
+data_dir = "/opt/applications/consul"
+client_addr = "0.0.0.0"
+ui_config{
+  enabled = true
+}
+server = true
+bootstrap = true
+acl = {
+  enabled = true
+  default_policy = "deny"
+  enable_token_persistence = true
+}

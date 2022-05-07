@@ -1,0 +1,50 @@
+groups:
+  - name: backuppc rule
+    rules:
+    - alert: 备份失败
+      expr: |
+        backuppc_hosts_reason{label='Reason_backup_failed',job='backuppc'} == 1
+      for: 2m
+      labels:
+        severity: error
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "{{ $labels.all }}备份失败"
+    - alert: 备份失联
+      expr: |
+        backuppc_hosts_reason{label='Reason_no_ping',job='backuppc'} == 1
+      for: 2m
+      labels:
+        severity: warn
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "{{ $labels.all }}主机备份失联"
+    - alert: 备份空间不足
+      expr: |
+        predict_linear(backuppc_disk_usage{job='backuppc'}[1h], 4 * 3600) >= 98
+      for: 2m
+      labels:
+        severity: info
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "{{ $labels.instance }} 备份池文件系统磁盘空间不足4h"
+    #超过三天未增备
+    - alert: 未增备
+      expr: |
+        time() - backuppc_hosts_incr_age{job='backuppc'} > 86400*3 and backuppc_hosts_disabled == 0
+      for: 2m
+      labels:
+        severity: warn
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "{{ $labels.all }}超过3天未增备"
+    #超过十五天未全备
+    - alert: 未全备
+      expr: |
+        time() - backuppc_hosts_full_age{job='backuppc'} > 86400*15 and backuppc_hosts_disabled == 0
+      for: 2m
+      labels:
+        severity: warn
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "{{ $labels.all }}超过15天未全备"

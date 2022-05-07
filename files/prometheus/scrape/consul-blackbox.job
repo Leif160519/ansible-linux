@@ -1,0 +1,25 @@
+- job_name: 'consul-blackbox_exporter'
+  metrics_path: /probe
+  consul_sd_configs:
+    - server: '{{ hostvars['prometheus-server']['ansible_host'] }}:8500'
+      token: 'd90e9f60-8fc1-9579-2e96-1b536ff095a3'
+      services: ['blackbox_exporter']
+  relabel_configs:
+    - source_labels: ["__meta_consul_service_metadata_instance"]
+      target_label: __param_target
+    - source_labels: [__meta_consul_service_metadata_module]
+      target_label: __param_module
+    - source_labels: [__meta_consul_service_metadata_module]
+      target_label: module
+    - source_labels: ["__meta_consul_service_metadata_company"]
+      target_label: company
+    - source_labels: ["__meta_consul_service_metadata_env"]
+      target_label: env
+    - source_labels: ["__meta_consul_service_metadata_name"]
+      target_label: name
+    - source_labels: ["__meta_consul_service_metadata_project"]
+      target_label: project
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: {{ hostvars['prometheus-server']['ansible_host'] }}:9115

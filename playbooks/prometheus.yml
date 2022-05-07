@@ -14,6 +14,8 @@
     blackbox_exporter_root_dir: /opt/black_exporter
     prometheusalert_root_dir: /opt/prometheusalert
     nginx_exporter_root_dir: /opt/nginx_exporter
+    consul_root_dir: /opt/consul
+    consulmanager_passwd: admin-123
 
     prometheus_version: 2.35.0
     alertmanager_version: 0.24.0
@@ -21,6 +23,7 @@
     blackbox_exporter_version: 0.20.0
     prometheusalert_version: v4.8
     nginx_exporter_version: 0.10.0
+    consul_version: 1.11.5
 
     prometheus_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz
     alertmanager_url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz
@@ -28,6 +31,7 @@
     blackbox_exporter_url: https://github.com/prometheus/blackbox_exporter/releases/download/v{{ blackbox_exporter_version }}/blackbox_exporter-{{ blackbox_exporter_version }}.linux-amd64.tar.gz
     prometheusalert_url: https://github.com/feiyu563/PrometheusAlert/releases/download/{{ prometheusalert_version }}/linux.zip
     nginx_exporter_url: https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v0.10.0/nginx-prometheus-exporter_{{ nginx_exporter_version }}_linux_amd64.tar.gz
+    consul_url: https://releases.hashicorp.com/consul/1.11.5/consul_{{ consul_version }}_linux_amd64.zip
 
   tasks:
     - name: user and group and directories
@@ -218,6 +222,108 @@
           name: prometheusalert
           state: started
           enabled: true
+      # }}}
+
+    - name: consul & consulmanager # {{{
+      tags: never, consul
+      block:
+        - name: create consul system group
+          group:
+            name: consul
+            system: true
+            state: present
+
+        - name: create consul system user
+          user:
+            name: consul
+            system: true
+            shell: /bin/false
+            group: consul
+            createhome: no
+
+        - name: stat consul
+          stat:
+            path: "{{ consul_root_dir }}/consul"
+          register: consul
+
+        - name: create dir
+          file:
+            path: "{{ item }}"
+            state: directory
+            owner: consul
+            group: consul
+            mode: 0755
+          with_items:
+            - /opt/consul
+            - /etc/consul.d
+            - /opt/applications/consul
+
+        - name: unzip consul
+          unarchive:
+            src: "{{ consul_url }}"
+            dest: "{{ consul_root_dir }}"
+            owner: consul
+            group: consul
+            remote_src: yes
+          when: consul.stat.exists == false
+
+        - name: create consul link
+          file:
+            src: "{{ consul_root_dir }}/consul"
+            dest: "/usr/bin/consul"
+            state: link
+            force: true
+            mode: 0755
+
+        - name: create consul service
+          template:
+            src: files/consul.d/consul.service.j2
+            dest: /lib/systemd/system/consul.service
+            mode: 0644
+
+        - name: config consul
+          template:
+            src: "files/consul.d/{{ item }}.j2"
+            dest: "/etc/consul.d/{{ item }}"
+            mode: 0644
+            owner: consul
+            group: consul
+          with_items:
+            - consul.env
+            - consul.hcl
+
+        - name: start consul service
+          service:
+            name: consul
+            state: started
+            enabled: true
+            daemon_reload: true
+
+        - name: get consul secret id
+          shell: /usr/bin/consul acl bootstrap | grep -i secretid | awk '{print $2}'
+          register: secret_id
+          failed_when: secret_id.stdout | length == 0
+
+        - set_fact:
+            consul_token: "{{ secret_id.stdout }}"
+            admin_passwd: "{{ consulmanager_passwd }}"
+
+        - name: output secret id
+          debug:
+            var: consul_token
+
+        - name: config consulmanager docker-compose
+          template:
+            src: files/consul.d/docker-compose.yml.j2
+            dest: /opt/consul/docker-compose.yml
+            mode: 0644
+            owner: consul
+            group: consul
+
+        - name: start consulmanager
+          shell: docker-compose -f {{ consul_root_dir }}/docker-compose.yml up -d
+          ignore_errors: false
+      when: inventory_hostname == "prometheus-server"
       # }}}
 
     - name: blackbox_exporter # {{{

@@ -1,0 +1,14 @@
+groups:
+  - name: prometheus
+    rules:
+    - alert: 监测站失联
+      expr: |
+        avg_over_time(up{job="prometheus"}[5m]) < .9
+        AND
+        max_over_time(up{job="prometheus"}[1m]) == 0
+      for: 2m
+      labels:
+        severity: warn
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "_"

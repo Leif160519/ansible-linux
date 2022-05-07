@@ -1,17 +1,73 @@
 groups:
-  - name: general default rule
+  - name: general default rule # {{{
     rules:
-    - alert: 分区剩余空间使用预计不足4h
+    - alert: 节点失联
       expr: |
-        predict_linear(node_filesystem_avail_bytes{fstype=~'ext.|xfs', mountpoint!='/boot'}[1h], 4 * 3600) < 0
+        avg_over_time(up{job="node"}[5m]) < .9
         AND
-        node_filesystem_avail_bytes{fstype=~'ext.|xfs',mountpoint!='/boot'} / node_filesystem_size_bytes{fstype=~'ext.|xfs',mountpoint!='/boot'} < 0.05
-      for: 10m
+        max_over_time(up{job="node"}[1m]) == 0
+      for: 2m
+      labels:
+        severity: info
+        channels: "@linux/feishu;"
       annotations:
-        summary: "{{ $labels.mountpoint }} 剩余 {{ printf \"node_filesystem_avail_bytes{mountpoint='%s', instance='%s'}\" $labels.mountpoint $labels.instance | query | first | value | humanize1024 }}"
+        summary: "检查机器/网络/采集器"
 
-    - alert: 分区剩余空间不足2%
-      expr: node_filesystem_avail_bytes{fstype=~'ext.|xfs', mountpoint!='/boot'} / node_filesystem_size_bytes{fstype=~'ext.|xfs', mountpoint!='/boot'} < 0.02
-      for: 5m
+    - alert: 剩余空间
+      expr: |
+        node_filesystem_avail_bytes{env=~"prod|staging", fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"} < 2000*1024*1024
+        AND
+        (
+            node_filesystem_avail_bytes{env=~"prod|staging", fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"}
+            /
+            node_filesystem_size_bytes{env=~"prod|staging", fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"}
+        ) < .02
+      for: 2m
+      labels:
+        severity: warn
+        channels: "@linux/feishu;"
       annotations:
-        summary: "{{ $labels.mountpoint }} 剩余 {{ printf \"node_filesystem_avail_bytes{mountpoint='%s', instance='%s'}\" $labels.mountpoint $labels.instance | query | first | value | humanize1024 }}"
+        summary: "不足2%，{{ $labels.mountpoint }} 剩余 {{ $value | humanize1024 }}"
+
+    - alert: 剩余空间
+      expr: |
+        node_filesystem_avail_bytes{env=~"prod|staging", fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"} < 200*1024*1024
+      for: 2m
+      labels:
+        severity: error
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "不足200M，{{ $labels.mountpoint }} 亟需清理"
+
+    - alert: CPU负载
+      expr: |
+        avg(irate(node_cpu_seconds_total{env=~"prod|staging", mode="idle"}[5m])) by (all,os,env,idc,instance,job,mode)< 0.2
+      for: 2m
+      labels:
+        severity: warn
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "利用率超过80%"
+
+    - alert: 空闲内存
+      expr:
+        node_memory_MemAvailable_bytes{job="node"} < 200*1024*1024
+        AND
+        node_memory_MemAvailable_bytes{job="node"} / node_memory_MemTotal_bytes{job="node"} < .02
+      for: 15m
+      labels:
+        severity: warn
+        channels: "@linux/feishu:1h;"
+      annotations:
+        summary: "少于2%，剩余 {{ $value | humanize1024 }}"
+
+    - alert: 时差过大
+      expr: abs(node_time_seconds-time()) / 60 > 30
+      for: 2m
+      labels:
+        severity: warn
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "时差为{{ $value | printf \"%.f\" }}分钟"
+
+  # }}}
