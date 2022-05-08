@@ -54,8 +54,7 @@
     owner: root
     group: root
     mode: 0644
-  delegate_to: nacos-proxy
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" and inventory_hostname == "nacos-proxy"
 
 - name: distribution profile - nginx debian
   template:
@@ -64,6 +63,11 @@
     owner: root
     group: root
     mode: 0644
-  delegate_to: nacos-proxy
-  when: ansible_os_family == "Debian"
-  notify: reload nginx service
+  when: ansible_os_family == "Debian" and inventory_hostname == "nacos-proxy"
+
+- name: reload nginx service
+  service:
+    name: nginx
+    state: reloaded
+    enabled: true
+    daemon_reload: true

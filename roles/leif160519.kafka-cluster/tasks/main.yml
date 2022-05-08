@@ -47,7 +47,7 @@
 
     - name: close auto create topic
       lineinfile:
-        path: "{{ kafka_root_dir }}/config/server.properties"
+        path: "/tmp/server.properties"
         line: "auto.create.topics.enable=false"
         create: false
       when: auto_create_topic == false

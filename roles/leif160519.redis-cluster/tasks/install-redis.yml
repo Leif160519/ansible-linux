@@ -28,8 +28,13 @@
     - "{{ redis_data_dir }}"
     - "{{ redis_conf_dir }}"
 
+- stat:
+    path: "{{ redis_root_dir }}/src/redis-cli"
+  register: redis
+
 - name: make redis
   shell: |
     cd "{{ redis_root_dir }}"
     make
   ignore_errors: false
+  when: redis.stat.exists == false

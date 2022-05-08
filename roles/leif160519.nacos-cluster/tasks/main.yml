@@ -1,6 +1,4 @@
 ---
-- include_tasks: env-nacos.yml
-
 - include_tasks: config-nacos.yml
 
 - include_tasks: start-nacos.yml

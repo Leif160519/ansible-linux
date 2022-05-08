@@ -39,4 +39,3 @@
 
 - debug:
     msg: "{{ inventory_hostname }}:{{ result.stdout_lines }}"
-  failed_when: result.stdout_lines | length == 0
