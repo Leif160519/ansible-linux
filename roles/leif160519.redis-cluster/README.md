@@ -63,6 +63,57 @@ echo 511 > /proc/sys/net/core/somaxconn
 | THP | /sys/kernel/mm/transparent_hugepage/enabled | never | 加速fork；建议禁用，否则可能会造成更大的内存开销 |
 | TCP backlog | /proc/sys/net/core/somaxconn | 511 | redis默认的 tcp backlog值为511 |
 
+## 集群验证
+
+1.检查集群信息
+在任意redis节点上执行命令(记得替换ip)：
+```
+root@ecm-mzl84:/opt/applications/redis# ./redis-6.2.6/src/redis-cli -h 192.168.0.37  -c
+192.168.0.37:6379> cluster info
+cluster_state:ok
+cluster_slots_assigned:16384
+cluster_slots_ok:16384
+cluster_slots_pfail:0
+cluster_slots_fail:0
+cluster_known_nodes:6
+cluster_size:3
+cluster_current_epoch:6
+cluster_my_epoch:3
+cluster_stats_messages_ping_sent:24279
+cluster_stats_messages_pong_sent:23655
+cluster_stats_messages_meet_sent:1
+cluster_stats_messages_sent:47935
+cluster_stats_messages_ping_received:23655
+cluster_stats_messages_pong_received:24280
+cluster_stats_messages_received:47935
+192.168.0.37:6379> cluster nodes
+41b57f75928d3b5d6249cee970c94904a7c91805 192.168.0.60:6379@16379 master - 0 1649841936423 1 connected 0-5460
+640e7c014af661b02aad144d5f0c67db82261734 192.168.0.37:6379@16379 myself,master - 0 1649841935000 3 connected 10923-16383
+9edf05abbb9e4244264b715b0702daed8374a1b6 192.168.0.242:6379@16379 slave 640e7c014af661b02aad144d5f0c67db82261734 0 1649841936000 3 connected
+fd443821be978948093eafa89f99c68d6dfa7c8e 192.168.0.128:6379@16379 slave 41b57f75928d3b5d6249cee970c94904a7c91805 0 1649841938430 1 connected
+201f6617928de701199003fe3cc604b76ea283e2 192.168.0.77:6379@16379 master - 0 1649841937427 2 connected 5461-10922
+3a6003c7eece53fb6009c3a45e9a4b47263e5237 192.168.0.158:6379@16379 slave 201f6617928de701199003fe3cc604b76ea283e2 0 1649841935421 2 connected
+192.168.0.37:6379>
+```
+
+2. 验证集群
+```
+root@ecm-piags:/opt/applications/redis/redis-6.2.6# ./src/redis-cli -h 192.168.0.60 -c
+192.168.0.60:6379> get hello
+(nil)
+192.168.0.60:6379> set hello word
+OK
+192.168.0.60:6379> get hello
+"word"
+192.168.0.60:6379>
+
+./src/redis-cli -h 192.168.0.37 -c
+192.168.0.37:6379> get hello
+-> Redirected to slot [866] located at 192.168.0.60:6379
+"word"
+192.168.0.60:6379>
+```
+
 ## 参考
 [搭建redis集群-超详细的配置](https://juejin.cn/post/6844904083321536526)
 [Redis 6.0 集群搭建实践](https://segmentfault.com/a/1190000038995016)
