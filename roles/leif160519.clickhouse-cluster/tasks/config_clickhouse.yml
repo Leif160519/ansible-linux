@@ -11,6 +11,13 @@
     - "{{ clickhouse_dir }}"
     - "{{ clickhouse_tmp_dir }}"
 
+- name: caculate password sha256
+  shell: echo -n {{ clickhouse_password }} | openssl dgst -sha256
+  register: sha256
+
+- set_fact:
+    password_sha256_hex: "{{ sha256.stdout }}"
+
 - name: config clickhouse
   template:
     src: "{{ item.src }}"
