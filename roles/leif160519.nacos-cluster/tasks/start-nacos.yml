@@ -2,7 +2,7 @@
 - name: start nacos-mysql
   block:
     - shell: docker-compose -f {{ nacos_mysql_root_dir }}/docker-compose.yml up -d
-  when: inventory_hostname == "nacos-cluster-1"
+  when: inventory_hostname == "nacos-mysql"
 
 - name: start nacos-app
   block:

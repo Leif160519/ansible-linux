@@ -36,7 +36,7 @@
     owner: root
     group: root
     mode: 0644
-  when: inventory_hostname == "nacos-cluster-1"
+  when: inventory_hostname == "nacos-mysql"
 
 - name: distribution profile - mysql env
   template:
@@ -45,7 +45,7 @@
     owner: root
     group: root
     mode: 0644
-  when: inventory_hostname == "nacos-cluster-1"
+  when: inventory_hostname == "nacos-mysql"
 
 - name: distribution profile - nginx redhat
   template:
