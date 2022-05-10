@@ -590,7 +590,7 @@
       file:
         path: /etc/prometheus/{{ item }}
         state: directory
-        owner: prometheus
+        owner: root
         group: prometheus
         mode: 0755
       with_items:
