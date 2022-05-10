@@ -592,7 +592,7 @@
         state: directory
         owner: root
         group: prometheus
-        mode: 0755
+        mode: 0770
       with_items:
         - file_sd
 
