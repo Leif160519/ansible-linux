@@ -4,6 +4,9 @@ backuppc_idrsapub: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPXHfNQ4UFIV7/b53GupkQb
 #}}}
 
 ## mysqld_exporter {{{
+#先创建用于采集指标的用户并赋予权限
+#CREATE USER 'exporter'@'%' IDENTIFIED BY 'export-123' WITH MAX_USER_CONNECTIONS 3;
+#GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'exporter'@'%';
 mysqld_exporter_username: exporter
-mysqld_exporter_password: tpt531kM3Z
+mysqld_exporter_password: exporter-123
 #}}}
