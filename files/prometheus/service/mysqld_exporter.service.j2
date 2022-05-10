@@ -2,7 +2,7 @@
 
 
 [Unit]
-Description=mysql_exporter
+Description=mysqld_exporter
 After=network-online.target
 
 [Service]
@@ -12,7 +12,7 @@ User=prometheus
 Group=prometheus
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStart=/usr/local/bin/mysqld_exporter \
-  --config.my-cnf=/etc/prometheus/conf.d/mysql_exporter.cnf \
+  --config.my-cnf=/etc/prometheus/conf.d/mysqld_exporter.cnf \
   --web.listen-address="0.0.0.0:9088" \
   --log.level=info
 

@@ -43,8 +43,7 @@
     prometheusalert_url: https://github.com/feiyu563/PrometheusAlert/releases/download/{{ prometheusalert_tag }}/linux.zip
     nginx_exporter_url: https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v{{ nginx_exporter_version }}/{{ nginx_exporter_tag }}.tar.gz
     consul_url: https://releases.hashicorp.com/consul/{{ consul_version }}/{{ consul_tag }}.zip
-    #mysqld_exporter_url: https://github.com/prometheus/mysqld_exporter/releases/download/v{{ mysqld_exporter_version }}/{{ mysqld_exporter_tag }}.tar.gz
-    mysqld_exporter_url: https://nexus.fjdynamics.com/repository/it/mysql/mysql-8.0.28-linux-glibc2.12-x86_64.tar.xz
+    mysqld_exporter_url: https://github.com/prometheus/mysqld_exporter/releases/download/v{{ mysqld_exporter_version }}/{{ mysqld_exporter_tag }}.tar.gz
 
   tasks:
     - name: user and group and directories

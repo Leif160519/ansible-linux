@@ -1,0 +1,14 @@
+- name: 集中备份账号
+  tags: backuppc
+  hosts: all:!off
+  tasks:
+    - authorized_key:
+        user: root
+        state: present
+        key: "{{ backuppc_idrsapub }}"
+    - known_hosts:
+        name: '{{ ansible_host }}'
+        key: '{{ ansible_host }} ecdsa-sha2-nistp256 {{ ansible_ssh_host_key_ecdsa_public | default(ansible_ssh_host_key_rsa_public) }}'
+      become: true
+      become_user: backuppc
+      delegate_to: backuppc-server

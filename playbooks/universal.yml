@@ -13,6 +13,9 @@
 # 系统配置
 - import_playbook: config.yml
 
+# 用户配置
+- import_playbook: user.yml
+
 # 安装node_exporter
 - import_playbook: prometheus.yml
 
