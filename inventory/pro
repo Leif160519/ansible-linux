@@ -9,6 +9,7 @@ pro.zookeeper
 pro.clickhouse
 pro.nginx
 pro.emqx
+pro.mysql
 # }}}
 
 [pro.minio] # {{{ minio 集群
@@ -69,4 +70,8 @@ nginx-web-02
 [pro.emqx] # {{{ emqx 集群
 emqx-cluster-1
 emqx-cluster-2
+# }}}
+
+[pro.mysql] # {{{ mysql
+mysql-server
 # }}}

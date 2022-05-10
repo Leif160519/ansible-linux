@@ -16,6 +16,7 @@
     nginx_exporter_root_dir: /opt/nginx_exporter
     consul_root_dir: /opt/consul
     consulmanager_passwd: admin-123
+    mysqld_exporter_root_dir: /opt/mysqld_exporter
 
     prometheus_version: 2.35.0
     alertmanager_version: 0.24.0
@@ -24,14 +25,26 @@
     prometheusalert_version: v4.8
     nginx_exporter_version: 0.10.0
     consul_version: 1.11.5
+    mysqld_exporter_version: 0.14.0
 
-    prometheus_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz
-    alertmanager_url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz
-    node_exporter_url: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz
-    blackbox_exporter_url: https://github.com/prometheus/blackbox_exporter/releases/download/v{{ blackbox_exporter_version }}/blackbox_exporter-{{ blackbox_exporter_version }}.linux-amd64.tar.gz
-    prometheusalert_url: https://github.com/feiyu563/PrometheusAlert/releases/download/{{ prometheusalert_version }}/linux.zip
-    nginx_exporter_url: https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v0.10.0/nginx-prometheus-exporter_{{ nginx_exporter_version }}_linux_amd64.tar.gz
-    consul_url: https://releases.hashicorp.com/consul/1.11.5/consul_{{ consul_version }}_linux_amd64.zip
+    prometheus_tag: prometheus-{{ prometheus_version }}.linux-amd64
+    alertmanager_tag: alertmanager-{{ alertmanager_version }}.linux-amd64
+    node_exporter_tag: node_exporter-{{ node_exporter_version }}.linux-amd64
+    blackbox_exporter_tag: blackbox_exporter-{{ blackbox_exporter_version }}.linux-amd64
+    prometheusalert_tag: "{{ prometheusalert_version }}"
+    nginx_exporter_tag: nginx-prometheus-exporter_{{ nginx_exporter_version }}_linux_amd64
+    consul_tag: consul_{{ consul_version }}_linux_amd64
+    mysqld_exporter_tag: mysqld_exporter-{{ mysqld_exporter_version }}.linux-amd64
+
+    prometheus_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/{{ prometheus_tag }}.tar.gz
+    alertmanager_url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/{{ alertmanager_tag }}.tar.gz
+    node_exporter_url: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/{{ node_exporter_tag }}.tar.gz
+    blackbox_exporter_url: https://github.com/prometheus/blackbox_exporter/releases/download/v{{ blackbox_exporter_version }}/{{ blackbox_exporter_tag }}.tar.gz
+    prometheusalert_url: https://github.com/feiyu563/PrometheusAlert/releases/download/{{ prometheusalert_tag }}/linux.zip
+    nginx_exporter_url: https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v{{ nginx_exporter_version }}/{{ nginx_exporter_tag }}.tar.gz
+    consul_url: https://releases.hashicorp.com/consul/{{ consul_version }}/{{ consul_tag }}.zip
+    #mysqld_exporter_url: https://github.com/prometheus/mysqld_exporter/releases/download/v{{ mysqld_exporter_version }}/{{ mysqld_exporter_tag }}.tar.gz
+    mysqld_exporter_url: https://nexus.fjdynamics.com/repository/it/mysql/mysql-8.0.28-linux-glibc2.12-x86_64.tar.xz
 
   tasks:
     - name: user and group and directories
@@ -90,7 +103,7 @@
         when: p.stat.exists == false
 
       - name: 重命名prometheus目录
-        command: mv /opt/{{ prometheus_version }} {{ prometheus_root_dir}}
+        command: mv /opt/{{ prometheus_tag }} {{ prometheus_root_dir}}
         when: p.stat.exists == false
 
       - name: 创建prometheus软链接
@@ -122,7 +135,7 @@
         when: a.stat.exists == false
 
       - name: 重命名alertmanager目录
-        command: mv /opt/{{ alertmanager_version }} {{ alertmanager_root_dir }}
+        command: mv /opt/{{ alertmanager_tag }} {{ alertmanager_root_dir }}
         when: a.stat.exists == false
 
       - name: 创建alertmanager软链接
@@ -159,18 +172,11 @@
           group: prometheus
           mode: 0755
 
-      - name: 重新载入systemd
-        systemd:
-          daemon_reload: true
-
       - name: 启动alertmanager服务
-        systemd:
+        service:
           name: alertmanager
           state: started
-
-      - name: 设置alertmanager服务开机自启
-        systemd:
-          name: alertmanager
+          daemon_reload: true
           enabled: true
         # }}}
 
@@ -213,15 +219,12 @@
           dest: /lib/systemd/system/prometheusalert.service
           mode: 0644
 
-      - name: 重新载入systemd
-        systemd:
-          daemon_reload: true
-
       - name: 启动prometheusalert服务
-        systemd:
+        service:
           name: prometheusalert
           state: started
           enabled: true
+          daemon_reload: true
       # }}}
 
     - name: consul & consulmanager # {{{
@@ -344,7 +347,7 @@
         when: b.stat.exists == false
 
       - name: 重命名blackbox目录
-        command: mv /opt/{{ blackbox_exporter_version }} {{ blackbox_exporter_root_dir }}
+        command: mv /opt/{{ blackbox_exporter_tag }} {{ blackbox_exporter_root_dir }}
         when: b.stat.exists == false
 
       - name: 创建blackbox软链接
@@ -373,19 +376,12 @@
           dest: /lib/systemd/system/blackbox_exporter.service
           mode: 0644
 
-      - name: 重新载入systemd
-        systemd:
-          daemon_reload: true
-
       - name: 启动blackbox_exporter服务
-        systemd:
+        service:
           name: blackbox_exporter
           state: started
-
-      - name: 设置blackbox_exporter服务开机自启
-        systemd:
-          name: blackbox_exporter
           enabled: true
+          daemon_reload: true
         # }}}
 
     - name: nginx_exporter # {{{
@@ -427,15 +423,64 @@
           dest: /lib/systemd/system/nginx_exporter.service
           mode: 0644
 
-      - name: 重新载入systemctl
-        systemd:
-          daemon_reload: true
-
       - name: 启动nginx_exporter服务
-        systemd:
+        service:
           name: nginx_exporter
           state: started
           enabled: true
+          daemon_reload: true
+      # }}}
+
+    - name: mysqld_exporter # {{{
+      tags: never, mysqld_exporter
+      block:
+        - name: stat mysqld_exporter
+          stat:
+            path: "{{ mysqld_exporter_root_dir }}"
+          register: m
+
+        - name: unarchive mysqld_exporter
+          unarchive:
+            src: "{{ mysqld_exporter_url }}"
+            dest: /opt
+            owner: prometheus
+            group: prometheus
+            remote_src: true
+          when: m.stat.exists == false
+
+        - name: rename mysqld_exporter dir
+          shell: mv /opt/{{ mysqld_exporter_tag }} {{ mysqld_exporter_root_dir }}
+          when: m.stat.exists == false
+
+        - name: create mysqld_exporter link
+          file:
+            src: "{{ mysqld_exporter_root_dir }}/{{ item }}"
+            dest: "/usr/local/bin/{{ item }}"
+            state: link
+            force: true
+          with_items:
+            - mysqld_exporter
+
+        - name: create mysqld_exporter config
+          template:
+            src: files/prometheus/exporter/mysqld_exporter.cnf.j2
+            dest: /etc/prometheus/conf.d/mysqld_exporter.cnf
+            mode: 0644
+            owner: prometheus
+            group: prometheus
+
+        - name: create mysqld_exporter service
+          template:
+            src: files/prometheus/service/mysqld_exporter.service.j2
+            dest: /lib/systemd/system/mysqld_exporter.service
+            mode: 0644
+
+        - name: start mysqld_exporter service
+          service:
+            name: mysqld_exporter
+            state: started
+            daemon_reload: true
+            enabled: true
       # }}}
 
     - name: scrape_cofig_node # {{{
@@ -456,7 +501,7 @@
       tags: [ targets ]
       block:
       - set_fact:
-          nginx_targets_node: "{{ groups['pro.nginx'] }}"
+          prometheus_targets_nginx: "{{ groups['pro.nginx'] }}"
       - template:
           src: files/nginx/stub_status.conf.j2
           dest: /etc/nginx/conf.d/stub_status.conf
@@ -469,6 +514,19 @@
         delegate_to: "prometheus-server"
         run_once: true
       when: ('pro.nginx' in group_names)
+      # }}}
+
+    - name: scrapt_config_mysql # {{{
+      tags: [ targets ]
+      block:
+      - set_fact:
+          prometheus_targets_mysql: "{{ groups['pro.mysql'] }}"
+      - template:
+          src: files/prometheus/scrape/file_sd/mysql.yml.j2
+          dest: /etc/prometheus/file_sd/mysql.yml
+        delegate_to: "prometheus-server"
+        run_once: true
+      when: ('pro.mysql' in group_names)
       # }}}
 
     - name: node_exporter # {{{
@@ -489,7 +547,7 @@
         when: n.stat.exists == false
 
       - name: 重命名node_exporter目录
-        command: mv /opt/{{ node_exporter_version }} {{ node_exporter_root_dir }}
+        command: mv /opt/{{ node_exporter_tag }} {{ node_exporter_root_dir }}
         when: n.stat.exists == false
 
       - name: 创建node_exporter软链接
@@ -507,18 +565,11 @@
           dest: /lib/systemd/system/node_exporter.service
           mode: 0644
 
-      - name: 重新载入systemd
-        systemd:
-          daemon_reload: true
-
       - name: 启动node_exporter服务
-        systemd:
+        service:
           name: node_exporter
           state: started
-
-      - name: 设置node_exporter服务开机自启
-        systemd:
-          name: node_exporter
+          daemon_reload: true
           enabled: true
         # }}}
 
@@ -572,12 +623,12 @@
                 - "{{ ansible_host }}:9093"
   tasks:
     - name: reload prometheus
-      systemd:
+      service:
         name: prometheus
         state: reloaded
 
     - name: reload alertmanager
-      systemd:
+      service:
         name: alertmanager
         state: reloaded
     # }}}

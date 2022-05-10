@@ -1,4 +1,4 @@
-{% for item in nginx_targets_node %}
+{% for item in prometheus_targets_nginx %}
 {%- set os = [] -%}
 {%- set pro = [] -%}
 - targets: ['{{ hostvars[item]['ansible_host'] }}:9113']

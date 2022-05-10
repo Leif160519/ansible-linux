@@ -1,0 +1,5 @@
+{% for item in prometheus_targets_mysql -%}
+- targets: ['{{ hostvars[item]['ansible_host'] }}:9088']
+  labels:
+    all:  "{{ item }}"
+{% endfor %}

@@ -1,0 +1,9 @@
+---
+## backuppc {{{
+backuppc_idrsapub: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPXHfNQ4UFIV7/b53GupkQbB7ZEpAzPLM1kXlwh266o0XoJYgc6bzZHNNsV0Nre+EeCtiWhUEytblHpEWNVVnvpLsyLfcIjHTqV8lg933DAI49d7HisLX3FGv9TK38oz6sNYMIVFzYaNxOpmOHz5LpOcQTfdVqSu7C0Rtx5Btu+WDX8QG76KfAqoJTMlFMVMajS+Z4E3PfOFbFv1ocI+FJ6axpVilPgawgO6Qh5kTToS12SujpwUp2Oul09a9fNveyZQt2nGc5y23QJRWrKygxkTNg/m+UZeUv54rtrIcWcydikfhkFUHeD1oJ/tjma8oMXznj40IVeYpTGWkElX+6WAL/Ud9VXlpZ8aY/ij5T0aZW1Lz3We9AImkT61cyjLEli1UKwgTGhC337xMpH+SirJMGrbfjtA3ub/TWSjPheglDojdlgt8MhlU4ywLh3ULeYmJNCDeSUzbSMvgPh6nneRMHgM2XNo4iJA5kRewJscTsh8Xu0aJyHy12Pf2+Ixc= backuppc@backuppc
+#}}}
+
+## mysqld_exporter {{{
+mysqld_exporter_username: exporter
+mysqld_exporter_password: tpt531kM3Z
+#}}}
