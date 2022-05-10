@@ -1,0 +1,34 @@
+{{ define "email.default.html" }}
+{{- range .Alerts -}}
+{{- if le .EndsAt.Unix 0 -}}ㄨ{{ end -}}
+{{- end -}}
+{{- range .Alerts -}}
+{{- if gt .EndsAt.Unix 0 -}}Ｏ{{ end -}}
+{{- end -}}
+{{ (index .Alerts 0).Labels.alertname }}
+<table border="1">
+<tr>
+<td>状态</td>
+<td>标记</td>
+<td>地址</td>
+<td>时间</td>
+<td>摘要</td>
+</tr>
+{{ range $i, $alert := .Alerts }}
+<tr>
+{{- if gt $alert.EndsAt.Unix 0 -}}
+<td>ＯＫ</td>
+{{ else -}}
+{{ end -}}
+<td>{{ if .Labels.alias }}{{ .Labels.alias }}{{ else }}{{ .Labels.all }}{{ end }}</td>
+<td>{{ .Labels.instance }}</td>
+{{ if gt .EndsAt.Unix 0 -}}
+<td>{{ (.EndsAt.Sub .StartsAt).Truncate 1000000000 }}</td>
+{{ else -}}
+<td>{{ .StartsAt.Local.Format "15:04(MST) 2006/01/02" }}</td>
+{{ end -}}
+<td>{{ .Annotations.summary }}</td>
+</tr>
+{{ end }}
+</table>
+{{ end }}
