@@ -1,22 +1,24 @@
 groups:
   - name: ping probe
-    interval: 30s
     rules:
-      - record: job:probe_success:avg30s
-        expr: avg_over_time(probe_success{job=~"ping.*"}[30s])
-      - record: job:probe_dns_lookup_time_seconds:avg30s
-        expr: avg_over_time(probe_dns_lookup_time_seconds{job=~"ping.*"}[30s])
-      - record: job:probe_duration_seconds:min30s
-        expr: min_over_time(probe_duration_seconds{job=~"ping.*"}[30s])
-      - record: job:probe_duration_seconds:q50_30s
-        expr: quantile_over_time(0.5, probe_duration_seconds{job=~"ping.*"}[30s])
-      - record: job:probe_duration_seconds:q90_30s
-        expr: quantile_over_time(0.9, probe_duration_seconds{job=~"ping.*"}[30s])
-      - record: job:probe_duration_seconds:q99_30s
-        expr: quantile_over_time(0.99, probe_duration_seconds{job=~"ping.*"}[30s])
-      - record: job:probe_duration_seconds:max30s
-        expr: max_over_time(probe_duration_seconds{job=~"ping.*"}[30s])
-      - alert: 乒有丢包
-        expr: floor( (1 - avg_over_time(job:probe_success:avg30s[5m])) * 100 ) > 10
-        annotations:
-          summary: "近5m丢包{{ $value }}%"
+    - alert: 乒不通了
+      expr: |
+        sum_over_time(fping_lost_count{job="ping"}[15m]) / sum_over_time(fping_sent_count{job="ping"}[15m]) > .9
+      for: 2m
+      labels:
+        severity: warn
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "_"
+
+    - alert: 乒丢包了
+      expr: |
+        sum_over_time(fping_lost_count{job="ping"}[15m]) / sum_over_time(fping_sent_count{job="ping"}[15m]) * 100 > 35
+        AND
+        sum_over_time(fping_lost_count{job="ping"}[15m]) / sum_over_time(fping_sent_count{job="ping"}[15m]) < .9
+      for: 2m
+      labels:
+        severity: info
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "丢包{{ $value | printf \"%.f\" }}%"
