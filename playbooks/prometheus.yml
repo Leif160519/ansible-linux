@@ -580,6 +580,8 @@
     - set_fact:
         prometheus_targets_node: "{{ groups['all'] }}"
         prometheus_scrape_configs: "{{ prometheus_scrape_configs + lookup('template', item) | from_yaml }}"
+        prometheus_targets_nginx: "{{ groups['pro.nginx'] }"
+        prometheus_targets_mysql: "{{ groups['pro.mysql'] }"
       with_fileglob:
         - "files/prometheus/scrape/*.job"
       when: inventory_hostname is match("^prometheus-server")
