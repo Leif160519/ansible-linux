@@ -44,6 +44,11 @@
     nginx_exporter_url: https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v{{ nginx_exporter_version }}/{{ nginx_exporter_tag }}.tar.gz
     consul_url: https://releases.hashicorp.com/consul/{{ consul_version }}/{{ consul_tag }}.zip
     mysqld_exporter_url: https://github.com/prometheus/mysqld_exporter/releases/download/v{{ mysqld_exporter_version }}/{{ mysqld_exporter_tag }}.tar.gz
+  handlers:
+    - name: reload alertmanager
+      service:
+        name: alertmanager
+        state: reloaded
 
   tasks:
     - name: user and group and directories
@@ -156,6 +161,7 @@
           group: prometheus
           mode: 0644
           validate: "/opt/alertmanager/amtool --alertmanager.url= check-config %s"
+        notify: reload alertmanager
 
       - name: 创建alertmanager服务
         template:
@@ -574,7 +580,14 @@
 
 - hosts: prometheus-server # {{{ 服务器配置
   tags: [never, admin]
+  handlers:
+    - name: reload prometheus
+      service:
+        name: prometheus
+        state: reloaded
   vars:
+    alertmanager_config_file: "files/prometheus/alert/alertmanager.yml"
+    alertmanager_template_files: [ "files/prometheus/alert/*.tmpl" ]
     prometheus_scrape_configs: []
   pre_tasks:
     - set_fact:
@@ -606,6 +619,7 @@
         mode: 0644
       with_fileglob:
         - "files/prometheus/scrape/file_sd/*.j2"
+      notify: reload prometheus
 
   roles:
     - role: roles/cloudalchemy.prometheus
@@ -622,14 +636,4 @@
         - static_configs:
             - targets:
                 - "{{ ansible_host }}:9093"
-  tasks:
-    - name: reload prometheus
-      service:
-        name: prometheus
-        state: reloaded
-
-    - name: reload alertmanager
-      service:
-        name: alertmanager
-        state: reloaded
     # }}}
