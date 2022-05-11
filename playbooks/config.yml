@@ -350,10 +350,12 @@
   tags: config, git
   tasks:
     - block:
-        - shell: |
-            git config --global core.editor vim
-            git config --global core.quotepath false
-          ignore_errors: yes
+        - template:
+            src: files/gitconfig.j2
+            dest: /root/.gitconfig
+            owner: root
+            group: root
+            mode: 0644
   # }}}
 
 - name: 15.Uninstall useless kernel # {{{
