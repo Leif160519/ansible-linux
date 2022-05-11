@@ -49,6 +49,10 @@
       service:
         name: alertmanager
         state: reloaded
+    - name: reload blackbox_exporter
+      service:
+        name: blackbox_exporter
+        state: reloaded
 
   tasks:
     - name: user and group and directories
@@ -371,6 +375,7 @@
           mode: 0644
           owner: prometheus
           group: prometheus
+        notify: reload blackbox_exporter
 
       - name: setcap
         command: setcap cap_net_raw+ep {{ blackbox_exporter_root_dir }}/blackbox_exporter
