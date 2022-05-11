@@ -13,7 +13,7 @@ Group=prometheus
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStart=/usr/local/bin/mysqld_exporter \
   --config.my-cnf=/etc/prometheus/conf.d/mysqld_exporter.cnf \
-  --web.listen-address="0.0.0.0:9088" \
+  --web.listen-address=0.0.0.0:9088 \
   --log.level=info
 
 ProtectSystem=full
