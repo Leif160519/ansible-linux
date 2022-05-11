@@ -204,13 +204,14 @@ server {
 ### 十、Grafana所需Dashboard一览表
 |                    监控点               |               Dashboard                                 |
 |-----------------------------------------|---------------------------------------------------------|
-| 所有Linux服务器状态 | [1 Node Exporter Dashboard 22/04/17 通用Job分组版][9] |
+| Linux服务器状态 | [1 Node Exporter Dashboard 22/04/17 通用Job分组版][9] |
 | 自动发现的腾讯云所有Linux服务器状态 | [1 Node Exporter Dashboard 22/04/13 ConsulManager自动同步版][10] |
 | Alertmanager告警总览 | [Alertmanager告警总览][11] |
 | Prometehus Alerts | [Prometheus Alerts][12] |
 | 所有业务http监控 | [1 Blackbox Exporter Dashboard 2022/04/12][13] |
 | Backuppc监控 | [Backuppc][14] |
 | prometehus数据持久化监控 | [VictoriaMetrics][15] |
+| MySQL监控 | [mysql overview][24] |
 
 ### 十一、参考
 - [ConsulManager][16]
@@ -245,3 +246,4 @@ server {
 [21]: https://blog.csdn.net/qq_45464560/article/details/119490479
 [22]: https://blog.csdn.net/u010953609/article/details/121988480
 [23]: https://www.cnblogs.com/zhrx/p/16028078.html
+[24]: https://grafana.com/grafana/dashboards/14969
