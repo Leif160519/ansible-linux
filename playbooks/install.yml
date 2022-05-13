@@ -1043,3 +1043,38 @@
           notify: reload nginx service
 
 # }}}
+
+- name: Install supervisor # {{{
+  hosts: all
+  tags: never, supervisor
+  handlers:
+    - name: restart supervisor service
+      service:
+        name: supervisord
+        state: restarted
+        daemon_reload: true
+        enabled: true
+  tasks:
+    - block:
+        - name: install supervisor
+          package:
+            name: supervisor
+            state: latest
+
+        - name: start supervisor
+          service:
+            name: supervisor
+            state: started
+            daemon_reload: true
+            enabled: true
+          when: ansible_os_family == "Debian"
+
+        - name: config supervisor
+          lineinfile:
+            path: /etc/supervisord.conf
+            regexp: "files ="
+            line: "files = /etc/supervisor/conf.d/*.conf"
+            insertafter: "[include]"
+          notify: restart supervisor service
+          when: ansible_os_family == "RedHat"
+# }}}
