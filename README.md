@@ -15,6 +15,7 @@ ansible-linux
 ├── group_vars                          // 全局环境变量
 ├── inventory                           // 机器分组列表
 │   ├── all                               // 所有机器，不分组
+│   ├── off                               // 下线机器列表
 │   ├── os                                // 按操作系统版本分类
 │   └── pro                               // 按项目或集群分类
 ├── LICENSE                             // 开源许可证

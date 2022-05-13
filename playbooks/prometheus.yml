@@ -6,7 +6,7 @@
 # @leif160519 @2020.09.11
 ####
 ---
-- hosts: all
+- hosts: all:!off
   vars:
     prometheus_root_dir: /opt/prometheus
     alertmanager_root_dir: /opt/alertmanager

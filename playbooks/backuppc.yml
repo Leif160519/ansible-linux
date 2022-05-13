@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: all:!off
   vars_files:
     - files/backuppc_vars.yml
   vars:

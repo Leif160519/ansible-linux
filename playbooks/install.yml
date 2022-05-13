@@ -7,7 +7,7 @@
 ####
 ---
 - name: Install software
-  hosts: all
+  hosts: all:!off
   vars:
     username: root
     groupnme: root
@@ -653,7 +653,7 @@
     # }}}
 
 - name: Install docker & docker-compose # {{{
-  hosts: all
+  hosts: all:!off
   tags: never, docker
   vars:
     docker_root_dir: /var/lib/docker
@@ -695,7 +695,7 @@
 # }}}
 
 - name: Install mysql-5.7.28 # {{{
-  hosts: all
+  hosts: all:!off
   tags: never, mysql
   vars:
     mysql_root_dir: /var/lib/mysql
@@ -786,7 +786,7 @@
 # }}}
 
 - name: Install oh-my-zsh # {{{
-  hosts: all
+  hosts: all:!off
   tags: never, zsh, oh-my-zsh
   vars:
     username: root
@@ -796,7 +796,7 @@
     - role: roles/leif160519.oh-my-zsh
 
 - name: 夹带点私货O(∩_∩)O哈哈哈~
-  hosts: all
+  hosts: all:!off
   tags: never, leif
   vars:
     username: root
@@ -829,7 +829,7 @@
 # }}}
 
 - name: Install vim with smart tips # {{{
-  hosts: all
+  hosts: all:!off
   tags: never, vim-complex
   vars:
     username: root
@@ -839,7 +839,7 @@
 # }}}
 
 - name: Install vim without smart tips # {{{
-  hosts: all
+  hosts: all:!off
   tags: never, vim-simple
   vars:
     username: root
@@ -849,7 +849,7 @@
 # }}}
 
 - name: Install oh-my-fish # {{{
-  hosts: all
+  hosts: all:!off
   tags: never, fish
   tasks:
     - name: 安装fish包
@@ -885,7 +885,7 @@
 # }}}
 
 - name: Install loki & promtail # {{{
-  hosts: all
+  hosts: all:!off
   vars:
     loki_version: v2.4.1
     promtail_version: v2.4.1
@@ -1006,7 +1006,7 @@
 # }}}
 
 - name: Install nginx # {{{
-  hosts: all
+  hosts: all:!off
   tags: never,nginx
   handlers:
     - name: reload nginx service
@@ -1045,7 +1045,7 @@
 # }}}
 
 - name: Install supervisor # {{{
-  hosts: all
+  hosts: all:!off
   tags: never, supervisor
   handlers:
     - name: restart supervisor service

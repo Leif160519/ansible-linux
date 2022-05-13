@@ -8,7 +8,7 @@
 ####
 ---
 - name: 1.Configure ssh  # {{{
-  hosts: all
+  hosts: all:!off
   tags: config, ssh
   tasks:
     - block:
@@ -70,7 +70,7 @@
   # }}}
 
 - name: 2.Configure hostname & hosts # {{{
-  hosts: all
+  hosts: all:!off
   tags: config, host
   tasks:
     - block:
@@ -85,7 +85,7 @@
   # }}}
 
 - name: 3.Masking system error reports # {{{
-  hosts: all
+  hosts: all:!off
   tags: config, error
   tasks:
     - block:
@@ -102,7 +102,7 @@
   # }}}
 
 - name: 4.Configure sudoer privileges # {{{
-  hosts: all
+  hosts: all:!off
   tags: config, sudo
   vars:
     username: root
@@ -147,7 +147,7 @@
   # }}}
 
 - name: 5.Disable selinux # {{{
-  hosts: all
+  hosts: all:!off
   tags: config, seliux
   tasks:
     - block:
@@ -164,7 +164,7 @@
   # }}}
 
 - name: 6.Disable firewall #{{{
-  hosts: all
+  hosts: all:!off
   tags: config, firewall
   tasks:
     - block:
@@ -177,7 +177,7 @@
   # }}}
 
 - name: 7.Configure pip # {{{
-  hosts: all
+  hosts: all:!off
   tags: never, pip, python
   vars:
     username: root
@@ -206,7 +206,7 @@
   # }}}
 
 - name: 8.Configure shutdown wait time  # {{{
-  hosts: all
+  hosts: all:!off
   tags: config, shutdown
   tasks:
     - block:
@@ -222,7 +222,7 @@
   # }}}
 
 - name: 9.Open cron log # {{{
-  hosts: all
+  hosts: all:!off
   tags: config, cron
   tasks:
     - block:
@@ -245,7 +245,7 @@
   # }}}
 
 - name: 10.Configure bash # {{{
-  hosts: all
+  hosts: all:!off
   tags: config, bash
   vars:
     username: root
@@ -291,7 +291,7 @@
   # }}}
 
 - name: 11.Configure clock & time zone # {{{
-  hosts: all
+  hosts: all:!off
   tags: config, clock, time
   tasks:
     - block:
@@ -301,7 +301,7 @@
   # }}}
 
 - name: 12.Configure the default editor # {{{
-  hosts: all
+  hosts: all:!off
   tags: config, editor
   vars:
     username: root
@@ -319,7 +319,7 @@
           # }}}
 
 - name: 13.Rewrite cron templates  # {{{
-  hosts: all
+  hosts: all:!off
   tags: config, cron
   vars:
     username: root
@@ -346,7 +346,7 @@
          # }}}
 
 - name: 14.Configure git #{{{
-  hosts: all
+  hosts: all:!off
   tags: config, git
   tasks:
     - block:
@@ -460,7 +460,7 @@
 # }}}
 
 - name: 18.You have new mail. # {{{
-  hosts: all
+  hosts: all:!off
   tags: config, mail
   tasks:
     - block:
@@ -475,7 +475,7 @@
 # }}}
 
 - name: 19.create sshkey # {{{
-  hosts: all
+  hosts: all:!off
   vars:
     username: root
     groupname: root
@@ -493,7 +493,7 @@
 # }}}
 
 - name: 20.config resolv # {{{
-  hosts: all
+  hosts: all:!off
   tags: never, resolv
   roles:
     - role: roles/ahuffman.resolv
@@ -509,7 +509,7 @@
 # }}}
 
 - name: 21.config static ip address # {{{
-  hosts: all
+  hosts: all:!off
   tags: never, network
   vars:
     dns1: 180.76.76.76
@@ -521,7 +521,7 @@
 
 - name: 22.config ntp # {{{
   # 注意：ubuntu20.04的系统请将ansible版本升级至2.9.8以上或使用2.10(使用pip3而不是apt)，详情参看：https://github.com/geerlingguy/ansible-role-ntp/issues/86
-  hosts: all
+  hosts: all:!off
   tags: never, ntp
   roles:
     - role: roles/geerlingguy.ntp
@@ -541,7 +541,7 @@
 # }}}
 
 - name: 23.config ulimit # {{{
-  hosts: all
+  hosts: all:!off
   tags: config, ulimit
   tasks:
     - block:
@@ -556,7 +556,7 @@
 # }}}
 
 - name: 24.config sysctl # {{{
-  hosts: all
+  hosts: all:!off
   tags: config, sysctl
   tasks:
     - block:
