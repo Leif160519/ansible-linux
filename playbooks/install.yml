@@ -717,6 +717,7 @@
     mysql_database: nacos_config
     nacos_app_root_dir: /opt/applications/nacos/app
     nacos_mysql_root_dir: /opt/applications/nacos/mysql
+    open_metrics: true
   roles:
     - role: roles/leif160519.nacos-cluster
 # }}}

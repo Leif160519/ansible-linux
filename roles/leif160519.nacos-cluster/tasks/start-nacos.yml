@@ -17,3 +17,10 @@
     - debug:
         msg: "{{ inventory_hostname }}:{{ docker_status.stdout_lines }}"
   when: not inventory_hostname == "nacos-proxy"
+
+- name: open metrics
+  block:
+    - shell: |
+        docker exec nacos-app echo "management.endpoints.web.exposure.include=*" >> /home/nacos/conf/application.properties
+        docker restart nacos-app
+      when: not inventory_hostname == "nacos-proxy" and open_metrics == true
