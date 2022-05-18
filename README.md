@@ -189,7 +189,8 @@ git-bars
 - ansible中的service模块(systemd版本:245.4)与内核版本为5.8的linux不兼容，会报`FAILED! => {"changed": false, "msg": "Service is in unknown state", "status": {}}`，建议内核版本5.8基础上升级systemd版本至245.7及以上或降级Linux内核版本,详情参看:[Service is in unknown state #71528][4] | [ansible fails with systemd 245.4][5]
 - 当执行ntp.yml时，若远程机器是ubuntu20.04的系统请将ansible版本升级至2.9.8以上或使用2.10(使用pip3而不是apt安装)，详情参看:[Problems on Ubuntu 20.04 #86][6]
 
-### 九、监控nginx
+### 九、监控其他指标
+#### 1. 监控nginx
 执行nginx_exporter之前，需提前配置好nginx中的/stub_status,剧本中使用的是8080端口，也可以更换成其他端口，另外，监控信息最好只对p8s服务器开放访问，其他ip可以禁止，配置示例如下：
 ```
 server {
@@ -201,6 +202,11 @@ server {
     }
 }
 ```
+
+#### 2. 监控jenkins
+需在jenkins中安装`Prometheus metrics`插件才行
+
+Grafana dashboard可以使用[9964][25]
 
 ### 十、Grafana所需Dashboard一览表
 |                    监控点               |               Dashboard                                 |
@@ -248,3 +254,4 @@ server {
 [22]: https://blog.csdn.net/u010953609/article/details/121988480
 [23]: https://www.cnblogs.com/zhrx/p/16028078.html
 [24]: https://grafana.com/grafana/dashboards/14969
+[25]: https://grafana.com/grafana/dashboards/9964

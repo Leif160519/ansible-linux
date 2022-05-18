@@ -3,6 +3,7 @@ localhost               ansible_host=127.0.0.1
 prometheus-server       ansible_host=10.1.1.24
 gitlab-server           ansible_host=10.1.1.28
 backuppc-server         ansible_host=10.1.1.30
+jenkins-server          ansible_host=10.1.1.40
 mysql-server            ansible_host=10.1.1.35
 minio-proxy             ansible_host=10.1.1.140
 minio-cluster-1         ansible_host=10.1.1.141
