@@ -61,6 +61,8 @@ docker 部署minio: [leif160519/docker-script/minio][7]
 | MINIO_CACHE_WATERMARK_LOW | 缓存驱逐停止的缓存配额百分比 |
 | MINIO_CACHE_WATERMARK_HIGH | 缓存驱逐开始时的缓存配额百分比 |
 
+## 5.grafana图表
+[13502][8]
 
 [1]: https://github.com/leif160519/minio-linux
 [2]: https://docs.min.io/minio/baremetal/reference/minio-server/minio-server.html#environment-variables
@@ -69,3 +71,4 @@ docker 部署minio: [leif160519/docker-script/minio][7]
 [5]: https://docs.min.io/docs/minio-disk-cache-guide.html
 [6]: https://github.com/minio/minio/blob/master/docs/disk-caching/DESIGN.md
 [7]: https://github.com/Leif160519/docker-script/tree/master/minio
+[8]: https://grafana.com/grafana/dashboards/13502

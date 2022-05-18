@@ -1,0 +1,5 @@
+- job_name: minio
+  metrics_path: /minio/v2/metrics/cluster
+  scheme: http
+  static_configs:
+  - targets: ['{{ hostvars['minio-proxy']['ansible_host'] }}:9000']
