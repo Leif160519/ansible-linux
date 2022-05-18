@@ -17,6 +17,8 @@
     consul_root_dir: /opt/consul
     consulmanager_passwd: admin-123
     mysqld_exporter_root_dir: /opt/mysqld_exporter
+    kminion_root_dir: /opt/kminion
+    kafka_exporter_root_dir: /opt/kafka_exporter
 
     prometheus_version: 2.35.0
     alertmanager_version: 0.24.0
@@ -26,6 +28,8 @@
     nginx_exporter_version: 0.10.0
     consul_version: 1.11.5
     mysqld_exporter_version: 0.14.0
+    kminion_version: 2.2.0
+    kafka_exporter_version: 1.4.2
 
     prometheus_tag: prometheus-{{ prometheus_version }}.linux-amd64
     alertmanager_tag: alertmanager-{{ alertmanager_version }}.linux-amd64
@@ -35,6 +39,8 @@
     nginx_exporter_tag: nginx-prometheus-exporter_{{ nginx_exporter_version }}_linux_amd64
     consul_tag: consul_{{ consul_version }}_linux_amd64
     mysqld_exporter_tag: mysqld_exporter-{{ mysqld_exporter_version }}.linux-amd64
+    kminion_tag: kminion_{{ kminion_version }}_linux_amd64
+    kafka_exporter_tag: kafka_exporter-{{ kafka_exporter_version }}.linux-amd64
 
     prometheus_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/{{ prometheus_tag }}.tar.gz
     alertmanager_url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/{{ alertmanager_tag }}.tar.gz
@@ -44,6 +50,8 @@
     nginx_exporter_url: https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v{{ nginx_exporter_version }}/{{ nginx_exporter_tag }}.tar.gz
     consul_url: https://releases.hashicorp.com/consul/{{ consul_version }}/{{ consul_tag }}.zip
     mysqld_exporter_url: https://github.com/prometheus/mysqld_exporter/releases/download/v{{ mysqld_exporter_version }}/{{ mysqld_exporter_tag }}.tar.gz
+    kminion_url: https://github.com/redpanda-data/kminion/releases/download/v{{ kminion_version }}/{{ kminion_tag }}.tar.gz
+    kafka_exporter_url: https://github.com/danielqsj/kafka_exporter/releases/download/v{{ kafka_exporter_version }}/{{ kafka_exporter_tag }}.tar.gz
   handlers:
     - name: reload alertmanager
       service:
@@ -582,6 +590,97 @@
           daemon_reload: true
           enabled: true
         # }}}
+
+    - name: kafka_exporter # {{{
+      tags: never, kafka_exporter
+      block:
+        - name: state kafka_exporter
+          stat:
+            path: "{{ kafka_exporter_root_dir }}"
+          register: k
+
+        - name: unarchive package
+          unarchive:
+            src: "{{ kafka_exporter_url }}"
+            dest: /opt
+            owner: prometheus
+            group: prometheus
+            remote_src: true
+          when: k.stat.exists == false
+
+        - name: rename archive dir
+          shell: mv /opt/{{ kafka_exporter_tag }} {{ kafka_exporter_root_dir }}
+          when: k.stat.exists == false
+
+        - name: create kafka_exporter link
+          file:
+            src: "{{ kafka_exporter_root_dir }}/{{ item }}"
+            dest: "/usr/local/bin/{{ item }}"
+            state: link
+            force: true
+          with_items:
+            - kafka_exporter
+
+        - name: create kafka_exporter service
+          template:
+            src: files/prometheus/service/kafka_exporter.service.j2
+            dest: /lib/systemd/system/kafka_exporter.service
+            mode: 0644
+
+        - name: start kafka_exporter service
+          service:
+            name: kafka_exporter
+            state: started
+            daemon_reload: true
+            enabled: true
+        # }}}
+
+    - name: kminion # {{{
+      tags: never, kminion
+      block:
+        - name: state kminion
+          stat:
+            path: "{{ kminion_root_dir }}/kminion"
+          register: k
+
+        - name: create unarchive dir
+          file:
+            path: "{{ kminion_root_dir }}"
+            state: directory
+            owner: prometheus
+            group: prometheus
+            mode: 0755
+
+        - name: unarchive kminion
+          unarchive:
+            src: "{{ kminion_url }}"
+            dest: "{{ kminion_root_dir }}"
+            owner: prometheus
+            group: prometheus
+            remote_src: true
+          when: k.stat.exists == false
+
+        - name: create kminion link
+          file:
+            src: "{{ kminion_root_dir }}/kminion"
+            dest: "/usr/local/bin/kminion"
+            state: link
+            force: true
+            mode: 0755
+
+        - name: create kminion service
+          template:
+            src: files/prometheus/service/kminion.service.j2
+            dest: /lib/systemd/system/kminion.service
+            mode: 0644
+
+        - name: start kminion service
+          service:
+            name: kminion
+            state: started
+            daemon_reload: true
+            enabled: true
+      # }}}
 
 - hosts: prometheus-server # {{{ 服务器配置
   tags: [never, admin]

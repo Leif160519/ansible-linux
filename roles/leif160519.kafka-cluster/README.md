@@ -54,3 +54,15 @@ advertised.listeners=PLAINTEXT://172.28.21.243:9092
 重启zk集群
 
 > ip地址为发送消息端连接kafka的ip地址
+
+## promethes监控
+#### 1.使用[kminion][1]
+Grafana看板：[10466][2]
+
+#### 2.使用[kafka_exporter][3]
+Grafana看板：[7589][4]
+
+[1]: https://github.com/redpanda-data/kminion
+[2]: https://grafana.com/grafana/dashboards/10466
+[3]: https://github.com/danielqsj/kafka_exporter
+[4]: https://grafana.com/grafana/dashboards/7589

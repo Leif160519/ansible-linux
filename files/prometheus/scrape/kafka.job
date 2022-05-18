@@ -1,0 +1,17 @@
+#- job_name: "kafka"
+#  metrics_path: /metrics
+#  scrape_interval: 60s
+#  static_configs:
+#    - targets: [ {{ hostvars['kafka-cluster-1']['ansible_host']}}:8080 ]
+#      labels:
+#        alias: "消息队列"
+#        all: kafka-cluster-1
+
+- job_name: "kafka"
+  metrics_path: /metrics
+  scrape_interval: 60s
+  static_configs:
+    - targets: [ {{ hostvars['kafka-cluster-1']['ansible_host']}}:9308 ]
+      labels:
+        alias: "消息队列"
+        all: kafka-cluster-1
