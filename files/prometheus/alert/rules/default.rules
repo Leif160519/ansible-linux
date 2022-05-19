@@ -15,12 +15,12 @@ groups:
 
     - alert: 剩余空间
       expr: |
-        node_filesystem_avail_bytes{env=~"prod|staging", fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"} < 2000*1024*1024
+        node_filesystem_avail_bytes{fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"} < 2000*1024*1024
         AND
         (
-            node_filesystem_avail_bytes{env=~"prod|staging", fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"}
+            node_filesystem_avail_bytes{fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"}
             /
-            node_filesystem_size_bytes{env=~"prod|staging", fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"}
+            node_filesystem_size_bytes{fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"}
         ) < .02
       for: 2m
       labels:
@@ -31,7 +31,7 @@ groups:
 
     - alert: 剩余空间
       expr: |
-        node_filesystem_avail_bytes{env=~"prod|staging", fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"} < 200*1024*1024
+        node_filesystem_avail_bytes{fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"} < 200*1024*1024
       for: 2m
       labels:
         severity: error
@@ -41,7 +41,7 @@ groups:
 
     - alert: CPU负载
       expr: |
-        avg(irate(node_cpu_seconds_total{env=~"prod|staging", mode="idle"}[5m])) by (all,os,env,idc,instance,job,mode)< 0.2
+        avg(irate(node_cpu_seconds_total{mode="idle"}[5m])) by (all,os,instance,job,mode)< 0.2
       for: 2m
       labels:
         severity: warn
