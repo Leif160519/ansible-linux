@@ -5,6 +5,7 @@ gitlab-server           ansible_host=10.1.1.28
 backuppc-server         ansible_host=10.1.1.30
 jenkins-server          ansible_host=10.1.1.40
 mysql-server            ansible_host=10.1.1.35
+vmware-esxi-1           ansible_host=10.1.2.100
 minio-proxy             ansible_host=10.1.1.140
 minio-cluster-1         ansible_host=10.1.1.141
 minio-cluster-2         ansible_host=10.1.1.142
