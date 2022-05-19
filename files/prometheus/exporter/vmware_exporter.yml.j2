@@ -1,0 +1,17 @@
+default:
+
+vmware-esxi-1:
+    vsphere_host: "{{ hostvars['vmware-esxi-1']['ansible_host'] }}"
+    vsphere_user: "{{ vmware_username }}"
+    vsphere_password: "{{ vmware_password}}"
+    ignore_ssl: True
+    specs_size: 5000
+    fetch_custom_attributes: False
+    fetch_tags: False
+    fetch_alarms: True
+    collect_only:
+        vms: False
+        vmguests: False
+        datastores: True
+        hosts: True
+        snapshots: True

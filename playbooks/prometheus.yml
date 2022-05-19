@@ -682,6 +682,36 @@
             enabled: true
       # }}}
 
+    - name: vmware_exporter # {{{
+      tags: never, vmware_exporter
+      block:
+        - name: install vmware_exporter
+          shell: pip3 install vmware_exporter
+
+        - name: create vmware_exporter.yml
+          template:
+            src: files/prometheus/exporter/vmware_exporter.yml.j2
+            dest: /etc/prometheus/conf.d/vmware_exporter.yml
+            mode: 0644
+            owner: prometheus
+            group: prometheus
+
+        - name: create vmware_exporter service
+          template:
+            src: files/prometheus/service/vmware_exporter.service.j2
+            dest: /lib/systemd/system/vmware_exporter.service
+            mode: 0644
+            owner: root
+            group: root
+
+        - name: start vmware_exporter service
+          service:
+            name: vmware_exporter
+            state: started
+            daemon_reload: true
+            enabled: true
+      when: inventory_hostname == "prometheus-server"
+    # }}}
 - hosts: prometheus-server # {{{ 服务器配置
   tags: [never, admin]
   handlers:

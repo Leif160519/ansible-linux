@@ -10,3 +10,8 @@ backuppc_idrsapub: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPXHfNQ4UFIV7/b53GupkQb
 mysqld_exporter_username: exporter
 mysqld_exporter_password: exporter-123
 #}}}
+
+## vmware_exporter # {{{
+vmware_username: root
+vmware_password: root-123
+#}}}
