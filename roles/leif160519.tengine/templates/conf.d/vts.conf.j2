@@ -1,0 +1,22 @@
+vhost_traffic_status_zone shared:vhost_traffic_status:32m;
+vhost_traffic_status_filter_by_host on;
+
+map $http_user_agent $filter_user_agent {
+        default 'unknown';
+        ~iPhone ios;
+        ~Android android;
+        ~(MSIE|Mozilla) windows;
+}
+vhost_traffic_status_filter_by_set_key $filter_user_agent agent::*;
+
+server {
+    listen 80;
+    server_name {{ ansible_host }};
+    vhost_traffic_status_bypass_stats on;
+
+    location /status {
+        vhost_traffic_status_display;
+        vhost_traffic_status_display_format html;
+        access_log off;
+    }
+}

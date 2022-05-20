@@ -1,0 +1,228 @@
+---
+- name: install dependency
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libpcre3
+    - libpcre3-dev
+    - openssl
+    - libssl-dev
+    - zlib1g-dev
+    - make
+    - libxml2
+    - libxml2-dev
+    - libxslt-dev
+    - libgd-dev
+  ignore_errors: true
+  when: ansible_os_family == "Debian"
+
+- name: install dependency
+  block:
+    - package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - gcc
+        - gcc-c++
+        - bzip2
+        - perl
+        - curl
+        - curl-devel
+        - expat-devel
+        - gettext-devel
+        - openssl-devel
+        - libxml2
+        - libxml2-devel
+        - libjpeg-devel
+        - libpng-devel
+        - freetype-devel
+        - libmcrypt-devel
+        - autoconf
+        - libxslt
+        - libxslt-devel
+        - gd
+        - gd-devel
+        - epel-release
+      ignore_errors: true
+
+    - name: update
+      yum:
+        update_cache: true
+
+    - name: install other dependency
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - libmcrypt
+        - libmcrypt-devel
+        - mcrypt
+        - mhash
+  when: ansible_os_family == "RedHat"
+
+- stat:
+    path: /opt/tengine-{{ tengine_version }}
+  register: tengine_dir
+
+- name: uanrchive tengine
+  unarchive:
+    src: "{{ tengine_url }}"
+    dest: /opt/
+    remote_src: true
+    owner: root
+    group: root
+  when: tengine_dir.stat.exists == false
+
+- stat:
+    path: /opt/nginx-module-vts
+  register: vts_dir
+
+- name: clone nginx-module-vts
+  git:
+    repo: https://github.com/vozlt/nginx-module-vts
+    dest: /opt/nginx-module-vts
+    clone: true
+    update: true
+  when: vts_dir.stat.exists == false
+
+- name: make tengine RedHat # {{{
+  shell: |
+    cd /opt/tengine-{{ tengine_version }}
+    ./configure \
+    --prefix=/usr/share/nginx \
+    --sbin-path=/usr/sbin/nginx \
+    --modules-path=/usr/lib64/nginx/modules \
+    --conf-path=/etc/nginx/nginx.conf \
+    --error-log-path=/var/log/nginx/error.log \
+    --http-log-path=/var/log/nginx/access.log \
+    --http-client-body-temp-path=/var/lib/nginx/tmp/client_body \
+    --http-proxy-temp-path=/var/lib/nginx/tmp/proxy \
+    --http-fastcgi-temp-path=/var/lib/nginx/tmp/fastcgi \
+    --http-uwsgi-temp-path=/var/lib/nginx/tmp/uwsgi \
+    --http-scgi-temp-path=/var/lib/nginx/tmp/scgi \
+    --pid-path=/run/nginx.pid \
+    --lock-path=/run/lock/subsys/nginx \
+    --user=nginx \
+    --group=nginx \
+    --with-compat \
+    --with-debug \
+    --with-file-aio \
+    --with-google_perftools_module \
+    --with-http_addition_module \
+    --with-http_auth_request_module \
+    --with-http_dav_module \
+    --with-http_degradation_module \
+    --with-http_flv_module \
+    --with-http_gunzip_module \
+    --with-http_gzip_static_module \
+    --with-http_image_filter_module=dynamic \
+    --with-http_mp4_module \
+    --with-http_perl_module=dynamic \
+    --with-http_random_index_module \
+    --with-http_realip_module \
+    --with-http_secure_link_module \
+    --with-http_slice_module \
+    --with-http_ssl_module \
+    --with-http_stub_status_module \
+    --with-http_sub_module \
+    --with-http_v2_module \
+    --with-http_xslt_module=dynamic \
+    --with-mail=dynamic \
+    --with-mail_ssl_module \
+    --with-pcre \
+    --with-pcre-jit \
+    --with-stream=dynamic \
+    --with-stream_ssl_module \
+    --with-stream_ssl_preread_module \
+    --with-threads \
+    --with-cc-opt='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong \
+    --param=ssp-buffer-size=4 -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic' \
+    --with-http_stub_status_module \
+    --with-http_ssl_module \
+    --with-stream \
+    --add-module=/opt/nginx-module-vts
+  when: ansible_os_family == "RedHat"
+  # }}}
+
+- name: make tengine debian  # {{{
+  shell: |
+    cd /opt/tengine-{{ tengine_version }}
+    ./configure \
+    --prefix=/usr/share/nginx \
+    --conf-path=/etc/nginx/nginx.conf \
+    --http-log-path=/var/log/nginx/access.log \
+    --error-log-path=/var/log/nginx/error.log \
+    --lock-path=/var/lock/nginx.lock \
+    --pid-path=/run/nginx.pid \
+    --modules-path=/usr/lib/nginx/modules \
+    --http-client-body-temp-path=/var/lib/nginx/body \
+    --http-fastcgi-temp-path=/var/lib/nginx/fastcgi \
+    --http-proxy-temp-path=/var/lib/nginx/proxy \
+    --http-scgi-temp-path=/var/lib/nginx/scgi \
+    --http-uwsgi-temp-path=/var/lib/nginx/uwsgi \
+    --with-debug \
+    --with-compat \
+    --with-pcre-jit \
+    --with-http_ssl_module \
+    --with-http_stub_status_module \
+    --with-http_realip_module \
+    --with-http_auth_request_module \
+    --with-http_v2_module \
+    --with-http_dav_module \
+    --with-http_slice_module \
+    --with-threads \
+    --with-http_addition_module \
+    --with-http_gunzip_module \
+    --with-http_gzip_static_module \
+    --with-http_image_filter_module=dynamic \
+    --with-http_sub_module \
+    --with-http_xslt_module=dynamic \
+    --with-stream=dynamic \
+    --with-stream_ssl_module \
+    --with-mail=dynamic \
+    --with-mail_ssl_module \
+    --add-module=/opt/nginx-module-vts
+    #}}}
+
+- name: make install
+  shell: |
+    cd /opt/tengine-{{ tengine_version }}
+    make install
+    make
+
+- name: create nginx group
+  group:
+    name: nginx
+    system: true
+    state: present
+
+- name: create nginx user
+  user:
+    name: nginx
+    system: true
+    shell: "/sbin/nologin"
+    group: nginx
+    createhome: true
+    home: /var/lib/nginx
+
+- name: link nginx
+  file:
+    src: /usr/share/nginx/sbin/nginx
+    dest: /usr/sbin/nginx
+    state: link
+    force: true
+
+- name: create conf.d dir
+  file:
+    path: /etc/nginx/conf.d
+    state: directory
+    owner: root
+    group: root
+
+- name: config nginx.conf
+  lineinfile:
+    path: /etc/nginx/nginx.conf
+    line: "    include /etc/nginx/conf.d/*.conf;"
+    insertafter: "http {"
+

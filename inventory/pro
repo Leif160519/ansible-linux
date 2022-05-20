@@ -10,6 +10,7 @@ pro.clickhouse
 pro.nginx
 pro.emqx
 pro.mysql
+pro.ingress
 # }}}
 
 [pro.minio] # {{{ minio 集群
@@ -65,6 +66,10 @@ clickhouse-cluster-2
 [pro.nginx] # {{{ nginx节点
 nginx-web-01
 nginx-web-02
+# }}}
+
+[pro.ingress] # {{{ tengine 节点
+ingress-server
 # }}}
 
 [pro.emqx] # {{{ emqx 集群

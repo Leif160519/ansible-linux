@@ -1,0 +1,4 @@
+  - job_name: ingress
+    metrics_path: /status/format/prometheus
+    static_configs:
+    - targets: ['{{ hostvars['ingress-server']['ansible_host'] }}']

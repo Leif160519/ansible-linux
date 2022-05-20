@@ -1079,3 +1079,10 @@
           notify: restart supervisor service
           when: ansible_os_family == "RedHat"
 # }}}
+
+- name: Make & Install Tengine # {{{
+  hosts: all:!off
+  tags: never, tengine
+  roles:
+    - role: roles/leif160519.tengine
+# }}}

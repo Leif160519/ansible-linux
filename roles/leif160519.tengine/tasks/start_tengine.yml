@@ -1,0 +1,14 @@
+- name: create tengine service
+  template:
+    src: service/nginx.service.{{ ansible_os_family | lower }}.j2
+    dest: /lib/systemd/system/nginx.service
+    mode: 0644
+    owner: root
+    group: root
+
+- name: start tengine service
+  service:
+    name: nginx
+    state: started
+    enabled: true
+    daemon_reload: true
