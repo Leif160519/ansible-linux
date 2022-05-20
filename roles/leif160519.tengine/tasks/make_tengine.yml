@@ -208,17 +208,20 @@
 
 - name: link nginx
   file:
-    src: /usr/share/nginx/sbin/nginx
+    src: /opt/tengine-{{ tengine_version }}/objs/nginx
     dest: /usr/sbin/nginx
     state: link
     force: true
 
 - name: create conf.d dir
   file:
-    path: /etc/nginx/conf.d
+    path: "{{ item }}"
     state: directory
     owner: root
     group: root
+  with_items:
+    - /etc/nginx/conf.d
+    - /var/lib/nginx/tmp
 
 - name: config nginx.conf
   lineinfile:
