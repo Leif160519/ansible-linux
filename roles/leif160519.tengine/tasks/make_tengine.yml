@@ -183,6 +183,7 @@
     --with-mail=dynamic \
     --with-mail_ssl_module \
     --add-module=/opt/nginx-module-vts
+  when: ansible_os_family == "Debian"
     #}}}
 
 - name: make install
