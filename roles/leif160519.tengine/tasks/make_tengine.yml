@@ -43,6 +43,8 @@
         - libxslt-devel
         - gd
         - gd-devel
+        - perl-ExtUtils-Embed
+        - gperftools
         - epel-release
       ignore_errors: true
 
@@ -107,7 +109,6 @@
     --group=nginx \
     --with-compat \
     --with-debug \
-    --with-file-aio \
     --with-google_perftools_module \
     --with-http_addition_module \
     --with-http_auth_request_module \
@@ -136,8 +137,6 @@
     --with-stream_ssl_module \
     --with-stream_ssl_preread_module \
     --with-threads \
-    --with-cc-opt='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong \
-    --param=ssp-buffer-size=4 -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic' \
     --with-http_stub_status_module \
     --with-http_ssl_module \
     --with-stream \
