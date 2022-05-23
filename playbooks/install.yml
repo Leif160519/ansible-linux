@@ -1070,6 +1070,18 @@
             enabled: true
           when: ansible_os_family == "Debian"
 
+        - name: create supervisor dir
+          file:
+            path: "{{ item }}"
+            state: directory
+            mode: 0755
+            owner: root
+            group: root
+          with_items:
+            - /etc/supervisor
+            - /etc/supervisor/conf.d
+          when: ansible_os_family == "RedHat"
+
         - name: config supervisor
           lineinfile:
             path: /etc/supervisord.conf
