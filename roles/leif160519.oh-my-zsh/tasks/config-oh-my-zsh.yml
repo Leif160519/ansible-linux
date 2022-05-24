@@ -35,6 +35,10 @@
               extract
               history-search-multi-word
               fast-syntax-highlighting
+              bundler
+              macos
+              rake
+              ruby
       )
   # }}}
 
