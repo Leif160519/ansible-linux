@@ -686,5 +686,7 @@
             - /usr/bin/ps
             - /usr/bin/head
             - /usr/bin/more
+            - /usr/bin/wget
+            - /usr/bin/curl
       when: not ( username is match "root" )
 # }}}
