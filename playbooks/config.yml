@@ -670,14 +670,13 @@
           with_fileglob:
             - /usr/bin/wc
             - /usr/bin/tail
-            - /bin/more
-            - /bin/cat
-            - /bin/grep
-            - /bin/find
-            - /bin/pwd
-            - /bin/ls
-            - /bin/less
-            - /bin/tar
+            - /usr/bin/cat
+            - /usr/bin/grep
+            - /usr/bin/find
+            - /usr/bin/pwd
+            - /usr/bin/ls
+            - /usr/bin/less
+            - /usr/bin/tar
             - /usr/bin/top
             - /usr/bin/free
             - /usr/bin/df
@@ -685,5 +684,7 @@
             - /usr/bin/telnet
             - /usr/bin/netstat
             - /usr/bin/ps
+            - /usr/bin/head
+            - /usr/bin/more
       when: not ( username is match "root" )
 # }}}
