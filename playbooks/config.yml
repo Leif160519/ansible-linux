@@ -668,25 +668,30 @@
             mode: 0755
             force: true
           with_fileglob:
+            - /bin/ls
+            - /bin/cp
+            - /bin/df
+            - /bin/grep
+            - /bin/more
+            - /bin/netstat
+            - /bin/ps
+            - /bin/pwd
+            - /bin/tar
+            - /bin/cat
             - /usr/bin/wc
             - /usr/bin/tail
-            - /usr/bin/cat
-            - /usr/bin/grep
             - /usr/bin/find
-            - /usr/bin/pwd
-            - /usr/bin/ls
             - /usr/bin/less
-            - /usr/bin/tar
             - /usr/bin/top
             - /usr/bin/free
-            - /usr/bin/df
             - /usr/bin/du
             - /usr/bin/telnet
-            - /usr/bin/netstat
-            - /usr/bin/ps
             - /usr/bin/head
-            - /usr/bin/more
             - /usr/bin/wget
             - /usr/bin/curl
+            - /usr/bin/which
+            - /usr/bin/whoami
+            - /usr/bin/whereis
+            - /usr/bin/who
       when: not ( username is match "root" )
 # }}}
