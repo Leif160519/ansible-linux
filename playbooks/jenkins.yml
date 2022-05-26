@@ -1,0 +1,34 @@
+- name: create jenkins node
+  hosts: all:!off
+  tags: jenkins_node
+  vars:
+    jenkins_root_dir: /data/jenkins
+    credentials_id: 5652c4e2-6f0a-4c4c-a64b-6c0ff3ece41a
+    remote_fs: /var/tmp/jenkins
+  tasks:
+    - shell: which java
+      register: java_result
+      failed_when: false
+
+    - block:
+        - set_fact:
+            target_ssh_port: "{{ ansible_port }}"
+
+        - file:
+            path: {{ jenkins_root_dir }}/nodes/{{ inventory_hostname }}
+            state: directory
+            owner: jenkins
+            group: jenkins
+            mode: 0755
+          delegate_to: jenkins-server
+          when: java_result.stdout is defined
+
+        - template:
+            src: files/jenkins/config.xml.j2
+            dest: {{ jenkins_root_dir }}/nodes/{{ inventory_hostname }}/config.xml
+            owner: jenkins
+            group: jenkins
+            mode: 0644
+          delegate_to: jenkins-server
+          when: java_result.stdout is defined
+      when: java_result.rc == 0
