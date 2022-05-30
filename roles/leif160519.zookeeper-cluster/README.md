@@ -16,3 +16,18 @@ docker exec  <zk-cluster-name> /apache-zookeeper-3.5.8-bin/bin/zkServer.sh statu
 ```
 docker logs -f <zk-cluster-name> --tail 200
 ```
+
+## 接入prometheus监控
+zookeeper_exporter日志出现:
+```
+mntr is not executed because it is not in the whitelist
+```
+
+解决方案：
+```
+vim zoo.cfg
+
+4lw.commands.whitelist=*
+
+重启zookeeper
+```

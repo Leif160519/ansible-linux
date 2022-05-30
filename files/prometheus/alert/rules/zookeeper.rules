@@ -1,0 +1,42 @@
+groups:
+  - name: zookeeper rule
+    rules:
+    - alert: Zookeeper 宕机
+      expr: zk_up == 0
+      for: 0m
+      labels:
+        severity: critical
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Zookeeper 宕机 (instance {{ $labels.instance }})
+        description: "Zookeeper down on instance {{ $labels.instance }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: Zookeeper 丢失主节点
+      expr: sum(zk_server_leader) == 0
+      for: 0m
+      labels:
+        severity: critical
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Zookeeper 丢失主节点 (instance {{ $labels.instance }})
+        description: "Zookeeper cluster has no node marked as leader\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: Zookeeper 过多主节点
+      expr: sum(zk_server_leader) > 1
+      for: 0m
+      labels:
+        severity: critical
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Zookeeper 过多主节点 (instance {{ $labels.instance }})
+        description: "Zookeeper cluster has too many nodes marked as leader\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: Zookeeper 非OK状态
+      expr: zk_ruok == 0
+      for: 3m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Zookeeper 非OK状态 (instance {{ $labels.instance }})
+        description: "Zookeeper instance is not ok\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"

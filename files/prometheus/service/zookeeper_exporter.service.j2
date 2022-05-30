@@ -1,0 +1,26 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=zookeeper_exporter
+After=network-online.target
+
+[Service]
+Type=simple
+Environment="GOMAXPROCS={{ ansible_processor_vcpus|default(ansible_processor_count) }}"
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/zookeeper-exporter \
+  -listen=0.0.0.0:9141 \
+  -location=/metrics \
+  -timeout=30 \
+  -zk-hosts={{ ansible_host }}:2181 \
+  -zk-tls-auth=false
+
+ProtectSystem=full
+
+SyslogIdentifier=prometheus
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
