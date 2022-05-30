@@ -19,6 +19,7 @@
     mysqld_exporter_root_dir: /opt/mysqld_exporter
     kminion_root_dir: /opt/kminion
     kafka_exporter_root_dir: /opt/kafka_exporter
+    es_exporter_root_dir: /opt/elasticsearch_exporter
 
     prometheus_version: 2.35.0
     alertmanager_version: 0.24.0
@@ -30,6 +31,7 @@
     mysqld_exporter_version: 0.14.0
     kminion_version: 2.2.0
     kafka_exporter_version: 1.4.2
+    es_exporter_version: 1.3.0
 
     prometheus_tag: prometheus-{{ prometheus_version }}.linux-amd64
     alertmanager_tag: alertmanager-{{ alertmanager_version }}.linux-amd64
@@ -41,6 +43,7 @@
     mysqld_exporter_tag: mysqld_exporter-{{ mysqld_exporter_version }}.linux-amd64
     kminion_tag: kminion_{{ kminion_version }}_linux_amd64
     kafka_exporter_tag: kafka_exporter-{{ kafka_exporter_version }}.linux-amd64
+    es_exporter_tag: elasticsearch_exporter-{{ es_exporter_version }}.linux-amd64
 
     prometheus_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/{{ prometheus_tag }}.tar.gz
     alertmanager_url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/{{ alertmanager_tag }}.tar.gz
@@ -52,6 +55,7 @@
     mysqld_exporter_url: https://github.com/prometheus/mysqld_exporter/releases/download/v{{ mysqld_exporter_version }}/{{ mysqld_exporter_tag }}.tar.gz
     kminion_url: https://github.com/redpanda-data/kminion/releases/download/v{{ kminion_version }}/{{ kminion_tag }}.tar.gz
     kafka_exporter_url: https://github.com/danielqsj/kafka_exporter/releases/download/v{{ kafka_exporter_version }}/{{ kafka_exporter_tag }}.tar.gz
+    es_exporter_url: https://github.com/prometheus-community/elasticsearch_exporter/releases/download/v{{ es_exporter_version }}/{{ es_exporter_tag }}.tar.gz
   handlers:
     - name: reload alertmanager
       service:
@@ -547,6 +551,19 @@
       when: ('pro.mysql' in group_names)
       # }}}
 
+    - name: scrapt_config_es # {{{
+      tags: targets
+      block:
+      - set_fact:
+          prometheus_targets_elasticsearch: "{{ groups['pro.es'] | difference(groups['off']) }}"
+      - template:
+          src: files/prometheus/scrape/file_sd/elasticsearch.yml.j2
+          dest: /etc/prometheus/file_sd/elasticsearch.yml
+        delegate_to: "fj-cvm-bj-prod-public-devops-03"
+        run_once: true
+      when: ('pro.es' in group_names)
+    # }}}
+
     - name: node_exporter # {{{
       tags: [ node_exporter ]
       block:
@@ -682,6 +699,50 @@
             enabled: true
       # }}}
 
+    - name: elasticsearch_exporter # {{{
+      tags: never, es_exporter
+      block:
+        - name: stat elasticsearch_exporter
+          stat:
+            path: "{{ es_exporter_root_dir }}"
+          register: e
+
+        - name: unarchive es
+          unarchive:
+            src: "{{ es_exporter_url }}"
+            dest: /opt
+            owner: prometheus
+            group: prometheus
+            remote_src: yes
+          when: e.stat.exists == false
+
+        - name: rename elasticsearch_exporter dir
+          shell: mv /opt/{{ es_exporter_tag }} {{ es_exporter_root_dir }}
+          when: e.stat.exists == false
+
+        - name: create elasticsearch_exporter link
+          file:
+            src: "{{ es_exporter_root_dir }}/{{ item }}"
+            dest: /usr/local/bin/{{ item }}
+            force: true
+            state: link
+          with_items:
+            - elasticsearch_exporter
+
+        - name: create es service
+          template:
+            src: files/prometheus/service/elasticsearch_exporter.service.j2
+            dest: /lib/systemd/system/elasticsearch_exporter.service
+            mode: 0644
+
+        - name: start elasticsearch_exporter service
+          service:
+            name: elasticsearch_exporter
+            state: started
+            daemon_reload: true
+            enabled: true
+    # }}}
+
     - name: vmware_exporter # {{{
       tags: never, vmware_exporter
       block:
@@ -712,6 +773,18 @@
             enabled: true
       when: inventory_hostname == "prometheus-server"
     # }}}
+
+    - alert: 乒丢包了
+      expr: |
+        sum_over_time(fping_lost_count{job="ping"}[15m]) / sum_over_time(fping_sent_count{job="ping"}[15m]) * 100 > 35
+        AND
+        sum_over_time(fping_lost_count{job="ping"}[15m]) / sum_over_time(fping_sent_count{job="ping"}[15m]) < .9
+      for: 2m
+      labels:
+        severity: info
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "丢包{{ $value | printf \"%.f\" }}%"
 - hosts: prometheus-server # {{{ 服务器配置
   tags: [never, admin]
   handlers:
@@ -729,6 +802,7 @@
         prometheus_scrape_configs: "{{ prometheus_scrape_configs + lookup('template', item) | from_yaml }}"
         prometheus_targets_nginx: "{{ groups['pro.nginx'] }"
         prometheus_targets_mysql: "{{ groups['pro.mysql'] }"
+        prometheus_targets_elasticsearch: "{{ groups['pro.es'] | difference(groups['off']) }}"
       with_fileglob:
         - "files/prometheus/scrape/*.job"
       when: inventory_hostname is match("^prometheus-server")

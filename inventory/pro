@@ -11,6 +11,7 @@ pro.nginx
 pro.emqx
 pro.mysql
 pro.ingress
+pro.es
 # }}}
 
 [pro.minio] # {{{ minio 集群
@@ -79,4 +80,10 @@ emqx-cluster-2
 
 [pro.mysql] # {{{ mysql
 mysql-server
+# }}}
+
+[pro.es] # es
+es-cluster-1
+es-cluster-2
+es-cluster-3
 # }}}

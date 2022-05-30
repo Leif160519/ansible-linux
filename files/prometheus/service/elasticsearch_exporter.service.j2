@@ -1,0 +1,31 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=elasticsearch_exporter
+After=network-online.target
+
+[Service]
+Type=simple
+Environment="GOMAXPROCS={{ ansible_processor_vcpus|default(ansible_processor_count) }}"
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/elasticsearch_exporter \
+  --es.all \
+  --es.indices \
+  --es.cluster_settings \
+  --es.indices_settings \
+  --es.shards \
+  --es.snapshots \
+  --es.timeout=10s \
+  --web.listen-address=0.0.0.0:9114 \
+  --web.telemetry-path=/metrics \
+  --es.uri=http://{{ ansible_host }}:9200
+
+ProtectSystem=full
+
+SyslogIdentifier=prometheus
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
