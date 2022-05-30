@@ -220,6 +220,7 @@ Grafana dashboard可以使用[9964][25]
 | prometehus数据持久化监控 | [VictoriaMetrics][15] |
 | MySQL监控 | [mysql overview][24] |
 | ElasticSearch监控 | [ElasticSearch Production][26] |
+| zookeeper监控 | [Zookeeper Exporter (dabealu)][27]|
 
 ### 十一、参考
 - [ConsulManager][16]
@@ -257,3 +258,4 @@ Grafana dashboard可以使用[9964][25]
 [24]: https://grafana.com/grafana/dashboards/14969
 [25]: https://grafana.com/grafana/dashboards/9964
 [26]: https://grafana.com/grafana/dashboards/13641
+[27]: https://grafana.com/grafana/dashboards/11442
