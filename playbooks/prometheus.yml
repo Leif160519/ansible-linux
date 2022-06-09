@@ -26,7 +26,7 @@
     alertmanager_version: 0.24.0
     node_exporter_version: 1.3.1
     blackbox_exporter_version: 0.20.0
-    prometheusalert_version: v4.8
+    prometheusalert_version: v4.8.1
     nginx_exporter_version: 0.10.0
     consul_version: 1.11.5
     mysqld_exporter_version: 0.14.0
