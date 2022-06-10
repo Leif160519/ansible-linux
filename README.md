@@ -220,7 +220,8 @@ Grafana dashboard可以使用[9964][25]
 | prometehus数据持久化监控 | [VictoriaMetrics][15] |
 | MySQL监控 | [mysql overview][24] |
 | ElasticSearch监控 | [ElasticSearch Production][26] |
-| zookeeper监控 | [Zookeeper Exporter (dabealu)][27]|
+| zookeeper监控 | [Zookeeper Exporter (dabealu)][27] |
+| emq 监控 | EMQ 服务指标看板[28](模板可能适用于api v3版本，v4版本的需要修改其中的采集数据) |
 
 ### 十一、参考
 - [ConsulManager][16]
@@ -259,3 +260,4 @@ Grafana dashboard可以使用[9964][25]
 [25]: https://grafana.com/grafana/dashboards/9964
 [26]: https://grafana.com/grafana/dashboards/13641
 [27]: https://grafana.com/grafana/dashboards/11442
+[28]: https://grafana.com/grafana/dashboards/9963
