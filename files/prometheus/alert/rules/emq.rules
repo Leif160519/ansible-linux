@@ -1,0 +1,33 @@
+groups:
+  - name: emq rule
+    rules:
+    - alert: EMQ 节点宕机
+      expr: |
+        emq_up{env!~"staging|pre"} == 0
+      for: 2m
+      labels:
+        severity: error
+        channels: "@linux/feishu;"
+        level: P0
+      annotations:
+        summary: "请检查节点状态"
+    - alert: EMQ 内存使用率
+      expr: |
+         emq_nodes_memory_used{env!~"staging|pre"} / emq_nodes_memory_total{env!~"staging|pre"} < 0.10
+      for: 2m
+      labels:
+        severity: warn
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "少于10%，剩余 {{ $value | humanize1024 }}"
+    - alert: EMQ 1分钟平均负载超过8
+      expr: |
+        avg(irate(emq_nodes_load1{env!~"staging|pre"}[1m])) by (all,os,env,idc,instance,job) > 8
+      for: 2m
+      labels:
+        severity: warn
+        channels: "@linux/feishu;"
+        level: P0
+      annotations:
+        summary: "当前 {{ $value }}"

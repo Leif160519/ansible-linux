@@ -1,0 +1,26 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=emq_exporter
+After=network-online.target
+
+[Service]
+Type=simple
+Environment="GOMAXPROCS={{ ansible_processor_vcpus|default(ansible_processor_count) }}"
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/emq_exporter \
+  --web.listen-address=0.0.0.0:9540 \
+  --emq.node=emqx@{{ ansible_host }} \
+  --emq.uri=http://{{ ansible_host }}:18083 \
+  --emq.creds-file=/etc/prometheus/conf.d/auth.json \
+  --emq.api-version=v4
+
+ProtectSystem=full
+
+SyslogIdentifier=prometheus
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

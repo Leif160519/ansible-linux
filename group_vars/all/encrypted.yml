@@ -15,3 +15,8 @@ mysqld_exporter_password: exporter-123
 vmware_username: root
 vmware_password: root-123
 #}}}
+
+## emqx {{{
+emq_username: exporter
+emq_password: public
+##}}}

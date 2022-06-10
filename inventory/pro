@@ -82,7 +82,7 @@ emqx-cluster-2
 mysql-server
 # }}}
 
-[pro.es] # es
+[pro.es] # {{{ elasticsearch
 es-cluster-1
 es-cluster-2
 es-cluster-3
