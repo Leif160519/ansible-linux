@@ -222,7 +222,8 @@ Grafana dashboard可以使用[9964][25]
 | ElasticSearch监控 | [ElasticSearch Production][26] |
 | zookeeper监控 | [Zookeeper Exporter (dabealu)][27] |
 | emq 监控 | [EMQ 服务指标看板][28](模板可能适用于api v3版本，v4版本的需要修改其中的采集数据) |
-| clickhouse监控(内置指标) | [ClickHouse][29]|
+| clickhouse监控(内置指标) | [ClickHouse][29] |
+| Nacos监控 | [Nacos][30] |
 
 ### 十一、参考
 - [ConsulManager][16]
@@ -263,3 +264,4 @@ Grafana dashboard可以使用[9964][25]
 [27]: https://grafana.com/grafana/dashboards/11442
 [28]: https://grafana.com/grafana/dashboards/9963
 [29]: https://grafana.com/grafana/dashboards/14192
+[30]: https://grafana.com/grafana/dashboards/13221

@@ -615,6 +615,19 @@
       when: ('pro.clickhouse' in group_names )
       # }}}
 
+    - name: scrap_config_nacos # {{{
+      tags: targets
+      block:
+      - set_fact:
+          prometheus_targets_nacos: "{{ groups['pro.nacos'] | difference(groups['off']) }}"
+      - template:
+          src: files/prometheus/scrape/file_sd/nacos.yml.j2
+          dest: /etc/prometheus/file_sd/nacos.yml
+      delegate_to: prometheus-server
+      run_once: true
+      when: ('pro.nacos' in group_names )
+      # }}}
+
     - name: node_exporter # {{{
       tags: [ node_exporter ]
       block:
@@ -942,6 +955,7 @@
         prometheus_targets_zookeeper: "{{ groups['pro.zookeeper'] | difference(groups['off']) }}"
         prometheus_targets_emq: "{{ groups['pro.emqx'] | difference(groups['off']) }}"
         prometheus_targets_clickhouse: "{{ groups['pro.clickhouse'] | difference(groups['off']) }}"
+        prometheus_targets_nacos: "{{ groups['pro.nacos'] | difference(groups['off']) }}"
       with_fileglob:
         - "files/prometheus/scrape/*.job"
       when: inventory_hostname is match("^prometheus-server")

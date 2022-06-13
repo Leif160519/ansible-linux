@@ -1,0 +1,39 @@
+groups:
+  - name: nacos default rule
+    rules:
+    - alert: nacos cpu使用率超过99%
+      expr: |
+        max(system_cpu_usage{job="nacos",env!~"staging|pre"}) * 100 > 99
+      for: 2m
+      labels:
+        severity: warn
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "nacos cpu使用率超过99%，当前 {{ $value }}%"
+
+    - alert: nacos 内存使用率超过90%
+      expr: |
+        (
+          sum(jvm_memory_used_bytes{area="heap", job="nacos",env!~"staging|pre"})
+          /
+          sum(jvm_memory_max_bytes{area="heap", job="nacos",env!~"staging|pre"}) * 100
+        ) > 90
+      for: 2m
+      labels:
+        severity: warn
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "nacos 内存使用率超过90%，当前 {{ $value }}%"
+
+    - alert: nacos 系统平均负载过高
+      expr: |
+        max(system_load_average_1m{job="nacos",env!~"staging|pre"}) > 10
+      for: 2m
+      labels:
+        severity: warn
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "nacos 系统平均负载过高，当前 {{ $value }}"

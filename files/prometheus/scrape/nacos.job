@@ -1,8 +1,4 @@
-- job_name: nacos
+- job_name: "nacos"
   metrics_path: /nacos/actuator/prometheus
-  scheme: http
-  static_configs:
-  - targets:
-      - '{{ hostvars['nacos-cluster-1']['ansible_host'] }}:8848'
-      - '{{ hostvars['nacos-cluster-2']['ansible_host'] }}:8848'
-      - '{{ hostvars['nacos-cluster-3']['ansible_host'] }}:8848'
+  file_sd_configs:
+    - files: [ "/etc/prometheus/file_sd/nacos.yml" ]
