@@ -3,7 +3,7 @@ groups:
     rules:
     - alert: nacos cpu使用率超过99%
       expr: |
-        max(system_cpu_usage{job="nacos",env!~"staging|pre"}) * 100 > 99
+        max(system_cpu_usage{job="nacos"}) * 100 > 99
       for: 2m
       labels:
         severity: warn
@@ -15,9 +15,9 @@ groups:
     - alert: nacos 内存使用率超过90%
       expr: |
         (
-          sum(jvm_memory_used_bytes{area="heap", job="nacos",env!~"staging|pre"})
+          sum(jvm_memory_used_bytes{area="heap", job="nacos"})
           /
-          sum(jvm_memory_max_bytes{area="heap", job="nacos",env!~"staging|pre"}) * 100
+          sum(jvm_memory_max_bytes{area="heap", job="nacos"}) * 100
         ) > 90
       for: 2m
       labels:
@@ -29,7 +29,7 @@ groups:
 
     - alert: nacos 系统平均负载过高
       expr: |
-        max(system_load_average_1m{job="nacos",env!~"staging|pre"}) > 10
+        max(system_load_average_1m{job="nacos"}) > 10
       for: 2m
       labels:
         severity: warn

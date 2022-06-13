@@ -3,7 +3,7 @@ groups:
     rules:
     - alert: EMQ 节点宕机
       expr: |
-        emq_up{env!~"staging|pre"} == 0
+        emq_up{} == 0
       for: 2m
       labels:
         severity: error
@@ -13,7 +13,7 @@ groups:
         summary: "请检查节点状态"
     - alert: EMQ 内存使用率
       expr: |
-         emq_nodes_memory_used{env!~"staging|pre"} / emq_nodes_memory_total{env!~"staging|pre"} < 0.10
+         emq_nodes_memory_used{} / emq_nodes_memory_total{} < 0.10
       for: 2m
       labels:
         severity: warn
@@ -23,7 +23,7 @@ groups:
         summary: "少于10%，剩余 {{ $value | humanize1024 }}"
     - alert: EMQ 1分钟平均负载超过8
       expr: |
-        avg(irate(emq_nodes_load1{env!~"staging|pre"}[1m])) by (all,os,env,idc,instance,job) > 8
+        avg(irate(emq_nodes_load1{}[1m])) by (all,os,env,idc,instance,job) > 8
       for: 2m
       labels:
         severity: warn
