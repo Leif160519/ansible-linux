@@ -602,6 +602,19 @@
       when: ('pro.emqx' in group_names)
       # }}}
 
+    - name: scrap_config_clickhouse # {{{
+      tags: targets
+      block:
+      - set_fact:
+          prometheus_targets_clickhouse: "{{ groups['pro.clickhouse'] | difference(groups['off']) }}"
+      - template:
+          src: files/prometheus/scrape/file_sd/clickhouse.yml.j2
+          dest: /etc/prometheus/file_sd/clickhouse.yml
+      delegate_to: prometheus-server
+      run_once: true
+      when: ('pro.clickhouse' in group_names )
+      # }}}
+
     - name: node_exporter # {{{
       tags: [ node_exporter ]
       block:
@@ -928,6 +941,7 @@
         prometheus_targets_elasticsearch: "{{ groups['pro.es'] | difference(groups['off']) }}"
         prometheus_targets_zookeeper: "{{ groups['pro.zookeeper'] | difference(groups['off']) }}"
         prometheus_targets_emq: "{{ groups['pro.emqx'] | difference(groups['off']) }}"
+        prometheus_targets_clickhouse: "{{ groups['pro.clickhouse'] | difference(groups['off']) }}"
       with_fileglob:
         - "files/prometheus/scrape/*.job"
       when: inventory_hostname is match("^prometheus-server")
