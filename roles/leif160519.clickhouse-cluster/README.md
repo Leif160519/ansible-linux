@@ -16,4 +16,4 @@
 </prometheus>
 ```
 
-无需重启clickhouse-server，其会自动reload，可以使用`lsof -i 9363`检查
+重启clickhouse-server`systemctl restart clickhouse-server`
