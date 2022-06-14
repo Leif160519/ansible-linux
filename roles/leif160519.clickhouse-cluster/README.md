@@ -8,7 +8,6 @@
 <prometheus>
     <endpoint>/metrics</endpoint>
     <port>9363</port>
-
     <metrics>true</metrics>
     <events>true</events>
     <asynchronous_metrics>true</asynchronous_metrics>
@@ -16,4 +15,4 @@
 </prometheus>
 ```
 
-重启clickhouse-server`systemctl restart clickhouse-server`
+重启clickhouse-server:`systemctl restart clickhouse-server`

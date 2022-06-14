@@ -19,6 +19,7 @@ management.endpoints.web.exposure.include=*
 
 # 重启nacos容器
 docker restart nacos-app
+```
 
 grafana图表：[13221][1]
 

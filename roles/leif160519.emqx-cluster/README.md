@@ -2,3 +2,6 @@
 
 ## 注意
 - 1.emqx集群的机器必须开启防火墙4370，5370端口以便集群互访
+
+## 暴露metrics
+在plugin中开启`emqx_prometheus`即可
