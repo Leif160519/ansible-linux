@@ -6,7 +6,7 @@ groups:
         max(system_cpu_usage{job="nacos"}) * 100 > 99
       for: 2m
       labels:
-        severity: warn
+        severity: warning
         channels: "@linux/feishu;"
         level: P1
       annotations:
@@ -21,7 +21,7 @@ groups:
         ) > 90
       for: 2m
       labels:
-        severity: warn
+        severity: warning
         channels: "@linux/feishu;"
         level: P1
       annotations:
@@ -32,7 +32,7 @@ groups:
         max(system_load_average_1m{job="nacos"}) > 10
       for: 2m
       labels:
-        severity: warn
+        severity: warning
         channels: "@linux/feishu;"
         level: P1
       annotations:

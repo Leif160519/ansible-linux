@@ -15,7 +15,7 @@ groups:
         backuppc_hosts_reason{label='Reason_no_ping',job='backuppc'} == 1
       for: 2m
       labels:
-        severity: warn
+        severity: warning
         channels: "@linux/feishu;"
       annotations:
         summary: "{{ $labels.all }}主机备份失联"
@@ -34,7 +34,7 @@ groups:
         time() - backuppc_hosts_incr_age{job='backuppc'} > 86400*3 and backuppc_hosts_disabled == 0
       for: 2m
       labels:
-        severity: warn
+        severity: warning
         channels: "@linux/feishu;"
       annotations:
         summary: "{{ $labels.all }}超过3天未增备"
@@ -44,7 +44,7 @@ groups:
         time() - backuppc_hosts_full_age{job='backuppc'} > 86400*15 and backuppc_hosts_disabled == 0
       for: 2m
       labels:
-        severity: warn
+        severity: warning
         channels: "@linux/feishu;"
       annotations:
         summary: "{{ $labels.all }}超过15天未全备"

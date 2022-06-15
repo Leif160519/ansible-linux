@@ -8,7 +8,7 @@ groups:
         max_over_time(up{job="prometheus"}[1m]) == 0
       for: 2m
       labels:
-        severity: warn
+        severity: warning
         channels: "@linux/feishu;"
       annotations:
         summary: "_"

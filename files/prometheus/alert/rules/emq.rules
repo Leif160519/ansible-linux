@@ -16,7 +16,7 @@ groups:
          emq_nodes_memory_used{} / emq_nodes_memory_total{} < 0.10
       for: 2m
       labels:
-        severity: warn
+        severity: warning
         channels: "@linux/feishu;"
         level: P1
       annotations:
@@ -26,7 +26,7 @@ groups:
         avg(irate(emq_nodes_load1{}[1m])) by (all,os,env,idc,instance,job) > 8
       for: 2m
       labels:
-        severity: warn
+        severity: warning
         channels: "@linux/feishu;"
         level: P0
       annotations:

@@ -4,6 +4,13 @@ global:
 #templates:
 #  - /etc/prometheus/conf.d/*.tmpl
 
+inhibit_rules:
+  - source_match:
+      severity: error
+    target_match:
+      severity: warning
+    equal: [ all, alertname ]
+
 route:
   group_by: ['alertname','job']
   group_wait: 3m
@@ -37,9 +44,3 @@ receivers:
     webhook_configs:
       - url: 'http://10.1.1.24:8080/prometheusalert?type=fs&tpl=prometheus-fsv2'
         send_resolved: true
-inhibit_rules:
-  - source_match:
-      severity: 'critical'
-    target_match:
-      severity: 'warning'
-    equal: ['alertname', 'instance']

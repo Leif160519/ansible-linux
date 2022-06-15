@@ -24,7 +24,7 @@ groups:
         ) < .02
       for: 2m
       labels:
-        severity: warn
+        severity: warning
         channels: "@linux/feishu;"
       annotations:
         summary: "不足2%，{{ $labels.mountpoint }} 剩余 {{ $value | humanize1024 }}"
@@ -44,7 +44,7 @@ groups:
         avg(irate(node_cpu_seconds_total{mode="idle"}[5m])) by (all,os,instance,job,mode)< 0.2
       for: 2m
       labels:
-        severity: warn
+        severity: warning
         channels: "@linux/feishu;"
       annotations:
         summary: "利用率超过80%"
@@ -56,7 +56,7 @@ groups:
         node_memory_MemAvailable_bytes{job="node"} / node_memory_MemTotal_bytes{job="node"} < .02
       for: 15m
       labels:
-        severity: warn
+        severity: warning
         channels: "@linux/feishu:1h;"
       annotations:
         summary: "少于2%，剩余 {{ $value | humanize1024 }}"
@@ -65,7 +65,7 @@ groups:
       expr: abs(node_time_seconds-time()) / 60 > 30
       for: 2m
       labels:
-        severity: warn
+        severity: warning
         channels: "@linux/feishu;"
       annotations:
         summary: "时差为{{ $value | printf \"%.f\" }}分钟"

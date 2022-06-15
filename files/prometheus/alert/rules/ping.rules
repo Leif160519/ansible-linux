@@ -6,7 +6,7 @@ groups:
         sum_over_time(fping_lost_count{job="ping"}[15m]) / sum_over_time(fping_sent_count{job="ping"}[15m]) > .9
       for: 2m
       labels:
-        severity: warn
+        severity: warning
         channels: "@linux/feishu;"
       annotations:
         summary: "_"
