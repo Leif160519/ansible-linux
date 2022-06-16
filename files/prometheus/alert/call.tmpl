@@ -1,0 +1,7 @@
+{{ range $k,$v:=.alerts }}
+{{if eq $v.status "resolved"}}
+尊敬的管理员，您的P0级告警已恢复，感谢您的处理
+{{else}}
+尊敬的管理员，您有一个P0级告警，请及时处理
+{{end}}
+{{ end }}
