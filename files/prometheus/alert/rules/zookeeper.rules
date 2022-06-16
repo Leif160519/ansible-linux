@@ -2,7 +2,10 @@ groups:
   - name: zookeeper rule
     rules:
     - alert: Zookeeper 宕机
-      expr: zk_up == 0
+      expr: |
+        avg_over_time(zk_up[5m]) < .9
+        AND
+        max_over_time(zk_up[1m]) == 0
       for: 0m
       labels:
         severity: critical

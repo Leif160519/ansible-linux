@@ -2,7 +2,10 @@ groups:
   - name: mysql probe
     rules:
     - alert: Mysql 宕机
-      expr: mysql_up == 0
+      expr: |
+        avg_over_time(mysql_up[5m]) < .9
+        AND
+        max_over_time(mysql_up[1m]) == 0
       for: 0m
       labels:
         severity: critical

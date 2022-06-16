@@ -3,7 +3,9 @@ groups:
     rules:
     - alert: EMQ 节点宕机
       expr: |
-        emq_up{} == 0
+        avg_over_time(emq_up[5m]) < .9
+        AND
+        max_over_time(emq_up[1m]) == 0
       for: 2m
       labels:
         severity: error
