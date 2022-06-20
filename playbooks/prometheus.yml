@@ -29,7 +29,7 @@
     blackbox_exporter_version: 0.20.0
     prometheusalert_version: v4.8.1
     nginx_exporter_version: 0.10.0
-    consul_version: 1.11.5
+    consul_version: 1.12.2
     mysqld_exporter_version: 0.14.0
     kminion_version: 2.2.0
     kafka_exporter_version: 1.4.2
