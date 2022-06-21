@@ -2,25 +2,27 @@ groups:
   - name: elasticsearch rule
     rules:
     - alert: Elasticsearch 堆使用率过高
-      expr: (elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"}) * 100 > 90
-      for: 2m
-      labels:
-        severity: critical
-        channels: "@linux/feishu;"
-      annotations:
-        summary: Elasticsearch 堆使用率过高 (instance {{ $labels.instance }})
-        description: "The heap usage is over 90%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-
-
-    - alert: Elasticsearch 堆使用情况警告
-      expr: (elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"}) * 100 > 80
+      expr: (elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"}) * 100 > 98
       for: 2m
       labels:
         severity: warning
         channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: Elasticsearch 堆使用率过高 (instance {{ $labels.instance }})
+        description: "The heap usage is over 98%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+
+    - alert: Elasticsearch 堆使用情况警告
+      expr: (elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"}) * 100 > 95
+      for: 2m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
       annotations:
         summary: Elasticsearch 堆使用情况警告 (instance {{ $labels.instance }})
-        description: "The heap usage is over 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        description: "The heap usage is over 95%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
     - alert: Elasticsearch 磁盘空间不足
       expr: elasticsearch_filesystem_data_available_bytes / elasticsearch_filesystem_data_size_bytes * 100 < 10
@@ -28,26 +30,17 @@ groups:
       labels:
         severity: critical
         channels: "@linux/feishu;"
+        level: P0
       annotations:
         summary: Elasticsearch 磁盘空间不足 (instance {{ $labels.instance }})
         description: "The disk usage is over 90%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
-    - alert: Elasticsearch 磁盘空间不足
-      expr: elasticsearch_filesystem_data_available_bytes / elasticsearch_filesystem_data_size_bytes * 100 < 20
-      for: 2m
-      labels:
-        severity: warning
-        channels: "@linux/feishu;"
-      annotations:
-        summary: Elasticsearch 磁盘空间不足 (instance {{ $labels.instance }})
-        description: "The disk usage is over 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-
-    - alert: Elasticsearch 集群状态-红
-      expr: elasticsearch_cluster_health_status{color="red"} == 1
+    - alert: Elasticsearch 集群状态-红expr: elasticsearch_cluster_health_status{color="red"} == 1
       for: 0m
       labels:
         severity: critical
         channels: "@linux/feishu;"
+        level: P0
       annotations:
         summary: Elasticsearch 集群状态 红 (instance {{ $labels.instance }})
         description: "Elastic Cluster Red status\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
@@ -56,8 +49,9 @@ groups:
       expr: elasticsearch_cluster_health_status{color="yellow"} == 1
       for: 0m
       labels:
-        severity: warning
+        severity: critical
         channels: "@linux/feishu;"
+        level: P0
       annotations:
         summary: Elasticsearch 集群状态 黄 (instance {{ $labels.instance }})
         description: "Elastic Cluster Yellow status\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
@@ -68,6 +62,7 @@ groups:
       labels:
         severity: critical
         channels: "@linux/feishu;"
+        level: P0
       annotations:
         summary: Elasticsearch 健康节点 (instance {{ $labels.instance }})
         description: "Missing node in Elasticsearch cluster\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
@@ -78,6 +73,7 @@ groups:
       labels:
         severity: critical
         channels: "@linux/feishu;"
+        level: P0
       annotations:
         summary: Elasticsearch 健康数据节点 (instance {{ $labels.instance }})
         description: "Missing data node in Elasticsearch cluster\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
@@ -86,8 +82,9 @@ groups:
       expr: elasticsearch_cluster_health_relocating_shards > 0
       for: 0m
       labels:
-        severity: info
+        severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
         summary: Elasticsearch 迁移分片 (instance {{ $labels.instance }})
         description: "Elasticsearch is relocating shards\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
@@ -98,6 +95,7 @@ groups:
       labels:
         severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
         summary: Elasticsearch 迁移分片时间太长 (instance {{ $labels.instance }})
         description: "Elasticsearch has been relocating shards for 15min\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
@@ -108,6 +106,7 @@ groups:
       labels:
         severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
         summary: Elasticsearch 初始化分片时间太长 (instance {{ $labels.instance }})
         description: "Elasticsearch has been initializing shards for 15 min\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
@@ -116,8 +115,9 @@ groups:
       expr: elasticsearch_cluster_health_unassigned_shards > 0
       for: 0m
       labels:
-        severity: critical
+        severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
         summary: Elasticsearch 未分配分片 (instance {{ $labels.instance }})
         description: "Elasticsearch has unassigned shards\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
@@ -128,16 +128,18 @@ groups:
       labels:
         severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
         summary: Elasticsearch 挂起的任务 (instance {{ $labels.instance }})
         description: "Elasticsearch has pending tasks. Cluster works slowly.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
     - alert: Elasticsearch 无新数据
-      expr: increase(elasticsearch_indices_docs{es_data_node="true"}[10m]) < 1
+      expr: increase(elasticsearch_indices_docs{es_data_node="true"}[60m]) < 1
       for: 0m
       labels:
-        severity: warning
+        severity: info
         channels: "@linux/feishu;"
+        level: P2
       annotations:
         summary: Elasticsearch 无新数据 (instance {{ $labels.instance }})
-        description: "No new documents for 10 min!\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        description: "No new documents for 60 min!\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"

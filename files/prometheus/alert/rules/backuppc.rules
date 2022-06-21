@@ -6,8 +6,9 @@ groups:
         backuppc_hosts_reason{label='Reason_backup_failed',job='backuppc'} == 1
       for: 2m
       labels:
-        severity: error
+        severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
         summary: "{{ $labels.all }}备份失败"
     - alert: 备份失联
@@ -17,6 +18,7 @@ groups:
       labels:
         severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
         summary: "{{ $labels.all }}主机备份失联"
     - alert: 备份空间不足
@@ -24,8 +26,9 @@ groups:
         predict_linear(backuppc_disk_usage{job='backuppc'}[1h], 4 * 3600) >= 98
       for: 2m
       labels:
-        severity: info
+        severity: critical
         channels: "@linux/feishu;"
+        level: P0
       annotations:
         summary: "{{ $labels.instance }} 备份池文件系统磁盘空间不足4h"
     #超过三天未增备
@@ -36,6 +39,7 @@ groups:
       labels:
         severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
         summary: "{{ $labels.all }}超过3天未增备"
     #超过十五天未全备
@@ -46,5 +50,6 @@ groups:
       labels:
         severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
         summary: "{{ $labels.all }}超过15天未全备"

@@ -1,3 +1,8 @@
+# 告警级别分类：
+# 紧急告警( critical ):P0
+# 警告告警( warning ):P1
+# 信息告警( info ):P2
+
 global:
   resolve_timeout: 5m
 
@@ -6,7 +11,7 @@ global:
 
 inhibit_rules:
   - source_match:
-      severity: error
+      severity: critical
     target_match:
       severity: warning
     equal: [ all, alertname ]

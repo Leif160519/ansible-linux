@@ -8,6 +8,7 @@ groups:
         alertype: domain
         severity: critical
         channels: "@linux/feishu;"
+        level: P0
       annotations:
         summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：站点无法访问\n> {{ $labels.instance }}"
 
@@ -16,8 +17,9 @@ groups:
       for: 3m
       labels:
         alertype: domain
-        severity: warning
+        severity: critical
         channels: "@linux/feishu;"
+        level: P0
       annotations:
         summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：站点1h可用性：{{ $value | humanize }}%\n> {{ $labels.instance }}"
 
@@ -26,18 +28,20 @@ groups:
       for: 1m
       labels:
         alertype: domain
-        severity: warning
+        severity: critical
         channels: "@linux/feishu;"
+        level: P0
       annotations:
         summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：站点状态异常：{{ $value }}\n> {{ $labels.instance }}"
 
     - alert: 站点耗时过高
-      expr: probe_duration_seconds > 0.5
+      expr: probe_duration_seconds > 5
       for: 2m
       labels:
         alertype: domain
         severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
         summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：当前站点耗时：{{ $value | humanize }}s\n> {{ $labels.instance }}"
 
@@ -48,5 +52,6 @@ groups:
         alertype: domain
         severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
         summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：证书有效期剩余{{ $value | humanize }}天\n> {{ $labels.instance }}"

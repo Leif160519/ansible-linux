@@ -1,5 +1,5 @@
 groups:
-  - name: general default rule # {{{
+  - name: general default rule
     rules:
     - alert: 节点失联
       expr: |
@@ -8,8 +8,9 @@ groups:
         max_over_time(up{job="node"}[1m]) == 0
       for: 2m
       labels:
-        severity: info
+        severity: critical
         channels: "@linux/feishu;"
+        level: P0
       annotations:
         summary: "检查机器/网络/采集器"
 
@@ -21,45 +22,49 @@ groups:
             node_filesystem_avail_bytes{fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"}
             /
             node_filesystem_size_bytes{fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"}
-        ) < .02
+        ) < .20
       for: 2m
       labels:
         severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
-        summary: "不足2%，{{ $labels.mountpoint }} 剩余 {{ $value | humanize1024 }}"
+        summary: "不足20%，{{ $labels.mountpoint }} 剩余 {{ $value | humanize1024 }}"
 
     - alert: 剩余空间
       expr: |
         node_filesystem_avail_bytes{fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"} < 200*1024*1024
       for: 2m
       labels:
-        severity: error
+        severity: critical
         channels: "@linux/feishu;"
+        level: P0
       annotations:
         summary: "不足200M，{{ $labels.mountpoint }} 亟需清理"
 
     - alert: CPU负载
       expr: |
-        avg(irate(node_cpu_seconds_total{mode="idle"}[5m])) by (all,os,instance,job,mode)< 0.2
+        avg(irate(node_cpu_seconds_total{mode="idle"}[5m])) by (all,os,instance,job,mode)< 0.01
       for: 2m
       labels:
         severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
-        summary: "利用率超过80%"
+        summary: "利用率超过99%"
 
     - alert: 空闲内存
       expr:
         node_memory_MemAvailable_bytes{job="node"} < 200*1024*1024
         AND
-        node_memory_MemAvailable_bytes{job="node"} / node_memory_MemTotal_bytes{job="node"} < .02
+        node_memory_MemAvailable_bytes{job="node"} / node_memory_MemTotal_bytes{job="node"} < .10
       for: 15m
       labels:
         severity: warning
         channels: "@linux/feishu:1h;"
+        level: P1
       annotations:
-        summary: "少于2%，剩余 {{ $value | humanize1024 }}"
+        summary: "少于10%，剩余 {{ $value | humanize1024 }}"
 
     - alert: 时差过大
       expr: abs(node_time_seconds-time()) / 60 > 30
@@ -67,7 +72,6 @@ groups:
       labels:
         severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
         summary: "时差为{{ $value | printf \"%.f\" }}分钟"
-
-  # }}}

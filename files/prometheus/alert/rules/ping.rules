@@ -6,8 +6,9 @@ groups:
         sum_over_time(fping_lost_count{job="ping"}[15m]) / sum_over_time(fping_sent_count{job="ping"}[15m]) > .9
       for: 2m
       labels:
-        severity: warning
+        severity: critical
         channels: "@linux/feishu;"
+        level: P0
       annotations:
         summary: "_"
 
@@ -18,7 +19,8 @@ groups:
         sum_over_time(fping_lost_count{job="ping"}[15m]) / sum_over_time(fping_sent_count{job="ping"}[15m]) < .9
       for: 2m
       labels:
-        severity: info
+        severity: warning
         channels: "@linux/feishu;"
+        level: P1
       annotations:
         summary: "丢包{{ $value | printf \"%.f\" }}%"
