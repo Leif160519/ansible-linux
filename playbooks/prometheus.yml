@@ -997,4 +997,6 @@
         - static_configs:
             - targets:
                 - "{{ ansible_host }}:9093"
+      prometheus_remote_write:
+          - url: http://{{ hostvars['prometheus-server']['ansible_host'] }}:8428/api/v1/write
     # }}}
