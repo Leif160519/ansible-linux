@@ -711,6 +711,7 @@
   hosts: pro.nacos
   tags: never, nacos-cluster
   vars:
+    open_metrics: true
     mysql_user: nacos
     mysql_password: nacos-123
     mysql_root_password: root
