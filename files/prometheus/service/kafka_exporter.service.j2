@@ -11,9 +11,9 @@ User=prometheus
 Group=prometheus
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStart=/usr/local/bin/kafka_exporter \
-  --kafka.server={{ hostvars['kafka-cluster-1']['ansible_host'] }}:9092 \
-  --kafka.server={{ hostvars['kafka-cluster-2']['ansible_host'] }}:9092 \
-  --kafka.server={{ hostvars['kafka-cluster-3']['ansible_host'] }}:9092 \
+  --kafka.server={{ ansible_host }}:9092 \
+  --kafka.server={{ ansible_host }}:9092 \
+  --kafka.server={{ ansible_host }}:9092 \
   --web.listen-address=0.0.0.0:9308
 
 ProtectSystem=full

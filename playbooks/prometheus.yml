@@ -517,7 +517,7 @@
             enabled: true
       # }}}
 
-    - name: scrape_cofig_node # {{{
+    - name: scrape_configs_node # {{{
       tags: [ targets ]
       block:
       - set_fact:
@@ -531,7 +531,7 @@
       when: ('all' in groups)
       # }}}
 
-    - name: scrapt_config_nginx # {{{
+    - name: scrape_configs_nginx # {{{
       tags: [ targets ]
       block:
       - set_fact:
@@ -550,7 +550,7 @@
       when: ('pro.nginx' in group_names)
       # }}}
 
-    - name: scrapt_config_mysql # {{{
+    - name: scrape_configs_mysql # {{{
       tags: [ targets ]
       block:
       - set_fact:
@@ -563,7 +563,7 @@
       when: ('pro.mysql' in group_names)
       # }}}
 
-    - name: scrapt_config_es # {{{
+    - name: scrape_configs_es # {{{
       tags: targets
       block:
       - set_fact:
@@ -576,7 +576,7 @@
       when: ('pro.es' in group_names)
     # }}}
 
-    - name: scrap_config_zookeeper # {{{
+    - name: scrape_configs_zookeeper # {{{
       tags: targets
       block:
       - set_fact:
@@ -589,7 +589,7 @@
       when: ('pro.zookeeper' in group_names)
     # }}}
 
-    - name: scrap_config_emq # {{{
+    - name: scrape_configs_emq # {{{
       tags: targets
       block:
       - set_fact:
@@ -602,7 +602,7 @@
       when: ('pro.emqx' in group_names)
       # }}}
 
-    - name: scrap_config_clickhouse # {{{
+    - name: scrape_configs_clickhouse # {{{
       tags: targets
       block:
       - set_fact:
@@ -615,7 +615,7 @@
       when: ('pro.clickhouse' in group_names )
       # }}}
 
-    - name: scrap_config_nacos # {{{
+    - name: scrape_configs_nacos # {{{
       tags: targets
       block:
       - set_fact:
@@ -626,6 +626,19 @@
       delegate_to: prometheus-server
       run_once: true
       when: ('pro.nacos' in group_names )
+      # }}}
+
+    - name: scrape_configs_kafka # {{{
+      tags: targets
+      block:
+      - set_fact:
+          prometheus_targets_kafka: "{{ groups['fj.kafka'] | difference(groups['off']) }}"
+      - template:
+          src: files/prometheus/scrape/file_sd/kafka.yml.j2
+          dest: /etc/prometheus/file_sd/kafka.yml
+      delegate_to: prometheus-server
+      run_once: true
+      when: ('fj.kafka' in group_names)
       # }}}
 
     - name: node_exporter # {{{
@@ -956,6 +969,7 @@
         prometheus_targets_emq: "{{ groups['pro.emqx'] | difference(groups['off']) }}"
         prometheus_targets_clickhouse: "{{ groups['pro.clickhouse'] | difference(groups['off']) }}"
         prometheus_targets_nacos: "{{ groups['pro.nacos'] | difference(groups['off']) }}"
+        prometheus_targets_kafka: "{{ groups['pro.kafka'] | difference(groups['off']) }}"
       with_fileglob:
         - "files/prometheus/scrape/*.job"
       when: inventory_hostname is match("^prometheus-server")

@@ -1,0 +1,24 @@
+groups:
+  - name: kafka rule
+    rules:
+    - alert: Kafka Topics 副本
+      expr: sum(kafka_topic_partition_in_sync_replica{job="kafka"}) by (all,os,instance,job,topic) < 1
+      for: 0m
+      labels:
+        severity: critical
+        channels: "@linux/P0;@linux/call;"
+        level: P0
+      annotations:
+        summary: Kafka topics 副本数 (instance {{ $labels.instance }})
+        description: "Kafka topic 同步分区数小于1，当前 {{ $value }}"
+
+    - alert: Kafka 消费组
+      expr: sum(kafka_consumergroup_lag{job="kafka"}) by (all,os,instance,job,consumergroup) > 50
+      for: 1m
+      labels:
+        severity: critical
+        cannels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: Kafka 消费组 (instance {{ $labels.instance }})
+        description: "Kafka 消费组总数超过50，当前 {{ $value }}"

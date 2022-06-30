@@ -225,6 +225,7 @@ Grafana dashboard可以使用[9964][25]
 | clickhouse监控(内置指标) | [ClickHouse][29] |
 | Nacos监控 | [Nacos][30] |
 | nginx vts 监控| [Nginx VTS Status][32] |
+| kafka 监控 | [Kafka Exporter Overview][33] |
 
 ### 十一、参考
 - [ConsulManager][16]
@@ -266,5 +267,6 @@ Grafana dashboard可以使用[9964][25]
 [28]: https://grafana.com/grafana/dashboards/9963
 [29]: https://grafana.com/grafana/dashboards/14192
 [30]: https://grafana.com/grafana/dashboards/13221
-[31]:https://grafana.com/grafana/dashboards/15026
+[31]: https://grafana.com/grafana/dashboards/15026
 [32]: https://grafana.com/grafana/dashboards/10990
+[33]: https://grafana.com/grafana/dashboards/7589
