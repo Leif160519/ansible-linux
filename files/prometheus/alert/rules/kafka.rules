@@ -17,7 +17,7 @@ groups:
       for: 1m
       labels:
         severity: critical
-        cannels: "@linux/feishu;"
+        channels: "@linux/feishu;"
         level: P1
       annotations:
         summary: Kafka 消费组 (instance {{ $labels.instance }})
