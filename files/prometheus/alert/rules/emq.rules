@@ -22,7 +22,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "少于10%，剩余 {{ $value | humanize1024 }}"
+        summary: "少于10%，剩余 {{ $value | humanize1024 }}B"
     - alert: EMQ 1分钟平均负载超过8
       expr: |
         avg(irate(emq_nodes_load1{}[1m])) by (all,os,instance,job) > 8

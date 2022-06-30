@@ -10,7 +10,7 @@ groups:
         channels: "@linux/feishu;"
         level: P0
       annotations:
-        summary: "_"
+        summary: "检查机器/网络/采集器"
 
     - alert: 乒丢包了
       expr: |

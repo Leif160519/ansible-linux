@@ -1,0 +1,48 @@
+groups:
+  - name: windows default rule
+    rules:
+    - alert: 可用空间
+      expr:
+        windows_logical_disk_free_bytes{volume=~".:", job="windows"} < 2000*1024*1024
+        AND
+        windows_logical_disk_free_bytes{volume=~".:", job="windows"} / windows_logical_disk_size_bytes{volume=~".:", job="windows"} < .02
+      for: 2m
+      labels:
+        severity: warning
+        channels: "@linux/P0;@linux/call;"
+        level: P1
+      annotations:
+        summary: "不足2%，{{ $labels.volume }} 剩余 {{ $value | humanize1024 }}B"
+
+    - alert: 可用空间
+      expr: windows_logical_disk_free_bytes{volume=~".:", job="windows"} < 200*1024*1024
+      for: 2m
+      labels:
+        severity: critical
+        channels: "@linux/P0;@linux/call;"
+        level: P0
+      annotations:
+        summary: "不足200MiB，{{ $labels.volume }} 亟需清理"
+
+    - alert: 空闲内存
+      expr:
+        windows_os_physical_memory_free_bytes{job="windows"} < 200*1024*1024
+        AND
+        windows_os_physical_memory_free_bytes{job="windows"} / windows_cs_physical_memory_bytes{job="windows"} < .02
+      for: 15m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "少于2%，剩余 {{ $value | humanize1024 }}B"
+
+    - alert: 空闲内存
+      expr: windows_os_physical_memory_free_bytes{job="windows"} < 20*1024*1024
+      for: 2m
+      labels:
+        severity: critical
+        channels: "@linux/P0;@linux/call;"
+        level: P0
+      annotations:
+        summary: "不足20MiB，亟需关注"

@@ -12,4 +12,4 @@ groups:
         channels: "@linux/feishu;"
         level: P0
       annotations:
-        summary: "_"
+        summary: "请检查prometheus服务状态"

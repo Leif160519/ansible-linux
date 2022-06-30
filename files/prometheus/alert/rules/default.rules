@@ -29,7 +29,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "不足20%，{{ $labels.mountpoint }} 剩余 {{ $value | humanize1024 }}"
+        summary: "不足20%，{{ $labels.mountpoint }} 剩余 {{ $value | humanize1024 }}B"
 
     - alert: 剩余空间
       expr: |
@@ -64,7 +64,7 @@ groups:
         channels: "@linux/feishu:1h;"
         level: P1
       annotations:
-        summary: "少于10%，剩余 {{ $value | humanize1024 }}"
+        summary: "少于10%，剩余 {{ $value | humanize1024 }}B"
 
     - alert: 时差过大
       expr: abs(node_time_seconds-time()) / 60 > 30
