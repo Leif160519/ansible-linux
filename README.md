@@ -38,8 +38,10 @@ ansible-linux
     ├── leif160519.clickhouse-cluster     // 安装配置clickhouse集群
     ├── leif160519.docker                 // 安装和配置docker
     ├── leif160519.emqx-cluster           // 安装emqx集群
+    ├── leif160519.fstab                  // 配置/etc/fstab中的挂载点
     ├── leif160519.kafka-cluster          // 安装kafka集群2.x
     ├── leif160519.minio-cluster          // 安装minio集群
+    ├── leif160519.monit                  // 安装monit，监控moosefs
     ├── leif160519.moosefs                // 安装moosefs分布式存储集群
     ├── leif160519.mysql                  // 安装和配置mysql5.7.28
     ├── leif160519.nacos-cluster          // 安装nacos集群2.0
