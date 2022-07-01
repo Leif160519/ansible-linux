@@ -1,0 +1,6 @@
+---
+- name: pkg - Install package
+  package:
+    name: monit
+    state: latest
+  when: ansible_facts['distribution_version'] is version('20.04', '>=') or (ansible_distribution == "Debian")

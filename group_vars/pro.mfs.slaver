@@ -1,0 +1,23 @@
+gens_mfs_slaver_monit_services__to_merge:
+  - name: mfsmetalogger
+    type: process
+    target: "/var/lib/mfs/.mfsmetalogger.lock"
+    rules: |
+      if changed pid then alert
+      alert icf65zvzab@pomail.net
+
+  - name: changelog
+    type: file
+    target: "/var/lib/mfs/changelog_ml.0.mfs"
+    rules: |
+      if not exist for 3 cycles then alert
+      if timestamp is older than 10 minutes then alert
+      alert icf65zvzab@pomail.net on { timestamp }
+
+  - name: metadata
+    type: file
+    target: "/var/lib/mfs/metadata_ml.mfs.back"
+    rules: |
+      if not exist for 3 cycles then alert
+      if timestamp is older than 2 days then alert
+      alert icf65zvzab@pomail.net on { timestamp }

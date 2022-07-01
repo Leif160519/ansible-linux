@@ -1,0 +1,24 @@
+---
+galaxy_info:
+  author: Peter Golm
+  description: Ansible role for configuring Monit.
+  min_ansible_version: 1.6
+  license: MIT
+  platforms:
+  - name: Debian
+    versions:
+    - all
+  - name: EL
+    versions:
+    - all
+  - name: RedHat
+    version:
+    - all
+  - name: Ubuntu
+    versions:
+    - all
+
+  galaxy_tags:
+    - monitoring
+    - system
+dependencies: []

@@ -1,0 +1,8 @@
+---
+- name: web - Setup webinterface
+  template:
+    src: webinterface.j2
+    dest: "{{ monit_includes }}/webinterface"
+    owner: root
+    group: root
+  notify: restart monit

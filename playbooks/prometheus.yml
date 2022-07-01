@@ -632,13 +632,13 @@
       tags: targets
       block:
       - set_fact:
-          prometheus_targets_kafka: "{{ groups['fj.kafka'] | difference(groups['off']) }}"
+          prometheus_targets_kafka: "{{ groups['pro.kafka'] | difference(groups['off']) }}"
       - template:
           src: files/prometheus/scrape/file_sd/kafka.yml.j2
           dest: /etc/prometheus/file_sd/kafka.yml
       delegate_to: prometheus-server
       run_once: true
-      when: ('fj.kafka' in group_names)
+      when: ('pro.kafka' in group_names)
       # }}}
 
     - name: node_exporter # {{{

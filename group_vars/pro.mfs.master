@@ -1,0 +1,40 @@
+gens_mfs_master_monit_services__to_merge:
+  - name: mfsmaster
+    type: process
+    target: "/var/lib/mfs/.mfsmaster.lock"
+    rules: |
+      if changed pid then alert
+
+  - name: mfscgiserv
+    type: process
+    target: "/var/lib/mfs/.mfscgiserv.lock"
+    rules: |
+      if changed pid then alert
+
+  - name: metadata
+    type: file
+    target: "/var/lib/mfs/metadata.mfs.back"
+    rules: |
+      if not exist for 3 cycles then alert
+      if timestamp is older than 2 hours then alert
+
+  - name: available
+    type: program
+    target: "/bin/sh -c 'mfsdirinfo /mnt/mfs/ | tee /mnt/mfs/.watchdog_by_monit'"
+    extend: "with timeout 10 seconds"
+    rules: |
+      if status != 0 for 2 cycles then alert
+
+  - name: mfscli2prom
+    type: program
+    target: "/bin/sh -c '/usr/bin/mfscli -ns\"|\" -SIM -SMU -SIG -SCS -SIC -SSC -SQU | /opt/mfscli2prom.awk > /var/log/prometheus/mfscli.prom'"
+    extend: "with timeout 10 seconds"
+    rules: |
+      if status != 0 for 2 cycles then alert
+
+  - name: mfsdirinfo2prom
+    type: program
+    target: "/bin/sh -c '/opt/mfsdirinfo2prom.sh | /usr/bin/stdbuf -oL tee /var/log/prometheus/mfsdirinfo.prom'"
+    extend: "with timeout 10 seconds"
+    rules: |
+      if status != 0 for 2 cycles then alert
