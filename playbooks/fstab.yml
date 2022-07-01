@@ -1,0 +1,21 @@
+- name: 配置远程挂载点(moosefs)
+  hosts: all:!off
+  vars_files:
+    - files/fstab_vars.yml
+  pre_tasks:
+    - name: 确认待处理的客户端集合
+      vars:
+        target: ""
+        client: '{{ item.1.client | map(attribute="name") | list }}'
+        append: '{{ target | list }}'
+      delegate_to: localhost
+      set_fact:
+        target: '{{ client + append }}'
+      run_once: True
+      with_subelements:
+        - "{{ remote_filesystem }}"
+        - detail
+  gather_facts: False
+  roles:
+    - role: leif160519.fstab
+      fstab_client: "{{ target }}"

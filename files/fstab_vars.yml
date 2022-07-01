@@ -1,0 +1,57 @@
+##
+# 存在的嵌套挂载点、为避免由此引发的问题，
+# **确保** import 的内容，按升序排列
+#
+# TIPS:
+#   vi -d =(/bin/grep "import:" files/fstab_vars.yml) =(/bin/grep "import:" files/fstab_vars.yml | sort)
+####
+---
+remote_filesystem:
+  - import: /mnt/mfs
+    export: /
+    detail:
+      - server: 10.1.2.140
+        client:
+          - name: mfs-master
+            type: moosefs
+            opts: nonempty,mfsdelayedinit,mfssubfolder=/
+  - import: /opt/prometheusalert/db
+    export: /@leif160519/prometheus/prometheusalert/db
+    detail:
+      - server: 10.1.2.140
+        client:
+          - name: prometheus-server
+            type: moosefs
+            opts: nonempty,mfsdelayedinit,mfssubfolder=@leif160519/prometheus/prometheusalert/db
+  - import: /opt/applications/consul
+    export: /@leif160519/prometheus/consul
+    detail:
+      - server: 10.1.2.140
+        client:
+          - name: prometheus-server
+            type: moosefs
+            opts: nonempty,mfsdelayedinit,mfssubfolder=@leif160519/prometheus/consul
+  - import: /opt/applications/victoria-metrics-data
+    export: /@leif160519/prometheus/victoria-metrics-data
+    detail:
+      - server: 10.1.2.140
+        client:
+          - name: prometheus-server
+            type: moosefs
+            opts: nonempty,mfsdelayedinit,mfssubfolder=@leif160519/prometheus/victoria-metrics-data
+  - import: /opt/applications/backuppc
+    export: /@leif160519/backuppc
+    detail:
+      - server: 10.1.2.140
+        client:
+          - name: jenkins-server
+            type: moosefs
+            opts: nonempty,mfsdelayedinit,mfssubfolder=@leif160519/backuppc
+  - import: /opt/applications/jenkins
+    export: /@leif160519/jenkins
+    detail:
+      - server: 10.1.2.140
+        client:
+          - name: jenkins-server
+            type: moosefs
+            opts: nonempty,mfsdelayedinit,mfssubfolder=@leif160519/jenkins

@@ -1,0 +1,7 @@
+---
+- name: re-mount all remote filesystem (umount & mount)
+  command:
+    "{{ item }}"
+  with_items:
+    - "umount -l -f -a -t cifs,nfs4,nfs,moosefs,fuse.mfs"
+    - "mount        -a -t cifs,nfs4,nfs,moosefs,fuse.mfs"

@@ -1,0 +1,18 @@
+---
+- name: describing filesystem layout, {{ outer_item }}
+  vars:
+    client: '{{ item.1.client | map(attribute="name") | list | unique }}'
+    option: '{{ item.1.client | selectattr("name", "equalto", inventory_hostname) | map(attribute="opts") | join(",") }}'
+    fstype: '{{ item.1.client | selectattr("name", "equalto", inventory_hostname) | map(attribute="type") | join(",") }}'
+    prefix: '{{ (fstype == "cifs") | ternary("//", "") }}'
+    middle: '{{ (fstype == "cifs") | ternary("", ":") }}'
+  mount_leif160519:
+    name: "{{ item.0.import }}"
+    opts: "{{ option }}"
+    src: "{{ prefix }}{{ item.1.server }}{{ middle }}{{ item.0.export }}"
+    fstype: "{{ fstype }}"
+    state: "{{ outer_item }}"
+  with_subelements:
+    - "{{ remote_filesystem }}"
+    - detail
+  when: inventory_hostname in client
