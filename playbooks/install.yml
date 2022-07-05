@@ -83,6 +83,7 @@
             - ripgrep                       # 通过正则快速查找文件内容工具
             - gdebi                         # 安装deb包，类似dpkg
             - whohas                        # 在发行版中查找软件包
+            - powerline                     # 解决zsh乱码问题
           when: ansible_os_family == "Debian"
           ignore_errors: yes
       # }}}
