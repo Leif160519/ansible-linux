@@ -1,8 +1,8 @@
 #!/usr/bin/awk -f
 #
-# usage: 
+# usage:
 #
-#   % /usr/bin/mfscli -ns"#" -SIM -SMU -SIG -SCS -SIC -SSC -SQU | ./mfscli2prom.awk
+#   % /usr/bin/mfscli -ns"|" -SIM -SMU -SIG -SCS -SIC -SSC -SQU | ./mfscli2prom.awk
 #
 # moosefs >= v3.0.105
 #

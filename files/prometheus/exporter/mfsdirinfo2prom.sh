@@ -5,10 +5,12 @@
 
 awk -f- <( \
 
-    cd /mnt/mfs/ && \
+    cd /mnt/mfs/@leif160519 && \
     find prometheus                 -mindepth 1 -maxdepth 1 -type d -exec mfsdirinfo -i -d -f -c -l -s -r {} \; && \
     find jenkins                    -mindepth 1 -maxdepth 1 -type d -exec mfsdirinfo -i -d -f -c -l -s -r {} \; && \
-    find backuppc                   -mindepth 1 -maxdepth 1 -type d -exec mfsdirinfo -i -d -f -c -l -s -r {} \;
+    find backuppc                   -mindepth 1 -maxdepth 1 -type d -exec mfsdirinfo -i -d -f -c -l -s -r {} \; && \
+    cd /mnt && \
+    find mfs                        -mindepth 1 -maxdepth 1 -type d -exec mfsdirinfo -i -d -f -c -l -s -r {} \;
 
 ) <<'EOF'
 
@@ -38,4 +40,3 @@ function mfsdirinfo(line) {
 }
 
 EOF
-
