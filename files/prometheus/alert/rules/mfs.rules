@@ -33,7 +33,7 @@ groups:
         channels: "@linux/feishu;"
         level: P2
       annotations:
-        summary: "{{ $labels.path }}: {{ $value | humanizePercentage }}({{ $labels.type }})"
+        summary: "{{ $labels.path }}: {{ $value | humanizePercentage }}"
 
     - alert: "文件库配额"
       expr: |
@@ -46,4 +46,4 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "{{ $labels.path }}: {{ $value | humanize1024 }}B({{ $labels.type }})"
+        summary: "{{ $labels.path }}: {{ $value | humanize1024 }}B"
