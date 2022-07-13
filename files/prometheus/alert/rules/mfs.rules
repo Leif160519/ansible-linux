@@ -1,7 +1,7 @@
 groups:
   - name: moosefs
     rules:
-    - alert: "文件库降级"
+    - alert: "文件系统降级"
       expr: moosefs_all_chunks_matrix_chunkclass_endangered{job="node"}
             / (moosefs_all_chunks_matrix_chunkclass_endangered{job="node"} + moosefs_all_chunks_matrix_chunkclass_stable{job="node"}) > 0.1
       for: 1h
@@ -12,7 +12,7 @@ groups:
       annotations:
         summary: "{{ $value | humanizePercentage }} 危急占比"
 
-    - alert: "文件库落盘"
+    - alert: "文件系统落盘"
       expr: time() - moosefs_master_info_last_successful_store{job="node"} > (3600 * 2)
       for: 2m
       labels:
@@ -22,7 +22,7 @@ groups:
       annotations:
         summary: "{{ $value | humanizeDuration }} 距离上次"
 
-    - alert: "文件库配额"
+    - alert: "文件系统配额"
       expr: |
         (moosefs_active_quotas_current_size{job="node"} / moosefs_active_quotas_soft_size{job="node"}) <= 1 > 0.9
         OR
@@ -35,7 +35,7 @@ groups:
       annotations:
         summary: "{{ $labels.path }}: {{ $value | humanizePercentage }}"
 
-    - alert: "文件库配额"
+    - alert: "文件系统配额"
       expr: |
         (moosefs_active_quotas_soft_size{job="node"} - moosefs_active_quotas_current_size{job="node"}) >= 0 < (2*1024*1024*1024)
         OR
