@@ -1,3 +1,4 @@
 ---
 zsh_installer_url: https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
 plugins_path: "~{{ username }}/.oh-my-zsh/custom/plugins"
+themes_path: "~{{ username }}/.oh-my-zsh/custom/themes"

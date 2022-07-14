@@ -88,3 +88,14 @@
     - 'bindkey -s "^[Oj" "*"'
     - 'bindkey -s "^[Oo" "/"'
 # }}}
+
+- name: Condifure other # {{{
+  lineinfile:
+    dest: ~{{ username }}/.zshrc
+    owner: "{{ username }}"
+    group: "{{ groupname }}"
+    line: "{{ item }}"
+  with_items:
+    - 'ENABLE_CORRECTION="true"'
+    - 'COMPLETION_WAITING_DOTS="true"'
+# }}}

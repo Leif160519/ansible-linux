@@ -1,0 +1,14 @@
+---
+- stat: # {{{
+    path: "{{ themes_path }}/powerlevel10k"
+  register: powerlevel10k
+# }}}
+
+- name: 安装powerlevel10k主题 # {{{
+  git:
+    repo: https://github.com/romkatv/powerlevel10k.git
+    dest: "{{ themes_path }}/powerlevel10k"
+    clone: yes
+    update: yes
+  when: powerlevel10k.stat.exists == false
+  # }}}
