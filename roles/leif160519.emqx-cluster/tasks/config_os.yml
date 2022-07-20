@@ -1,4 +1,7 @@
 ---
+- shell: modprobe ip_conntrack
+  ignore_errors: true
+
 - name: config /etc/system/system.conf
   lineinfile:
     path: /etc/system/system.conf
