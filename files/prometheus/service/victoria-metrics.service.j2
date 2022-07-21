@@ -1,0 +1,26 @@
+{{ ansible_managed | comment }}
+
+
+[Unit]
+Description=victoria-metrics
+After=network-online.target
+
+[Service]
+Type=simple
+Environment="GOMAXPROCS={{ ansible_processor_vcpus|default(ansible_processor_count) }}"
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/opt/victoria-metrics/victoria-metrics-prod \
+  -httpListenAddr=:8428 \
+  -vmalert.proxyURL=http://{{ hostvars['prometheus-server']['ansible_host'] }}:9090 \
+  -storageDataPath={{ victoria_metrics_data_dir }} \
+  -retentionPeriod={{ victoria_metrics_retention_period }}
+
+ProtectSystem=full
+
+SyslogIdentifier=prometheus
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

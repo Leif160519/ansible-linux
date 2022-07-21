@@ -9,6 +9,11 @@
 - hosts: all:!off
   vars:
     prometheus_root_dir: /opt/prometheus
+    victoria_metrics_root_dir: /opt/victoria-metrics
+    # vms数据存储路径
+    victoria_metrics_data_dir: /data/victoria-metrics-data
+    # vms数据保留时间
+    victoria_metrics_retention_period: 30
     alertmanager_root_dir: /opt/alertmanager
     node_exporter_root_dir: /opt/node_exporter
     blackbox_exporter_root_dir: /opt/black_exporter
@@ -24,6 +29,7 @@
     emq_exporter_root_dir: /opt/emq_exporter
 
     prometheus_version: 2.35.0
+    victoria_metrics_version: 1.79.0
     alertmanager_version: 0.24.0
     node_exporter_version: 1.3.1
     blackbox_exporter_version: 0.20.0
@@ -38,6 +44,7 @@
     emq_exporter_version: 0.5.1
 
     prometheus_tag: prometheus-{{ prometheus_version }}.linux-amd64
+    victoria_metrics_tag: victoria-metrics-linux-amd64-v{{ victoria_metrics_version }}
     alertmanager_tag: alertmanager-{{ alertmanager_version }}.linux-amd64
     node_exporter_tag: node_exporter-{{ node_exporter_version }}.linux-amd64
     blackbox_exporter_tag: blackbox_exporter-{{ blackbox_exporter_version }}.linux-amd64
@@ -52,6 +59,7 @@
     emq_exporter_tag: emq_exporter-{{ emq_exporter_version }}-linux
 
     prometheus_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/{{ prometheus_tag }}.tar.gz
+    victoria_metrics_url: https://github.com/victoria-metrics/victoria-metrics/releases/download/v1.79.0/{{ victoria_metrics_tag }}.tar.gz
     alertmanager_url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/{{ alertmanager_tag }}.tar.gz
     node_exporter_url: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/{{ node_exporter_tag }}.tar.gz
     blackbox_exporter_url: https://github.com/prometheus/blackbox_exporter/releases/download/v{{ blackbox_exporter_version }}/{{ blackbox_exporter_tag }}.tar.gz
@@ -148,6 +156,54 @@
           - prometheus
           - promtool
         # }}}
+
+    - name: victoria-metrics # {{{
+      tags: [never, victoria, victoria-metrics]
+      block:
+      - name: stat victoria-metrics
+        stat:
+          path: "{{ victoria_metrics_root_dir }}"
+        register: v
+
+      - name: create unarchive dir
+        file:
+          path: /opt/victoria-metrics
+          state: directory
+          owner: prometheus
+          group: prometheus
+          mode: 0755
+
+      - name: unarchive victoria-metrics
+        unarchive:
+          src: "{{ victoria_metrics_url }}"
+          dest: /opt/victoria-metrics
+          owner: prometheus
+          group: prometheus
+          remote_src: true
+        when: v.stat.exists == false
+
+      - name: create victoria-metrics soft link
+        file:
+          src: "{{ victoria_metrics_root_dir }}/{{ item }}"
+          dest: "/usr/local/bin/{{ item }}"
+          state: link
+          force: true
+        with_items:
+          - victoria-metrics-prod
+
+      - name: create victoria-metrics service
+        template:
+          src: files/prometheus/victoria-metrics.service.j2
+          dest: /lib/systemd/system/victoria-metrics.service
+          mode: 0644
+
+      - name: start victoria-metrics service
+        service:
+          name: victoria-metrics
+          state: enabled
+          enabled: true
+          daemon_reload: true
+      # }}}
 
     - name: alertmanager # {{{
       tags: [never, alertmanager]
