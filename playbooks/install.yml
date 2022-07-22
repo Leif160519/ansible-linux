@@ -834,9 +834,9 @@
   roles:
     - role: roles/leif160519.oh-my-zsh
 
-- name: 夹带点私货O(∩_∩)O哈哈哈~
+- name: 夹带点私货-agnoster
   hosts: all:!off
-  tags: never, leif
+  tags: never, agnoster
   vars:
     username: root
     groupname: root
@@ -860,12 +860,56 @@
             - CURRENT_BG=""
             - DALLAS_CURRENT_TIME_="%{$fg[yellow]%}%* %{$fg[red]%}%h%%%{$reset_color%}"
             - PS1="${DALLAS_CURRENT_TIME_}${PS1}"
-            - HISTSIZE=100000
-            - SAVEHIST=100000
-            - HISTFILESIZE=100000
+            - HISTSIZE=10000000
+            - SAVEHIST=10000000
+            - HISTFILESIZE=10000000
             - prompt_context() {}
       when: username is not match("root")
-# }}}
+
+- name: 夹带私货-powerlevel10k
+  hosts: all:!off
+  tags: never, powerlevel10k
+  vars:
+    username: root
+    groupname: root
+    zsh_theme: powerlevel10k/powerlevel10k
+  tasks:
+    - block:
+        - lineinfile:
+            dest: ~{{ username }}/.zshrc
+            regexp: "^ZSH_THEME="
+            line: 'ZSH_THEME={{ zsh_theme }}'
+            owner: "{{ username }}"
+            group: "{{ groupname }}"
+
+        - lineinfile:
+            path: ~{{ username }}/.zshrc
+            line: "{{ item }}"
+            owner: "{{ username }}"
+            group: "{{ groupname }}"
+          with_items:
+            - typeset -g POWERLEVEL9K_DIR_CLASSES=(
+            - '    "/etc|/etc/*|*config*" ETC ⚙️'
+            - '    "~" HOME'
+            - '    "~/*" HOME_SUBFOLDER'
+            - '    "*" DEFAULT'
+            - )
+            - typeset -g POWERLEVEL9K_ANACONDA_VISUAL_IDENTIFIER_EXPANSION=' '
+            - typeset -g POWERLEVEL9K_TIME_VISUAL_IDENTIFIER_EXPANSION=' '
+            - typeset -g POWERLEVEL9K_VCS_UNTRACKED_ICON='❓'
+            - typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_VISUAL_IDENTIFIER_EXPANSION='⌛'
+            - typeset -g POWERLEVEL9K_CONTEXT_PREFIX='  '
+            - typeset -g POWERLEVEL9K_TIME_PREFIX=''
+            - typeset -g POWERLEVEL9K_STATUS_OK_VISUAL_IDENTIFIER_EXPANSION='✔️'
+            - typeset -g POWERLEVEL9K_STATUS_OK_PIPE_VISUAL_IDENTIFIER_EXPANSION='✔️'
+            - typeset -g POWERLEVEL9K_STATUS_ERROR_VISUAL_IDENTIFIER_EXPANSION='✘'
+            - typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_VISUAL_IDENTIFIER_EXPANSION='✘'
+            - typeset -g POWERLEVEL9K_STATUS_ERROR_PIPE_VISUAL_IDENTIFIER_EXPANSION='✘'
+            - typeset -g POWERLEVEL9K_TIME_FORMAT='%D{ %b-%d %H:%M}'
+            - typeset -g POWERLEVEL9K_VCS_PREFIX=''
+            - typeset -g POWERLEVEL9K_LOCK_ICON=' '
+            - typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PREFIX=''
+ # }}}
 
 - name: Install vim with smart tips # {{{
   hosts: all:!off
