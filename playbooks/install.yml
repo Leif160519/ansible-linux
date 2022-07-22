@@ -84,6 +84,9 @@
             - gdebi                         # 安装deb包，类似dpkg
             - whohas                        # 在发行版中查找软件包
             - powerline                     # 解决zsh乱码问题
+            - cmatrix                       # 终端打印矩阵
+            - httperf                       # web压测工具
+            - nmon                          # 显示系统信息和性能
           when: ansible_os_family == "Debian"
           ignore_errors: yes
       # }}}
@@ -112,6 +115,11 @@
             - flameshot                     # 截图工具
             - nnn                           # 终端文件管理器
             - hardinfo                      # 类似hwinfo，硬件检查工具
+            - bleachbit                     # 系统记录清理工具
+            - diffuse                       # 文件比较工具
+            - retext                        # markdown工具
+            - kazam                         # 屏幕录制工具
+            - okular                        # 阅读器
           when: ansible_os_family == "Debian"
           ignore_errors: yes
       # }}}
@@ -211,6 +219,9 @@
             - nvme-cli                      # nvme硬盘的终端工具
             - unhide                        # 查看隐藏进程
             - highlight                     # 高亮显示
+            - speedtest-cli                 # 带宽测试工具
+            - pwgen                         # 一个生成随机、无特殊含义但可以正常拼读的密码
+            - slurm                         # 网卡监控
           ignore_errors: yes
       # }}}
 
@@ -626,6 +637,31 @@
           when: zsh_config.stat.exists == true
       when: ansible_distribution == "Ubuntu"
     # }}}
+
+    - name: Install bat # {{{
+      tags: never, alias, bat
+      block:
+        - stat:
+            path: ~{{ username }}/.zshrc
+          register: zsh_config
+
+        - apt:
+            deb: https://github.com/sharkdp/bat/releases/download/v0.21.0/bat_0.21.0_amd64.deb
+
+        - lineinfile:
+            path: ~{{ username }}/.zshrc
+            line: 'alias cat="bat --theme=OneHalfDark --paging=never -p"'
+            owner: "{{ username }}"
+            group: "{{ groupname }}"
+          when: zsh_config.stat.exists == true
+
+        - lineinfile:
+            path: ~{{ username }}/.bashrc
+            line: 'alias cat="bat --theme=OneHalfDark --paging=never -p"'
+            owner: "{{ username }}"
+            group: "{{ groupname }}"
+      when: ansible_os_family == "Debian"
+      # }}}
 
     - name: Install pygmentize # {{{
       tags: never, alias, pygmentize
