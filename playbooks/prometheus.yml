@@ -27,6 +27,7 @@
     es_exporter_root_dir: /opt/elasticsearch_exporter
     zk_exporter_root_dir: /opt/zookeeper_exporter
     emq_exporter_root_dir: /opt/emq_exporter
+    jmx_exporter_root_dir: /opt/jmx_exporter
 
     prometheus_version: 2.35.0
     victoria_metrics_version: 1.79.0
@@ -42,6 +43,7 @@
     es_exporter_version: 1.3.0
     zk_exporter_version: 0.1.12
     emq_exporter_version: 0.5.1
+    jmx_exporter_version: 0.17.0
 
     prometheus_tag: prometheus-{{ prometheus_version }}.linux-amd64
     victoria_metrics_tag: victoria-metrics-linux-amd64-v{{ victoria_metrics_version }}
@@ -57,6 +59,7 @@
     es_exporter_tag: elasticsearch_exporter-{{ es_exporter_version }}.linux-amd64
     zk_exporter_tag: zookeeper-exporter-v{{ zk_exporter_version }}-linux
     emq_exporter_tag: emq_exporter-{{ emq_exporter_version }}-linux
+    jmx_exporter_tag: jmx_exporter_tag: jmx_prometheus_javaagent-{{ jmx_exporter_version }}
 
     prometheus_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/{{ prometheus_tag }}.tar.gz
     victoria_metrics_url: https://github.com/victoria-metrics/victoria-metrics/releases/download/v1.79.0/{{ victoria_metrics_tag }}.tar.gz
@@ -72,6 +75,7 @@
     es_exporter_url: https://github.com/prometheus-community/elasticsearch_exporter/releases/download/v{{ es_exporter_version }}/{{ es_exporter_tag }}.tar.gz
     zk_exporter_url: https://github.com/dabealu/zookeeper-exporter/releases/download/v{{ zk_exporter_version }}/{{ zk_exporter_tag }}.tar.gz
     emq_exporter_url: https://github.com/nuvo/emq_exporter/releases/download/v{{ emq_exporter_version }}/{{ emq_exporter_tag }}.tar.gz
+    jmx_exporter_url: https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/{{ jmx_exporter_version }}/{{ jmx_exporter_tag }}.jar
   handlers:
     - name: reload alertmanager
       service:
@@ -966,6 +970,48 @@
             state: started
             daemon_reload: true
             enabled: true
+      # }}}
+
+    - name: jmx_exporter # {{{
+      tags: targets, jmx_exporter
+      block:
+        - name: stat jmx_exporter
+          stat:
+            path: "{{ jmx_exporter_root_dir }}"
+          register: j
+
+        - name: create jmx_exporter dir
+          file:
+            path: "{{ jmx_exporter_root_dir }}"
+            state: directory
+            owner: prometheus
+            group: prometheus
+            mode: 0755
+          when: j.stat.exists == false
+
+        - name: download jmx_exporter
+          get_url:
+            url: "{{ jmx_exporter_url }}"
+            dest: "{{ jmx_exporter_root_dir }}"
+            owner: prometheus
+            group: prometheus
+            mode: 0644
+          when: j.stat.exists == false
+
+        - name: create jmx_exporter link
+          file:
+            path: "{{ jmx_exporter_root_dir }}/jmx_exporter.jar"
+            src: "{{ jmx_exporter_root_dir }}/{{ jmx_exporter_tag }}.jar"
+            state: link
+            force: true
+
+        - name: create jmx.xml
+          template:
+            dest: "{{ jmx_exporter_root_dir }}/jmx.yml"
+            src: files/prometheus/exporter/jmx.yml.j2
+            mode: 0644
+            owner: prometheus
+            group: prometheus
       # }}}
 
     - name: vmware_exporter # {{{
