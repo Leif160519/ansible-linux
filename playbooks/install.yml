@@ -1180,3 +1180,30 @@
   roles:
     - role: roles/leif160519.tengine
 # }}}
+
+- name: Install moosfs client # {{{
+  hosts: all:!off
+  tags: never, moosefs-client
+  tasks:
+    - get_url:
+        url: "{{ item.url }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - { url: "http://ppa.moosefs.com/RPM-GPG-KEY-MooseFS" , dest: "/etc/pki/rpm-gpg/RPM-GPG-KEY-MooseFS"}
+        - { url: "http://ppa.moosefs.com/MooseFS-3-el{{ ansible_distribution_major_version }}.repo" , dest: "/etc/yum.repos.d/MooseFS.repo"}
+      when: ansible_os_family == "RedHat"
+
+    - apt_key:
+        url: https://ppa.moosefs.com/moosefs.key
+      when: ansible_os_family == "Debian"
+
+    - lineinfile:
+        dest: /etc/apt/sources.list.d/moosefs.list
+        line: "deb [arch=amd64] http://ppa.moosefs.com/moosefs-3/apt/ubuntu/{{ ansible_lsb.codename}} {{ ansible_lsb.codename }} main"
+        create: true
+      when: ansible_os_family == "Debian"
+
+    - package:
+        name: moosefs-client
+        state: latest
+# }}}
