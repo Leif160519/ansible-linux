@@ -274,10 +274,7 @@
             - "files/bash.d/*.sh"
 
         - blockinfile:
-            dest: "~{{ username }}/.bashrc"
-            create: yes
-            owner: "{{ username }}"
-            group: "{{ groupname }}"
+            dest: "/etc/profile"
             block: |
               if [ -d /etc/bash.d ]; then
                 for i in /etc/bash.d/*.sh; do
