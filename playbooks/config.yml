@@ -550,6 +550,10 @@
             - "*　　hard　　nofile　　65536"
             - "*    soft    noproc    65535"
             - "*    hard    noproc    65535"
+            - "root　　soft　　nofile　　65536"
+            - "root　　hard　　nofile　　65536"
+            - "root    soft    noproc    65535"
+            - "root    hard    noproc    65535"
 # }}}
 
 - name: 24.config sysctl # {{{
