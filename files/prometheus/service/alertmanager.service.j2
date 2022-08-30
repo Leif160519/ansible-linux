@@ -13,6 +13,7 @@ ExecReload=/bin/kill -HUP $MAINPID
 ExecStart=/usr/local/bin/alertmanager \
   --config.file=/etc/prometheus/alertmanager.yml \
   --storage.path=/var/lib/alertmanager/ \
+  --web.external-url=http://{{ ansible_host }}:9093 \
   --web.listen-address=0.0.0.0:9093
 CapabilityBoundingSet=CAP_SET_UID
 LimitNOFILE=65000
