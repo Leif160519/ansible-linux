@@ -10,7 +10,7 @@ groups:
         channels: "@linux/feishu;"
         level: P0
       annotations:
-        summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：站点无法访问\n> {{ $labels.instance }}"
+        summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：站点无法访问"
 
     - alert: 站点1h可用性低于80%
       expr: sum_over_time(probe_success[1h])/count_over_time(probe_success[1h]) * 100 < 80
@@ -21,7 +21,7 @@ groups:
         channels: "@linux/feishu;"
         level: P0
       annotations:
-        summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：站点1h可用性：{{ $value | humanize }}%\n> {{ $labels.instance }}"
+        summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：站点1h可用性：{{ $value | humanize }}%"
 
     - alert: 站点状态异常
       expr: (probe_success == 0 and probe_http_status_code > 499) or probe_http_status_code == 0
@@ -32,7 +32,7 @@ groups:
         channels: "@linux/feishu;"
         level: P0
       annotations:
-        summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：站点状态异常：{{ $value }}\n> {{ $labels.instance }}"
+        summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：站点状态异常：{{ $value }}"
 
     - alert: 站点耗时过高
       expr: probe_duration_seconds > 5
@@ -43,7 +43,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：当前站点耗时：{{ $value | humanize }}s\n> {{ $labels.instance }}"
+        summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：当前站点耗时：{{ $value | humanize }}s"
 
     - alert: SSL证书有效期
       expr: (probe_ssl_earliest_cert_expiry-time()) / 3600 / 24 < 15
@@ -54,4 +54,4 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：证书有效期剩余{{ $value | humanize }}天\n> {{ $labels.instance }}"
+        summary: "{{ $labels.env }}_{{ $labels.name }}({{ $labels.project }})：证书有效期剩余{{ $value | humanize }}天"

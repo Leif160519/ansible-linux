@@ -9,8 +9,7 @@ groups:
         channels: "@linux/P0;@linux/call;"
         level: P0
       annotations:
-        summary: Kafka topics 副本数 (instance {{ $labels.instance }})
-        description: "Kafka topic 同步分区数小于1，当前 {{ $value }}"
+        summary: "Kafka topic 同步分区数小于1，当前 {{ $value }}"
 
     - alert: Kafka 消费组
       expr: sum(kafka_consumergroup_lag{job="kafka"}) by (all,os,instance,job,consumergroup) > 50
@@ -20,5 +19,4 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: Kafka 消费组 (instance {{ $labels.instance }})
-        description: "Kafka 消费组总数超过50，当前 {{ $value }}"
+        summary: "Kafka 消费组总数超过50，当前 {{ $value }}"

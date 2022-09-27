@@ -9,9 +9,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: Elasticsearch 堆使用率过高 (instance {{ $labels.instance }})
-        description: "The heap usage is over 98%"
-
+        summary: "Elasticsearch 堆使用率过高，超过98% 当前: {{ $value }}%"
 
     - alert: Elasticsearch 堆使用情况警告
       expr: (elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"}) * 100 > 95
@@ -21,8 +19,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: Elasticsearch 堆使用情况警告 (instance {{ $labels.instance }})
-        description: "The heap usage is over 95%"
+        summary: "Elasticsearch 堆使用情况警告，超过95%，当前：{{ $value }}%"
 
     - alert: Elasticsearch 磁盘空间不足
       expr: elasticsearch_filesystem_data_available_bytes / elasticsearch_filesystem_data_size_bytes * 100 < 10
@@ -32,8 +29,7 @@ groups:
         channels: "@linux/feishu;"
         level: P0
       annotations:
-        summary: Elasticsearch 磁盘空间不足 (instance {{ $labels.instance }})
-        description: "The disk usage is over 90%"
+        summary: "Elasticsearch 磁盘空间不足90%，当前: {{ $value }}"
 
     - alert: Elasticsearch 集群状态-红expr: elasticsearch_cluster_health_status{color="red"} == 1
       for: 0m
@@ -42,8 +38,7 @@ groups:
         channels: "@linux/feishu;"
         level: P0
       annotations:
-        summary: Elasticsearch 集群状态 红 (instance {{ $labels.instance }})
-        description: "Elastic Cluster Red status"
+        summary: "Elasticsearch 集群状态 红"
 
     - alert: Elasticsearch 集群状态-黄
       expr: elasticsearch_cluster_health_status{color="yellow"} == 1
@@ -53,8 +48,7 @@ groups:
         channels: "@linux/feishu;"
         level: P0
       annotations:
-        summary: Elasticsearch 集群状态 黄 (instance {{ $labels.instance }})
-        description: "Elastic Cluster Yellow status"
+        summary: "Elasticsearch 集群状态 黄"
 
     - alert: Elasticsearch 健康节点
       expr: elasticsearch_cluster_health_number_of_nodes < 3
@@ -64,8 +58,7 @@ groups:
         channels: "@linux/feishu;"
         level: P0
       annotations:
-        summary: Elasticsearch 健康节点 (instance {{ $labels.instance }})
-        description: "Missing node in Elasticsearch cluster"
+        summary: "Elasticsearch 健康节点丢失"
 
     - alert: Elasticsearch 健康数据节点
       expr: elasticsearch_cluster_health_number_of_data_nodes < 3
@@ -75,8 +68,7 @@ groups:
         channels: "@linux/feishu;"
         level: P0
       annotations:
-        summary: Elasticsearch 健康数据节点 (instance {{ $labels.instance }})
-        description: "Missing data node in Elasticsearch cluster"
+        summary: "Elasticsearch 健康数据节点丢失"
 
     - alert: Elasticsearch 迁移分片
       expr: elasticsearch_cluster_health_relocating_shards > 0
@@ -86,8 +78,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: Elasticsearch 迁移分片 (instance {{ $labels.instance }})
-        description: "Elasticsearch is relocating shards"
+        summary: "Elasticsearch 迁移分片"
 
     - alert: Elasticsearch 迁移分片时间太长
       expr: elasticsearch_cluster_health_relocating_shards > 0
@@ -97,8 +88,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: Elasticsearch 迁移分片时间太长 (instance {{ $labels.instance }})
-        description: "Elasticsearch has been relocating shards for 15min"
+        summary: "Elasticsearch 迁移分片时间太长"
 
     - alert: Elasticsearch 初始化分片时间太长
       expr: elasticsearch_cluster_health_initializing_shards > 0
@@ -108,8 +98,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: Elasticsearch 初始化分片时间太长 (instance {{ $labels.instance }})
-        description: "Elasticsearch has been initializing shards for 15 min"
+        summary: "Elasticsearch 初始化分片时间太长"
 
     - alert: Elasticsearch 未分配分片
       expr: elasticsearch_cluster_health_unassigned_shards > 0
@@ -119,8 +108,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: Elasticsearch 未分配分片 (instance {{ $labels.instance }})
-        description: "Elasticsearch has unassigned shards"
+        summary: "Elasticsearch 未分配分片"
 
     - alert: Elasticsearch 挂起的任务
       expr: elasticsearch_cluster_health_number_of_pending_tasks > 0
@@ -130,8 +118,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: Elasticsearch 挂起的任务 (instance {{ $labels.instance }})
-        description: "Elasticsearch has pending tasks. Cluster works slowly."
+        summary: "Elasticsearch 挂起的任务"
 
     - alert: Elasticsearch 无新数据
       expr: increase(elasticsearch_indices_docs{es_data_node="true"}[60m]) < 1
@@ -141,5 +128,4 @@ groups:
         channels: "@linux/feishu;"
         level: P2
       annotations:
-        summary: Elasticsearch 无新数据 (instance {{ $labels.instance }})
-        description: "No new documents for 60 min!"
+        summary: "Elasticsearch 无新数据"
