@@ -619,4 +619,6 @@
             - net.core.wmem_max = 12582912
             - net.core.somaxconn = 65535
             - net.netfilter.nf_conntrack_tcp_timeout_established = 216000
+
+        - shell: sysctl -p
 # }}}
