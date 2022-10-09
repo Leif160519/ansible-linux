@@ -348,13 +348,16 @@
 - name: 14.Configure git #{{{
   hosts: all:!off
   tags: config, git
+  vars:
+    username: root
+    groupname: root
   tasks:
     - block:
         - template:
             src: files/gitconfig.j2
-            dest: /root/.gitconfig
-            owner: root
-            group: root
+            dest: ~{{ username }}/.gitconfig
+            owner: "{{ username }}"
+            group: "{{ groupname }}"
             mode: 0644
   # }}}
 
@@ -619,4 +622,21 @@
             - net.core.somaxconn = 65535
 
         - shell: sysctl -p
+# }}}
+
+- name: 17.config vim # {{{
+  hosts: all:!off
+  tags: vim
+  tasks:
+    - block:
+        - package:
+            name: vim
+            state: latest
+
+        - template:
+            src: files/vimrc.j2
+            dest: /root/.vimrc
+            owner: root
+            group: root
+            mode: 0644
 # }}}
