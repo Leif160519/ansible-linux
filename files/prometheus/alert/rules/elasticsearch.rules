@@ -9,7 +9,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "Elasticsearch 堆使用率过高，超过98% 当前: {{ $value }}%"
+        summary: "Elasticsearch 堆使用率过高，超过98% 当前: {{ $value | humanizePercentage  }}%"
 
     - alert: Elasticsearch 堆使用情况警告
       expr: (elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"}) * 100 > 95
@@ -19,7 +19,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "Elasticsearch 堆使用情况警告，超过95%，当前：{{ $value }}%"
+        summary: "Elasticsearch 堆使用情况警告，超过95%，当前：{{ $value | humanizePercentage  }}%"
 
     - alert: Elasticsearch 磁盘空间不足
       expr: elasticsearch_filesystem_data_available_bytes / elasticsearch_filesystem_data_size_bytes * 100 < 10
@@ -29,7 +29,7 @@ groups:
         channels: "@linux/feishu;"
         level: P0
       annotations:
-        summary: "Elasticsearch 磁盘空间不足90%，当前: {{ $value }}"
+        summary: "Elasticsearch 磁盘空间不足90%，当前: {{ $value | humanizePercentage  }}"
 
     - alert: Elasticsearch 集群状态-红expr: elasticsearch_cluster_health_status{color="red"} == 1
       for: 0m
