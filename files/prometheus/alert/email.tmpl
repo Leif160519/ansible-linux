@@ -1,34 +1,51 @@
-{{ define "email.default.html" }}
-{{- range .Alerts -}}
-{{- if le .EndsAt.Unix 0 -}}ㄨ{{ end -}}
-{{- end -}}
-{{- range .Alerts -}}
-{{- if gt .EndsAt.Unix 0 -}}Ｏ{{ end -}}
-{{- end -}}
-{{ (index .Alerts 0).Labels.alertname }}
-<table border="1">
-<tr>
-<td>状态</td>
-<td>标记</td>
-<td>地址</td>
-<td>时间</td>
-<td>摘要</td>
-</tr>
-{{ range $i, $alert := .Alerts }}
-<tr>
-{{- if gt $alert.EndsAt.Unix 0 -}}
-<td>ＯＫ</td>
-{{ else -}}
-{{ end -}}
-<td>{{ if .Labels.alias }}{{ .Labels.alias }}{{ else }}{{ .Labels.all }}{{ end }}</td>
-<td>{{ .Labels.instance }}</td>
-{{ if gt .EndsAt.Unix 0 -}}
-<td>{{ (.EndsAt.Sub .StartsAt).Truncate 1000000000 }}</td>
-{{ else -}}
-<td>{{ .StartsAt.Local.Format "15:04(MST) 2006/01/02" }}</td>
-{{ end -}}
-<td>{{ .Annotations.summary }}</td>
-</tr>
-{{ end }}
+{{ define "email.html" }}
+
+<style type="text/css">
+table.gridtable {
+  font-family: verdana,arial,sans-serif;
+  font-size:11px;
+  color:#333333;
+  border-width: 1px;
+  border-color: #666666;
+  border-collapse: collapse;
+}
+
+table.gridtable th {
+  border-width: 1px;
+  padding: 8px;
+  border-style: solid;
+  border-color: #666666;
+  background-color: #dedede;
+}
+
+table.gridtable td {
+  border-width: 1px;
+  padding: 8px;
+  border-style: solid;
+  border-color: #666666;
+  background-color: #ffffff;
+}
+</style>
+
+
+<table class="gridtable">
+  <tr>
+    <th>告警项</th>
+    <th>实例</th>
+    <th>告警详情</th>
+    <th>告警级别</th>
+    <th>开始时间</th>
+    <th>告警摘要</th>
+  </tr>
+  {{ range $i, $alert := .Alerts }}
+    <tr>
+      <td>{{ index $alert.Labels "alertname" }}</td>
+      <td>{{ index $alert.Labels "instance" }}</td>
+      <td>{{ index $alert.Annotations "description" }}</td>
+      <td>{{ index $alert.Labels "severity" }}</td>
+      <td>{{ ($alert.StartsAt.Add 28800e9).Format "2006-01-02 15:04:05" }}</td>
+      <td>{{ index $alert.Annotations "summary" }}</td>
+    </tr>
+  {{ end }}
 </table>
 {{ end }}
