@@ -29,11 +29,11 @@
     emq_exporter_root_dir: /opt/emq_exporter
     jmx_exporter_root_dir: /opt/jmx_exporter
 
-    prometheus_version: 2.35.0
-    victoria_metrics_version: 1.79.0
+    prometheus_version: 2.39.1
+    victoria_metrics_version: 1.82.1
     alertmanager_version: 0.24.0
-    node_exporter_version: 1.3.1
-    blackbox_exporter_version: 0.20.0
+    node_exporter_version: 1.4.0
+    blackbox_exporter_version: 0.22.0
     prometheusalert_version: v4.8.2
     nginx_exporter_version: 0.10.0
     consul_version: 1.12.2
