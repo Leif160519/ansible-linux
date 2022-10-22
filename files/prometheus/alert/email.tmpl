@@ -1,4 +1,4 @@
-{{ define "email.html" }}
+{{ define "email.default.html" }}
 
 <style type="text/css">
 table.gridtable {
@@ -32,7 +32,6 @@ table.gridtable td {
   <tr>
     <th>告警项</th>
     <th>实例</th>
-    <th>告警详情</th>
     <th>告警级别</th>
     <th>开始时间</th>
     <th>告警摘要</th>
@@ -41,7 +40,6 @@ table.gridtable td {
     <tr>
       <td>{{ index $alert.Labels "alertname" }}</td>
       <td>{{ index $alert.Labels "instance" }}</td>
-      <td>{{ index $alert.Annotations "description" }}</td>
       <td>{{ index $alert.Labels "severity" }}</td>
       <td>{{ ($alert.StartsAt.Add 28800e9).Format "2006-01-02 15:04:05" }}</td>
       <td>{{ index $alert.Annotations "summary" }}</td>
