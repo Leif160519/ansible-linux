@@ -97,14 +97,14 @@
       service:
         name: prometheusalert
         state: reloaded
-    - name: reload promtail
+    - name: restart promtail
       service:
         name: promtail
-        state: reloaded
-    - name: reload loki
+        state: restarted
+    - name: restart loki
       service:
         name: loki
-        state: reloaded
+        state: restarted
 
   tasks:
     - name: user and group and directories
@@ -810,7 +810,7 @@
           mode: 0644
           owner: root
           group: root
-        notify: reload promtail
+        notify: restart promtail
 
       - name: start promtail service
         service:
@@ -873,7 +873,7 @@
           mode: 0644
           owner: root
           group: root
-        notify: reload loki
+        notify: restart loki
 
       - name: start loki service
         service:
