@@ -794,6 +794,14 @@
           dest: /lib/systemd/system/promtail.service
           mode: 0644
 
+      - name: create storage dir
+        file:
+          path: /var/lib/loki
+          state: directory
+          owner: root
+          group: root
+          mode: 0755
+
       - name: create promtail config
         template:
           src: files/loki/config/promtail.yml.j2
@@ -847,6 +855,14 @@
           src: files/loki/service/loki.service.j2
           dest: /lib/systemd/system/loki.service
           mode: 0644
+
+      - name: create storage dir
+        file:
+          path: /var/lib/loki
+          state: directory
+          owner: root
+          group: root
+          mode: 0755
 
       - name: create loki config
         template:
