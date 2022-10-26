@@ -762,7 +762,7 @@
       block:
       - name: stat promtail
         stat:
-          path: "{{ promtail_root_dir }}"
+          path: "{{ promtail_root_dir }}/promtail-linux-amd64"
         register: p
 
       - name: create unarchive dir
@@ -775,7 +775,7 @@
 
       - name: unarchive package
         unarchive:
-          src: "{{ promtail_root_url }}"
+          src: "{{ promtail_url }}"
           dest: "{{ promtail_root_dir }}"
           owner: root
           group: root
@@ -787,6 +787,7 @@
           src: "{{ promtail_root_dir }}/promtail-linux-amd64"
           dest: "/usr/local/bin/promtail"
           state: link
+          force: true
 
       - name: create promtail service
         template:
@@ -824,7 +825,7 @@
       block:
       - name: stat loki
         stat:
-          path: "{{ loki_root_dir }}"
+          path: "{{ loki_root_dir }}/loki-linux-amd64"
         register: l
 
       - name: create unarchive dir
@@ -837,7 +838,7 @@
 
       - name: unarchive package
         unarchive:
-          src: "{{ loki_root_url }}"
+          src: "{{ loki_url }}"
           dest: "{{ loki_root_dir }}"
           owner: root
           group: root
@@ -849,6 +850,7 @@
           src: "{{ loki_root_dir }}/loki-linux-amd64"
           dest: "/usr/local/bin/loki"
           state: link
+          force: true
 
       - name: create loki service
         template:
