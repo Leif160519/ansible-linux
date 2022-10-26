@@ -28,6 +28,8 @@
     zk_exporter_root_dir: /opt/zookeeper_exporter
     emq_exporter_root_dir: /opt/emq_exporter
     jmx_exporter_root_dir: /opt/jmx_exporter
+    promtail_root_dir: /opt/promtail
+    loki_root_dir: /opt/loki
 
     prometheus_version: 2.39.1
     victoria_metrics_version: 1.82.1
@@ -44,6 +46,8 @@
     zk_exporter_version: 0.1.12
     emq_exporter_version: 0.5.1
     jmx_exporter_version: 0.17.0
+    promtail_version: v2.6.1
+    loki_version: v2.6.1
 
     prometheus_tag: prometheus-{{ prometheus_version }}.linux-amd64
     victoria_metrics_tag: victoria-metrics-linux-amd64-v{{ victoria_metrics_version }}
@@ -60,6 +64,8 @@
     zk_exporter_tag: zookeeper-exporter-v{{ zk_exporter_version }}-linux
     emq_exporter_tag: emq_exporter-{{ emq_exporter_version }}-linux
     jmx_exporter_tag: jmx_exporter_tag: jmx_prometheus_javaagent-{{ jmx_exporter_version }}
+    promtail_tag: promtail-linux-amd64
+    loki_tag: loki-linux-amd64
 
     prometheus_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/{{ prometheus_tag }}.tar.gz
     victoria_metrics_url: https://github.com/victoria-metrics/victoria-metrics/releases/download/v1.79.0/{{ victoria_metrics_tag }}.tar.gz
@@ -76,6 +82,8 @@
     zk_exporter_url: https://github.com/dabealu/zookeeper-exporter/releases/download/v{{ zk_exporter_version }}/{{ zk_exporter_tag }}.tar.gz
     emq_exporter_url: https://github.com/nuvo/emq_exporter/releases/download/v{{ emq_exporter_version }}/{{ emq_exporter_tag }}.tar.gz
     jmx_exporter_url: https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/{{ jmx_exporter_version }}/{{ jmx_exporter_tag }}.jar
+    promtail_url: https://github.com/grafana/loki/releases/download/{{ promtail_version }}/{{ promtail_tag }}.zip
+    loki_url: https://github.com/grafana/loki/release/download/{{ loki_version }}/{{ loki_tag}}.zip
   handlers:
     - name: reload alertmanager
       service:
@@ -88,6 +96,14 @@
     - name: reload prometheusalert
       service:
         name: prometheusalert
+        state: reloaded
+    - name: reload promtail
+      service:
+        name: promtail
+        state: reloaded
+    - name: reload loki
+      service:
+        name: loki
         state: reloaded
 
   tasks:
@@ -740,6 +756,114 @@
           daemon_reload: true
           enabled: true
         # }}}
+
+    - name: promtail # {{{
+      tags: never,promtail
+      block:
+      - name: stat promtail
+        stat:
+          path: "{{ promtail_root_dir }}"
+        register: p
+
+      - name: create unarchive dir
+        file:
+          path: "{{ promtail_root_dir }}"
+          state: directory
+          owner: root
+          group: root
+          mode: 0755
+
+      - name: unarchive package
+        unarchive:
+          src: "{{ promtail_root_url }}"
+          dest: "{{ promtail_root_dir }}"
+          owner: root
+          group: root
+          remote_src: true
+        when: p.stat.exists == false
+
+      - name: create promtail link
+        file:
+          src: "{{ promtail_root_dir }}/promtail-linux-amd64"
+          dest: "/usr/local/bin/promtail"
+          state: link
+
+      - name: create promtail service
+        template:
+          src: files/loki/service/promtail.service.j2
+          dest: /lib/systemd/system/promtail.service
+          mode: 0644
+
+      - name: create promtail config
+        template:
+          src: files/loki/config/promtail.yml.j2
+          dest: "{{ promtail_root_dir }}/promtail.yml"
+          mode: 0644
+          owner: root
+          group: root
+        notify: reload promtail
+
+      - name: start promtail service
+        service:
+          name: promtail
+          state: started
+          enabled: true
+          daemon_reload: true
+      # }}}
+
+    - name: loki # {{{
+      tags: never, loki
+      block:
+      - name: stat loki
+        stat:
+          path: "{{ loki_root_dir }}"
+        register: l
+
+      - name: create unarchive dir
+        file:
+          path: "{{ loki_root_dir }}"
+          state: directory
+          owner: root
+          group: root
+          mode: 0755
+
+      - name: unarchive package
+        unarchive:
+          src: "{{ loki_root_url }}"
+          dest: "{{ loki_root_dir }}"
+          owner: root
+          group: root
+          remote_src: true
+        when: l.stat.exists == false
+
+      - name: create loki link
+        file:
+          src: "{{ loki_root_dir }}/loki-linux-amd64"
+          dest: "/usr/local/bin/loki"
+          state: link
+
+      - name: create loki service
+        template:
+          src: files/loki/service/loki.service.j2
+          dest: /lib/systemd/system/loki.service
+          mode: 0644
+
+      - name: create loki config
+        template:
+          src: files/loki/config/loki.yml.j2
+          dest: "{{ loki_root_dir }}/loki.yml"
+          mode: 0644
+          owner: root
+          group: root
+        notify: reload loki
+
+      - name: start loki service
+        service:
+          name: loki
+          state: started
+          enabled: true
+          daemon_reload: true
+      # }}}
 
     - name: kafka_exporter # {{{
       tags: never, kafka_exporter

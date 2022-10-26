@@ -1,3 +1,4 @@
 inventory/all_tmp
 inventory/os_tmp
 playbooks/test.yml
+*.swp

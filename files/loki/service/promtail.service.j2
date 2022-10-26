@@ -1,0 +1,11 @@
+[Unit]
+Description=promtail
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/promtail -config.file {{ promtail_root_dir }}/promtail.yml
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
