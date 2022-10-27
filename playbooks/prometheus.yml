@@ -97,7 +97,14 @@
       service:
         name: prometheusalert
         state: reloaded
-
+    - name: restart promtail
+      service:
+        name: promtail
+        state: restarted
+    - name: restart loki
+      service:
+        name: loki
+        state: restarted
   tasks:
     - name: user and group and directories
       tags: [common]
@@ -802,16 +809,14 @@
           mode: 0644
           owner: root
           group: root
+        notify: restart promtail
 
       - name: start promtail service
         service:
           name: promtail
-          state: "{{ item }}"
+          state: started
           enabled: true
           daemon_reload: true
-        with_items:
-          - started
-          - reloaded
       # }}}
 
     - name: loki # {{{
@@ -867,16 +872,14 @@
           mode: 0644
           owner: root
           group: root
+        notify: restart loki
 
       - name: start loki service
         service:
           name: loki
-          state: "{{ item }}"
+          state: started
           enabled: true
           daemon_reload: true
-        with_items:
-          - started
-          - reloaded
       # }}}
 
     - name: kafka_exporter # {{{
