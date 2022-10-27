@@ -63,7 +63,7 @@
     es_exporter_tag: elasticsearch_exporter-{{ es_exporter_version }}.linux-amd64
     zk_exporter_tag: zookeeper-exporter-v{{ zk_exporter_version }}-linux
     emq_exporter_tag: emq_exporter-{{ emq_exporter_version }}-linux
-    jmx_exporter_tag: jmx_exporter_tag: jmx_prometheus_javaagent-{{ jmx_exporter_version }}
+    jmx_exporter_tag: jmx_prometheus_javaagent-{{ jmx_exporter_version }}
     promtail_tag: promtail-linux-amd64
     loki_tag: loki-linux-amd64
 
