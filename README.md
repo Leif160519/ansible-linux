@@ -220,7 +220,7 @@ Grafana dashboard可以使用[9964][25]
 | 所有业务http监控 | [1 Blackbox Exporter Dashboard 2022/04/12][13] |
 | Backuppc监控 | [Backuppc][14] |
 | prometehus数据持久化监控 | [VictoriaMetrics][15] |
-| MySQL监控 | [mysql overview][24] |
+| MySQL监控 | [mysql overview][24],[1 Mysqld Exporter Dashboard 22/11/01中文版][36] |
 | ElasticSearch监控 | [ElasticSearch Production][26] |
 | zookeeper监控 | [Zookeeper Exporter (dabealu)][27],[Zookeeper_exporter][31] |
 | emq 监控 | [EMQ 服务指标看板][28](模板可能适用于api v3版本，v4版本的需要修改其中的采集数据) |
@@ -275,3 +275,4 @@ Grafana dashboard可以使用[9964][25]
 [33]: https://grafana.com/grafana/dashboards/7589
 [34]: https://grafana.com/grafana/dashboards/3457
 [35]: https://grafana.com/grafana/dashboards/11131-kubernetes-jmx-dashboard/
+[36]: https://grafana.com/grafana/dashboards/17320
