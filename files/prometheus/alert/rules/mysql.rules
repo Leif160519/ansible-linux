@@ -3,9 +3,9 @@ groups:
     rules:
     - alert: MySQL 宕机
       expr: |
-        avg_over_time(mysql_up{}[5m]) < .9
+        avg_over_time(mysql_up[5m]) < .9
         AND
-        max_over_time(mysql_up{}[1m]) == 0
+        max_over_time(mysql_up[1m]) == 0
       for: 0m
       labels:
         severity: critical
@@ -15,34 +15,74 @@ groups:
         summary: MySQL down
 
     - alert: MySQL 连接过多(>80%)
-      expr: max_over_time(mysql_global_status_threads_connected[1m]) / mysql_global_variables_max_connections * 100 > 80
+      expr: max_over_time(mysql_global_status_threads_connected[1m]) / mysql_global_variables_max_connections > 0.8
       for: 2m
       labels:
         severity: warning
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: MySQL too many connections (> 80%)
+        summary: MySQL too many connections (> 80%), 当前：{{ $value | humanizePercentage }}
+
+    - alert: MySQL 连接过多
+      expr: irate(mysql_global_status_threads_connected[3m]) > 1000
+      for: 2m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: MySQL Connections： {{ $value | humanize }}
 
     - alert: MySQL 高线程运行
-      expr: max_over_time(mysql_global_status_threads_running[1m]) / mysql_global_variables_max_connections * 100 > 60
+      expr: max_over_time(mysql_global_status_threads_running[1m]) / mysql_global_variables_max_connections > 0.6
       for: 2m
       labels:
         severity: warning
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: MySQL high threads running
+        summary: MySQL high threads running,当前：{{ $value | humanizePercentage }}
 
     - alert: MySQL 慢查询
       expr: increase(mysql_global_status_slow_queries[1m]) > 0
+      for: 5m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: MySQL slow queries , 每分钟慢查询：{{ $value }}
+
+    - alert: MySQL 当前活跃的连接数过多
+      expr: mysql_global_status_threads_running > 100
+      for: 1m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: 当前活跃的连接数： {{ $value }}
+
+    - alert: MySQL 当前updating状态的线程过多
+      expr: mysql_info_schema_processlist_threads{,state=~"updating"} > 100
+      for: 1m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: 当前updating状态的线程：{{ $value }}
+
+    - alert: MySQL 高 QPS
+      expr: irate(mysql_global_status_questions[3m]) > 30000
       for: 2m
       labels:
         severity: warning
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: MySQL slow queries
+        summary: 当前QPS：{{ $value | humanize }}
 
     - alert: MySQL InnoDB 日志等待
       expr: rate(mysql_global_status_innodb_log_waits[15m]) > 10
