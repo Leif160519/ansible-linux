@@ -1,24 +1,28 @@
 [client]
 socket = {{ mysql_sock_file }}
-default-character-set = utf8
+default-character-set = utf8mb4
 
 [mysql]
-default-character-set = utf8
+default-character-set = utf8mb4
 
 [mysql.server]
-default-character-set = utf8
+default-character-set = utf8mb4
 
 [mysqld_safe]
-default-character-set = utf8
+default-character-set = utf8mb4
 
 [mysqld]
+user = mysql
 port = 3306
+mysqlx_port = 33060
 bind-address = 0.0.0.0
+basedir = {{ mysql_root_dir }}
 datadir = {{ mysql_root_dir }}/data
 socket = {{ mysql_sock_file }}
-basedir = {{ mysql_root_dir }}
-character-set-server = utf8
-collation-server = utf8_general_ci
+mysqlx_socket = {{ mysqlx_sock_file }}
+character-set-server = utf8mb4
+collation-server = utf8mb4_general_ci
+default_storage_engine = InnoDB
 skip-character-set-client-handshake
 skip-external-locking
 symbolic-links = 0
@@ -26,7 +30,20 @@ log-error = {{ mysql_error_log_file }}
 general_log_file = {{ mysql_general_log_file }}
 general_log = 1
 pid-file = {{ mysql_pid_file }}
+back_log = 2000
 max_connections = 2000
+max_connect_errors = 2000
 max_allowed_packet = 64M
+innodb_open_files = 65535
 lower_case_table_names = 1
 default_authentication_plugin=mysql_native_password
+slow_query_log_file = {{ mysql_slow_query_log_file }}
+slow_query_log  = 1
+log_queries_not_using_indexes  = 1
+long_query_time = 1
+min_examined_row_limit = 100
+log-slave-updates = ON
+log-bin = {{ mysql_log_bin_file }}
+binlog_cache_size = 1M
+binlog_checksum = none
+max_binlog_size = 1G

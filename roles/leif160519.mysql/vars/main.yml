@@ -5,6 +5,9 @@ mysql_url: https://downloads.mysql.com/archives/get/p/23/file/{{ mysql_version }
 #mysql_url: https://cdn.mysql.com//Downloads/MySQL-8.0/{{ mysql_version }}.tar.xz
 mysql_general_log_file: "{{ mysql_log_dir }}/mysql.log"
 mysql_error_log_file: "{{ mysql_log_dir }}/error.log"
+mysql_slow_query_log_file: "{{ mysql_log_dir }}/slow.log"
+mysql_log_bin_file: "{{ mysql_log_dir }}/mysql-bin"
 mysql_pid_file: "{{ mysql_run_dir }}/mysql.pid"
 mysql_sock_file: "{{ mysql_run_dir }}/mysql.sock"
+mysqlx_sock_file: "{{ mysql_run_dir }}/mysqlx.sock"
 mysql_pre_file: "{{ mysql_pre_dir }}/mysql-systemd-pre"
