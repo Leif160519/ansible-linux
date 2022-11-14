@@ -31,7 +31,7 @@
     promtail_root_dir: /opt/promtail
     loki_root_dir: /opt/loki
 
-    prometheus_version: 2.39.1
+    prometheus_version: 2.40.1
     victoria_metrics_version: 1.82.1
     alertmanager_version: 0.24.0
     node_exporter_version: 1.4.0
