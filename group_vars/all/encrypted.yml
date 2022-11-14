@@ -11,6 +11,11 @@ mysqld_exporter_username: exporter
 mysqld_exporter_password: exporter-123
 #}}}
 
+## postgres_exporter {{{
+postgres_exporter_username: exporter
+postgres_exporter_password: exporter-123
+#}}}
+
 ## vmware_exporter # {{{
 vmware_username: root
 vmware_password: root-123

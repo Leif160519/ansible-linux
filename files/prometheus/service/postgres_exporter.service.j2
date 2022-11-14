@@ -1,0 +1,27 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=postgres_exporter
+After=network-online.target
+
+[Service]
+Environment=DB_SOURCE_USER=
+Environment=DB_SOURCE_PASS=
+Environment=DB_SOURCE_URI=x.x.x.x:5432/postgres?sslmode=disable
+Type=simple
+Environment="GOMAXPROCS={{ ansible_processor_vcpus|default(ansible_processor_count) }}"
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/postgres_exporter \
+  --web.config.file=/opt/prometheus/conf.d/postgres_exporter.yml \
+  --extend.query-path=/etc/prometheus/conf.d/queries.yaml \
+  --web.listen-address=0.0.0.0:9187
+
+ProtectSystem=full
+
+SyslogIdentifier=prometheus
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

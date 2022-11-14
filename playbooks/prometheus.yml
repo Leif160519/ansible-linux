@@ -30,6 +30,7 @@
     jmx_exporter_root_dir: /opt/jmx_exporter
     promtail_root_dir: /opt/promtail
     loki_root_dir: /opt/loki
+    postgres_exporter_root_dir: /opt/postgres_exporter
 
     prometheus_version: 2.39.1
     victoria_metrics_version: 1.82.1
@@ -48,6 +49,7 @@
     jmx_exporter_version: 0.17.0
     promtail_version: v2.6.1
     loki_version: v2.6.1
+    postgres_exporter_version: 0.11.1
 
     prometheus_tag: prometheus-{{ prometheus_version }}.linux-amd64
     victoria_metrics_tag: victoria-metrics-linux-amd64-v{{ victoria_metrics_version }}
@@ -66,6 +68,7 @@
     jmx_exporter_tag: jmx_prometheus_javaagent-{{ jmx_exporter_version }}
     promtail_tag: promtail-linux-amd64
     loki_tag: loki-linux-amd64
+    postgres_exporter_tag: postgres_exporter-{{ postgres_exporter_version }}.linux-amd64.tar.gz
 
     prometheus_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/{{ prometheus_tag }}.tar.gz
     victoria_metrics_url: https://github.com/victoria-metrics/victoria-metrics/releases/download/v1.79.0/{{ victoria_metrics_tag }}.tar.gz
@@ -84,6 +87,7 @@
     jmx_exporter_url: https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/{{ jmx_exporter_version }}/{{ jmx_exporter_tag }}.jar
     promtail_url: https://github.com/grafana/loki/releases/download/{{ promtail_version }}/{{ promtail_tag }}.zip
     loki_url: https://github.com/grafana/loki/release/download/{{ loki_version }}/{{ loki_tag}}.zip
+    postgres_exporter_url: https://github.com/prometheus-community/postgres_exporter/releases/download/v{{ postgres_exporter_versiono }}/{{ postgres_exporter_tag }}.tar.gz
   handlers:
     - name: reload alertmanager
       service:
@@ -1016,6 +1020,50 @@
             daemon_reload: true
             enabled: true
     # }}}
+
+    - name: postgres_exporter # {{{
+      tags: never, postgres_exporter
+      block:
+        - name: stat postgres_exporter
+          stat:
+            path: "{{ postgres_exporter_root_dir }}"
+          register: p
+
+        - name: unarchive postgres_exporter
+          unarchive:
+            src: "{{ postgres_exporter_url }}"
+            dest: /opt
+            owner: prometheus
+            group: prometheus
+            remote_src: true
+          when: p.stat.exists == false
+
+        - name: rename postgres_exporter dir
+          shell: mv /opt/{{ postgres_exporter_tag }} {{ postgres_exporter_root_dir }}
+          when: p.stat.exists == false
+
+        - name: create postgres_exporter link
+          file:
+            src: "{{ postgres_exporter_root_dir }}/{{ item }}"
+            dest: /usr/local/bin/{{ item }}
+            force: true
+            stat: link
+          when_items:
+            - postgres_exporter
+
+        - name: create postgres_exporter service
+          template:
+            src: files/prometheus/service/postgres_exporter.service.j2
+            dest: /lib/systemd/system/postgres_exporter.service
+            mode: 0644
+
+        - name: start postgres_exporter service
+          service:
+            name: postgres_exporter
+            stat: started
+            daemon_reload: true
+            enabled: true
+      # }}}
 
     - name: zookeeper_exporter # {{{
       tags: never, zk_exporter
