@@ -552,6 +552,7 @@
             dest: /etc/security/limits.conf
             line: "{{ item }}"
           with_items:
+            - "*    soft    core      5242880"
             - "*　　soft　　nofile　　500000000"
             - "*　　hard　　nofile　　500000000"
             - "*    soft    noproc    500000000"
@@ -574,6 +575,7 @@
             - fs.file-max = 6815744
             - fs.nr_open = 5000000
             - kernel.core_uses_pid = 1
+            - kernel.core_pattern = /var/tmp/corefile/%e-%p
             - kernel.msgmnb = 65535
             - kernel.msgmax = 65535
             - kernel.softlockup_panic = 1
