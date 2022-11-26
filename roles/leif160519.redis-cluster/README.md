@@ -7,6 +7,7 @@
 | port  | 6379 | 端口号 |
 | daemonize | yes | 以后台模式运行 |
 | protected-mode | no   | 集群模式下要设置成no，设置为yes的时候需要配合bind参数，只有被bind的ip能访问我们的redis |
+| requirepass | 123456 | redis密码 |
 | dir | /opt/redis/data | 日志、aof、rdb文件都会保存到这里 所以这个路径要是机器磁盘空间最大的（可通过df –h来获取磁盘信息）|
 | logfile | redis-6379.log  | 产生的日志名 |
 | loglevel | notice |日志级别（用于生产环境）|

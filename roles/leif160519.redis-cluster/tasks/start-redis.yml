@@ -31,6 +31,7 @@
       {{ hostvars['redis-cluster-slaver-1'].ansible_host }}:{{ redis_port }} \
       {{ hostvars['redis-cluster-slaver-2'].ansible_host }}:{{ redis_port }} \
       {{ hostvars['redis-cluster-slaver-3'].ansible_host }}:{{ redis_port }} \
+      -a {{ redis_password }} \
       --cluster-replicas 1
   register: result
   when: inventory_hostname == "redis-cluster-master-1"
