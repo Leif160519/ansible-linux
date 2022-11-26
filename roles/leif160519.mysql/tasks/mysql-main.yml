@@ -126,12 +126,15 @@
     enabled: true
     daemon_reload: yes
 
-- name: Create mysql link
-  file:
-    src: "{{ item }}"
-    state: link
-    force: yes
-    dest: "/usr/bin/{{ item | basename | replace('{{ mysql_root_dir }}/bin','') }}"
-  with_fileglob:
-    - "{{ mysql_root_dir }}/bin/*"
+#- name: Create mysql link
+#  file:
+#    src: "{{ item }}"
+#    state: link
+#    force: yes
+#    dest: "/usr/bin/{{ item | basename | replace('{{ mysql_root_dir }}/bin','') }}"
+#  with_fileglob:
+#    - "{{ mysql_root_dir }}/bin/*"
 
+- name: Create mysql link
+  shell: ln -svf {{ mysql_root_dir }}/bin/* /usr/local/bin/
+  ignore_errors: true

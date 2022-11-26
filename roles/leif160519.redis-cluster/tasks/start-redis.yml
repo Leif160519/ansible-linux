@@ -52,3 +52,7 @@
 
 - debug:
     var: cluster_info.stdout_lines
+
+- name: Create redis-cli link
+  shell: ln -svf {{ redis_root_dir }}/src/redis-cli /usr/local/bin/redis-cli
+  ignore_errors: true
