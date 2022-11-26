@@ -77,3 +77,4 @@
     state: reloaded
     enabled: true
     daemon_reload: true
+  when: inventory_hostname == "nacos-proxy"
