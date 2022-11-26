@@ -12,7 +12,7 @@
     - "{{ clickhouse_tmp_dir }}"
 
 - name: caculate password sha256
-  shell: echo -n {{ clickhouse_password }} | openssl dgst -sha256
+  shell: echo -n {{ clickhouse_password }} | openssl dgst -sha256 | awk '{print $NF}'
   register: sha256
 
 - set_fact:
