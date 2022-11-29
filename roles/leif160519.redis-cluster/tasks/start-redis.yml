@@ -17,7 +17,7 @@
 
 - name: restart redis service
   service:
-    name: redis
+    name: redis-server
     state: restarted
     enabled: true
     daemon_reload: true
