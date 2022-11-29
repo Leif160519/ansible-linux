@@ -328,9 +328,9 @@
     - name: Install gitlab
       tags: [never, gitlab]
       vars:
-        gitlab_rpm_version: gitlab-ce-15.2.2-ce.0.el7.x86_64
+        gitlab_rpm_version: gitlab-ce-15.4.5-ce.0.el7.x86_64
         gitlab_rpm_url: https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/{{ gitlab_rpm_version }}.rpm/download.rpm
-        gitlab_deb_version: gitlab-ce_15.2.2-ce.0_amd64
+        gitlab_deb_version: gitlab-ce_15.4.5-ce.0_amd64
         gitlab_deb_url: https://packages.gitlab.com/gitlab/gitlab-ce/packages/{{ ansible_lsb.id | lower }}/{{ ansible_lsb.codename }}/{{ gitlab_deb_version }}.deb/download.deb
       block:
         - stat:
