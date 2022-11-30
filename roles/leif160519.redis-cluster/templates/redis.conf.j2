@@ -2,6 +2,7 @@ port {{ redis_port }}
 daemonize no
 protected-mode no
 requirepass {{ redis_password }}
+masterauth {{ redis_password }}
 
 dir {{ redis_data_dir }}
 logfile redis-{{ redis_port }}.log
