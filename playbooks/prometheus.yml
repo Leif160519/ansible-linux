@@ -12,8 +12,8 @@
     victoria_metrics_root_dir: /opt/victoria-metrics
     # vms数据存储路径
     victoria_metrics_data_dir: /data/victoria-metrics-data
-    # vms数据保留时间
-    victoria_metrics_retention_period: 30
+    # vms数据保留时间(单位:月)
+    victoria_metrics_retention_period: 6
     alertmanager_root_dir: /opt/alertmanager
     node_exporter_root_dir: /opt/node_exporter
     blackbox_exporter_root_dir: /opt/black_exporter
