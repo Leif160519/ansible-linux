@@ -1,0 +1,123 @@
+groups:
+  - name: redis probe
+    rules:
+    - alert: Redis 宕机
+      expr: redis_up == 0
+      for: 0m
+      labels:
+        severity: critical
+        level: P0
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Redis {{ $labels.name }} down
+
+    - alert: Redis 丢失主节点
+      expr: redis_instance_info{role="master"} < 1
+      for: 0m
+      labels:
+        severity: critical
+        level: P0
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Redis {{ $labels.name }} missing master
+
+    - alert: Redis 太多主节点
+      expr: redis_instance_info{role="master"} > 1
+      for: 0m
+      labels:
+        severity: critical
+        level: P0
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Redis {{ $labels.name }} too many masters, current {{ $value }}
+
+    - alert: Redis 与slave节点失联
+      expr: count without (instance, job) (redis_connected_slaves) - sum without (instance, job) (redis_connected_slaves) - 1 > 1
+      for: 0m
+      labels:
+        severity: critical
+        level: P0
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Redis {{ $labels.name }} disconnected slaves
+
+    - alert: Redis 副本损坏
+      expr: delta(redis_connected_slaves[1m]) < 0
+      for: 0m
+      labels:
+        severity: critical
+        level: P0
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Redis {{ $labels.name }} replication broken
+
+    - alert: Redis 集群震荡
+      expr: changes(redis_connected_slaves[1m]) > 1
+      for: 2m
+      labels:
+        severity: critical
+        level: P0
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Redis {{ $labels.name }} cluster flapping
+
+    - alert: Redis 缺少备份超过24小时
+      expr: time() - redis_rdb_last_save_timestamp_seconds > 60 * 60 * 24
+      for: 0m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Redis {{ $labels.name }} missing backup
+
+    # The exporter must be started with --include-system-metrics flag or REDIS_EXPORTER_INCL_SYSTEM_METRICS=true environment variable.
+    - alert: Redis 超系统物理内存90%
+      expr: redis_memory_used_bytes / redis_total_system_memory_bytes > 0.9
+      for: 2m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Redis {{ $labels.name }} out of system memory, current {{ $value | humanizePercentage }}
+
+    - alert: Redis 超出配置的最大内存
+      expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.9
+      for: 2m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Redis {{ $labels.name }} out of configured maxmemory, current {{ $value | humanizePercentage }}
+
+    - alert: Redis 连接数超过100
+      expr: redis_connected_clients > 100
+      for: 2m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Redis {{ $labels.name }} too many connections, current {{ $value }}
+
+    - alert: Redis 没有足够的连接数
+      expr: redis_connected_clients < 5
+      for: 2m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Redis {{ $labels.name }} not enough connections, current {{ $value }}
+
+    - alert: Redis 拒绝连接
+      expr: increase(redis_rejected_connections_total[1m]) > 0
+      for: 0m
+      labels:
+        severity: critical
+        level: P0
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Redis {{ $labels.name }} rejected connections
