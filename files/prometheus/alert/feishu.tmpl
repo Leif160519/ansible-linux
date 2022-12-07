@@ -2,6 +2,7 @@
 {{- if eq $v.status "resolved" }}
 **[恢复信息]({{ $v.generatorURL }})**
 *✅[{{$v.labels.alertname}}]({{ $var }})*
+告警状态：{{$v.status}}
 告警级别：{{ $v.labels.level }}
 故障地址：{{ $v.labels.instance }}
 {{- if $v.labels.all }}
@@ -15,6 +16,7 @@
 {{ else }}
 **[告警信息]({{ $v.generatorURL }})**
 *⛔[{{$v.labels.alertname}}]({{ $var }})*
+告警状态：{{$v.status}}
 告警级别：{{ $v.labels.level }}
 故障地址：{{ $v.labels.instance }}
 {{- if $v.labels.all }}
@@ -26,3 +28,5 @@
 描述信息：{{ $v.annotations.description }}{{ end -}}
 {{ end -}}
 {{ end -}}
+{{ $urimsg:=""}}{{ range $key,$value:=.commonLabels }}{{ $urimsg = print $urimsg $key "%3D%22" $value "%22%2C" }}{{ end }}
+[屏蔽该告警]({{ $var }}/#/silences/new?filter=%7B{{ SplitString $urimsg 0 -3 }}%7D)

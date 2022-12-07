@@ -1,0 +1,10 @@
+{{ $var := .externalURL}}{{ range $k,$v:=.alerts }} 状态：**{{$v.status}}** {{if eq $v.status "resolved"}}（恢复）{{else}}（报警）{{end}}
+报警名字：**{{$v.labels.alertname}}**  [查看图表]({{$v.generatorURL}})
+告警级别：{{$v.labels.severity}}
+故障主机：{{$v.labels.instance}}
+开始时间：{{TimeFormat $v.startsAt "2006-01-02 15:04:05"}}
+结束时间：{{TimeFormat $v.endsAt "2006-01-02 15:04:05"}}
+报警概述：{{$v.annotations.summary}}
+报警详情：{{$v.annotations.description}}
+{{ end }}
+{{ $urimsg:=""}}{{ range $key,$value:=.commonLabels }}{{$urimsg =  print $urimsg $key "%3D%22" $value "%22%2C" }}{{end}}[屏蔽该告警]({{$var}}/#/silences/new?filter=%7B{{SplitString $urimsg 0 -3}}%7D)
