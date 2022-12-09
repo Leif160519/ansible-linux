@@ -89,22 +89,39 @@
       service:
         name: alertmanager
         state: reloaded
+    - name: restart alertmanager
+      service:
+        name: alertmanager
+        state: restarted
+        daemon_reload: true
     - name: reload blackbox_exporter
       service:
         name: blackbox_exporter
         state: reloaded
+    - name: restart blackbox_exporter
+      service:
+        name: blackbox_exporter
+        state: restarted
+        daemon_reload: true
     - name: reload prometheusalert
       service:
         name: prometheusalert
         state: reloaded
+    - name: restart prometheusalert
+      service:
+        name: prometheusalert
+        state: restarted
+        daemon_reload: true
     - name: restart promtail
       service:
         name: promtail
         state: restarted
+        daemon_reload: true
     - name: restart loki
       service:
         name: loki
         state: restarted
+        daemon_reload: true
   tasks:
     - name: user and group and directories
       tags: [common]
@@ -271,6 +288,7 @@
           src: files/prometheus/service/alertmanager.service.j2
           dest: /lib/systemd/system/alertmanager.service
           mode: 0644
+        notify: restart alertmanager
 
       - name: 创建storage目录
         file:
@@ -322,6 +340,7 @@
           src: files/prometheus/service/prometheusalert.service.j2
           dest: /lib/systemd/system/prometheusalert.service
           mode: 0644
+        notify: restart prometheusalert
 
       - name: 启动prometheusalert服务
         service:
@@ -480,6 +499,7 @@
           src: files/prometheus/service/blackbox_exporter.service.j2
           dest: /lib/systemd/system/blackbox_exporter.service
           mode: 0644
+        notify: restart blackbox_exporter
 
       - name: 启动blackbox_exporter服务
         service:
@@ -793,6 +813,7 @@
           src: files/loki/service/promtail.service.j2
           dest: /lib/systemd/system/promtail.service
           mode: 0644
+        notify: restart promtail
 
       - name: create storage dir
         file:
@@ -856,6 +877,7 @@
           src: files/loki/service/loki.service.j2
           dest: /lib/systemd/system/loki.service
           mode: 0644
+        notify: restart loki
 
       - name: create storage dir
         file:
