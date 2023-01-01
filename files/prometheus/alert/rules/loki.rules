@@ -11,7 +11,7 @@ groups:
       annotations:
         summary: Loki process too many restarts
 
-    - alert: Loki请求错误
+    - alert: Loki 请求错误
       expr: |
         100 * sum(rate(loki_request_duration_seconds_count{status_code=~"5.."}[1m])) by (namespace,job,route,all,instance,method)
         /
@@ -44,6 +44,16 @@ groups:
         channels: "@linux/feishu;"
       annotations:
         summary: Loki request latency
+
+    - alert: Promtail 进程频繁重启
+      expr: changes(process_start_time_seconds{job=~"promtail"}[15m]) > 2
+      for: 0m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Loki process too many restarts
 
     - alert: Promtail 请求错误
       expr: |
