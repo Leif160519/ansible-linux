@@ -1086,3 +1086,23 @@
         name: moosefs-client
         state: latest
 # }}}
+
+- name: Install fscan # {{{
+  hosts: all:!off
+  tags: never, fscan
+  vars:
+    fscan_version: 1.8.2
+    fscan_url: https://github.com/shadow1ng/fscan/releases/download/{{ fscan_version }}/fscan_amd64
+  tasks:
+    - stat:
+        path: /usr/local/bin/fscan
+      register: f
+
+    - get_url:
+        url: "{{ fscan_url }}"
+        dest: /usr/local/bin/fscan
+        mode: 0775
+        owner: root
+        group: root
+      when: f.stat.exists == false
+  # }}}
