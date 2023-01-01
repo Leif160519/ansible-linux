@@ -28,6 +28,9 @@ schema_config:
     index:
       prefix: index_
       period: 168h
+    chunks:
+      period: 168h
+      prefix: chunk_
 
 storage_config:
   boltdb:

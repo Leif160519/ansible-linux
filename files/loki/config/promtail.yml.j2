@@ -6,12 +6,16 @@ server:
 
 positions:
   filename: /var/lib/loki/positions.yml
+  sync_period: 30s
 
 clients:
   - url: http://{{ hostvars['prometheus-server']['ansible_host'] }}:3100/loki/api/v1/push
     external_labels:
       all: {{ inventory_hostname }}
       ip: {{ ansible_host }}
+
+target_config:
+  sync_period: 30s
 
 scrape_configs:
   - job_name: journal
