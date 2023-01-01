@@ -1,0 +1,70 @@
+groups:
+  - name: loki & promtail default rule
+    rules:
+    - alert: Loki 进程频繁重启
+      expr: changes(process_start_time_seconds{job=~"loki"}[15m]) > 2
+      for: 0m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Loki process too many restarts
+
+    - alert: Loki请求错误
+      expr: |
+        100 * sum(rate(loki_request_duration_seconds_count{status_code=~"5.."}[1m])) by (namespace,job,route,all,instance,method)
+        /
+        sum(rate(loki_request_duration_seconds_count[1m])) by (namespace,job,route,all,instance,method)
+        > 10
+      for: 15m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: route： {{ $labels.route }}，method：{{ $labels.method }}
+
+    - alert: Loki 请求恐慌
+      expr: sum(increase(loki_panic_total[10m])) by (namespace,job,instance,job,all) > 0
+      for: 5m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Loki request panic
+
+    - alert: Loki 请求延迟
+      expr: (histogram_quantile(0.99, sum(rate(loki_request_duration_seconds_bucket{route!~"(?i).*tail.*"}[5m])) by (le,instance,job,all)))  > 1
+      for: 5m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Loki request latency
+
+    - alert: Promtail 请求错误
+      expr: |
+        100 * sum(rate(promtail_request_duration_seconds_count{status_code=~"5..|failed"}[1m])) by (namespace,job,route,instance,all)
+        /
+        sum(rate(promtail_request_duration_seconds_count[1m])) by (namespace,job,route,instance,all)
+        > 10
+      for: 5m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Promtail request errors
+
+    - alert: Promtail 请求延迟
+      expr: histogram_quantile(0.99, sum(rate(promtail_request_duration_seconds_bucket[5m])) by (le,instance,job,all)) > 1
+      for: 5m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu;"
+      annotations:
+        summary: Promtail request latency
