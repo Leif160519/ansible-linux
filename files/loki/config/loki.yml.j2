@@ -5,9 +5,12 @@ server:
   grpc_listen_port: 9095
   grpc_server_max_recv_msg_size: 15728640
   grpc_server_max_send_msg_size: 15728640
+  log_level: debug
 
 ingester:
   lifecycler:
+    num_tokens: 128
+    join_after: 30s
     address: "{{ ansible_host }}"
     ring:
       kvstore:
@@ -16,6 +19,7 @@ ingester:
     final_sleep: 0s
   chunk_idle_period: 5m
   chunk_retain_period: 30s
+  chunk_encoding: gzip
   max_transfer_retries: 0
   max_chunk_age: 20m
 
@@ -39,6 +43,7 @@ storage_config:
     directory: /var/lib/loki/chunks
 
 limits_config:
+  ingestion_rate_strategy: local
   enforce_metric_name: false
   reject_old_samples: true
   reject_old_samples_max_age: 168h
@@ -50,7 +55,7 @@ limits_config:
   per_stream_rate_limit: 512M
   per_stream_rate_limit_burst: 1024M
   cardinality_limit: 200000
-  max_entries_limit_per_query: 1000000
+  max_entries_limit_per_query: 100000
   max_label_value_length: 20480
   max_label_name_length: 10240
   max_label_names_per_series: 300
@@ -61,3 +66,14 @@ chunk_store_config:
 table_manager:
   retention_deletes_enabled: true
   retention_period: 168h
+
+query_range:
+  align_queries_with_step: true
+  max_retries: 5
+  cache_results: true
+  results_cache:
+    cache:
+      enable_fifocache: true
+      fifocache:
+        max_size_bytes: 512MB
+        validity: 168h
