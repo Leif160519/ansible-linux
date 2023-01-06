@@ -46,8 +46,8 @@
     zk_exporter_version: 0.1.12
     emq_exporter_version: 0.5.1
     jmx_exporter_version: 0.17.0
-    promtail_version: v2.6.1
-    loki_version: v2.6.1
+    promtail_version: v2.7.1
+    loki_version: v2.7.1
 
     prometheus_tag: prometheus-{{ prometheus_version }}.linux-amd64
     victoria_metrics_tag: victoria-metrics-linux-amd64-v{{ victoria_metrics_version }}
