@@ -228,7 +228,7 @@ Grafana dashboard可以使用[9964][25]
 | Nacos监控 | [Nacos][30] |
 | nginx vts 监控| [Nginx VTS Status][32] |
 | kafka 监控 | [Kafka Exporter Overview][33] |
-| jvm 监控| [JMX Overview][34],[Kubernetes JMX Dashboard][35] |
+| jvm 监控| [JMX Overview][34],[Kubernetes JMX Dashboard][35],[JVM (Actuator)][36] |
 
 ### 十一、参考
 - [ConsulManager][16]
@@ -276,3 +276,4 @@ Grafana dashboard可以使用[9964][25]
 [34]: https://grafana.com/grafana/dashboards/3457
 [35]: https://grafana.com/grafana/dashboards/11131-kubernetes-jmx-dashboard/
 [36]: https://grafana.com/grafana/dashboards/17320
+[37]: https://grafana.com/grafana/dashboards/9568-jvm-actuator/
