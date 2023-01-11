@@ -33,14 +33,14 @@ groups:
 
     - alert: 剩余空间
       expr: |
-        node_filesystem_avail_bytes{fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"} < 200*1024*1024
+        node_filesystem_avail_bytes{fstype=~"ext.|xfs", mountpoint!~"/boot|/var/backups/.*"} < 500*1024*1024
       for: 2m
       labels:
         severity: critical
         channels: "@linux/feishu;"
         level: P0
       annotations:
-        summary: "不足200M，{{ $labels.mountpoint }} 亟需清理"
+        summary: "不足500MiB，{{ $labels.mountpoint }} 亟需清理，当前 {{ $value | humanize1024 }}"
 
     - alert: CPU负载
       expr: |

@@ -15,14 +15,14 @@ groups:
         summary: "不足2%，{{ $labels.volume }} 剩余 {{ $value | humanize1024 }}B"
 
     - alert: 可用空间
-      expr: windows_logical_disk_free_bytes{volume=~".:", job="windows"} < 200*1024*1024
+      expr: windows_logical_disk_free_bytes{volume=~".:", job="windows"} < 500*1024*1024
       for: 2m
       labels:
         severity: critical
         channels: "@linux/P0;@linux/call;"
         level: P0
       annotations:
-        summary: "不足200MiB，{{ $labels.volume }} 亟需清理"
+        summary: "不足500MiB，{{ $labels.volume }} 亟需清理，当前 {{ $value | humanize1024 }}"
 
     - alert: 空闲内存
       expr:
