@@ -40,7 +40,7 @@ groups:
         channels: "@linux/feishu;"
         level: P0
       annotations:
-        summary: "不足500MiB，{{ $labels.mountpoint }} 亟需清理，当前 {{ $value | humanize1024 }}"
+        summary: "不足500MiB，{{ $labels.mountpoint }} 亟需清理，当前 {{ $value | humanize1024 }}B"
 
     - alert: CPU负载
       expr: |

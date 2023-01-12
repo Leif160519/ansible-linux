@@ -22,7 +22,7 @@ groups:
         channels: "@linux/P0;@linux/call;"
         level: P0
       annotations:
-        summary: "不足500MiB，{{ $labels.volume }} 亟需清理，当前 {{ $value | humanize1024 }}"
+        summary: "不足500MiB，{{ $labels.volume }} 亟需清理，当前 {{ $value | humanize1024 }}B"
 
     - alert: 空闲内存
       expr:
