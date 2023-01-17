@@ -2,27 +2,27 @@ groups:
   - name: elasticsearch rule
     rules:
     - alert: Elasticsearch 堆使用率过高
-      expr: (elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"}) * 100 > 98
+      expr: (elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"}) > 0.8
       for: 2m
       labels:
         severity: warning
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "Elasticsearch 堆使用率过高，超过98% 当前: {{ $value | humanizePercentage  }}%"
+        summary: "Elasticsearch 堆使用率过高，超过80% 当前: {{ $value | humanizePercentage  }}"
 
     - alert: Elasticsearch 堆使用情况警告
-      expr: (elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"}) * 100 > 95
+      expr: (elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"}) > 0.9
       for: 2m
       labels:
         severity: warning
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "Elasticsearch 堆使用情况警告，超过95%，当前：{{ $value | humanizePercentage  }}%"
+        summary: "Elasticsearch 堆使用情况警告，超过90%，当前：{{ $value | humanizePercentage  }}"
 
     - alert: Elasticsearch 磁盘空间不足
-      expr: elasticsearch_filesystem_data_available_bytes / elasticsearch_filesystem_data_size_bytes * 100 < 10
+      expr: elasticsearch_filesystem_data_available_bytes / elasticsearch_filesystem_data_size_bytes < 0.1
       for: 0m
       labels:
         severity: critical
