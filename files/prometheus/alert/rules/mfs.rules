@@ -10,7 +10,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "{{ $value | humanizePercentage }} 危急占比"
+        summary: "危急占比 {{ $value | humanizePercentage }}"
 
     - alert: "文件系统落盘"
       expr: time() - moosefs_master_info_last_successful_store{job="node"} > (3600 * 2)
@@ -20,7 +20,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "{{ $value | humanizeDuration }} 距离上次"
+        summary: "距离上次 {{ $value | humanizeDuration }}"
 
     - alert: "文件系统配额"
       expr: |
