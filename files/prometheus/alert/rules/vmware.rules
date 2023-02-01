@@ -3,7 +3,7 @@ groups:
     rules:
     - alert: 虚拟机快照过多
       expr: vmware_vm_snapshots > 5
-      for: 30m
+      for: 5m
       labels:
         severity: warning
         level: P1
@@ -13,7 +13,7 @@ groups:
 
     - alert: 虚拟机内存占用过高
       expr: vmware_vm_mem_usage_average >= 0.8 and vmware_vm_mem_usage_average < 0.9
-      for: 30m
+      for: 5m
       labels:
         severity: warning
         level: P1
@@ -23,7 +23,7 @@ groups:
 
     - alert: 虚拟机内存占用过高
       expr: vmware_vm_mem_usage_average / 100 >= 90
-      for: 30m
+      for: 5m
       labels:
         severity: warning
         level: P1
@@ -33,7 +33,7 @@ groups:
 
     - alert: 虚拟机快照过时
       expr: (time() - vmware_vm_snapshot_timestamp_seconds) / (60 * 60 * 24) >= 90
-      for: 30m
+      for: 5m
       labels:
         severity: warning
         level: P1
