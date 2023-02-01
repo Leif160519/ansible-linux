@@ -122,6 +122,16 @@
         name: loki
         state: restarted
         daemon_reload: true
+    - name: reload vmware_exporter
+      service:
+        name: vmware_exporter
+        state: reloaded
+        daemon_reload: true
+    - name: restart vmware_exporter
+      service:
+        name: vmware_exporter
+        state: restarted
+        daemon_reload: true
   tasks:
     - name: user and group and directories
       tags: [common]
@@ -1190,6 +1200,7 @@
             mode: 0644
             owner: prometheus
             group: prometheus
+          notify: reload vmware_exporter
 
         - name: create vmware_exporter service
           template:
@@ -1198,6 +1209,7 @@
             mode: 0644
             owner: root
             group: root
+          notify: restart vmware_exporter
 
         - name: start vmware_exporter service
           service:
