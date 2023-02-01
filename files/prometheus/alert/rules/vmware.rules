@@ -1,0 +1,72 @@
+groups:
+  - name: vmware status
+    rules:
+    - alert: 虚拟机快照过多
+      expr: vmware_vm_snapshots > 5
+      for: 30m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu"
+      annotations:
+        summary: "快照超过5个，{{ $labels.dc_name }}/{{$labels.host_name }}/{{ $labels.vm_name }} 当前 {{ $value }}"
+
+    - alert: 虚拟机内存占用过高
+      expr: vmware_vm_mem_usage_average >= 0.8 and vmware_vm_mem_usage_average < 0.9
+      for: 30m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu"
+      annotations:
+        summary: "超过80%，{{ $labels.dc_name }}/{{$labels.host_name }}/{{ $labels.vm_name }} 当前 {{ $value | humanizePercentage }}"
+
+    - alert: 虚拟机内存占用过高
+      expr: vmware_vm_mem_usage_average / 100 >= 90
+      for: 30m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu"
+      annotations:
+        summary: "超过90%，{{ $labels.dc_name }}/{{$labels.host_name }}/{{ $labels.vm_name }} 当前 {{ $value | humanizePercentage }}"
+
+    - alert: 虚拟机快照过时
+      expr: (time() - vmware_vm_snapshot_timestamp_seconds) / (60 * 60 * 24) >= 90
+      for: 30m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu"
+      annotations:
+        summary: "超过90天，{{ $labels.dc_name }}/{{$labels.host_name }}/{{ $labels.vm_name }}/{{ $labels.vm_snapshot_name }} 当前{{ $value | humanizeTimestamp }}"
+
+    - alert: 服务器内存使用过高
+      expr: vmware_host_memory_usage / vmware_host_memory_max > 0.8
+      for: 5m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu"
+      annotations:
+        summary: "超过80%，{{ $labels.dc_name }}/{{$labels.host_name }} 当前 {{ $value | humanizePercentage }}"
+
+    - alert: 服务器CPU占用过高
+      expr: vmware_host_cpu_usage / vmware_host_cpu_max > 0.8
+      for: 5m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu"
+      annotations:
+        summary:  "超过80%，{{ $labels.dc_name }}/{{$labels.host_name }} 当前 {{ $value | humanizePercentage }}"
+
+    - alert: 服务器存储使用过高
+      expr: vmware_datastore_freespace_size / vmware_datastore_capacity_size < 0.1
+      for: 5m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu"
+      annotations:
+        summary: "不足10%，{{ $labels.dc_name }}/{{$labels.host_name }}/{{ $labels.ds_name }} 当前 {{ $value | humanizePercentage }}"
