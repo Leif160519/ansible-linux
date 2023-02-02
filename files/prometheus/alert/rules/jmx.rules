@@ -1,0 +1,83 @@
+groups:
+  - name: jvm default rule
+    rules:
+    - alert: 应用失联
+      expr: up{job="jmx",env="prod"} == 0
+      for: 1m
+      labels:
+        severity: critical
+        channels: "@linux/feishu;"
+        level: P0
+      annotations:
+        summary: "当前应用：{{ $labels.app }}"
+
+    - alert: 应用重启
+      expr: time() - process_start_time_seconds{job="jmx",env="prod"} < 60
+      for: 0m
+      labels:
+        severity: warnging
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "应用 {{ $labels.app }} 运行时间低于 1 分钟，当前已运行 {{ $value | humanize }} 秒"
+
+    - alert: Jvm内存过高
+      expr: |
+        (jvm_memory_bytes_used{job="jmx",area="heap",env="prod"}
+        /
+        jvm_memory_bytes_max{job="jmx",area="heap",env="prod"})
+        > 0.9
+      for: 5m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "jvm占用超过90%，应用名称 {{ $labels.app }} 当前 {{ $value | humanizePercentage }}"
+
+    - alert: 应用GC频率过高
+      expr: jvm_gc_collection_seconds_count{job="jmx",env="prod"} - jvm_gc_collection_seconds_count{job="jmx",env="prod"} offset 1m > 50
+      for: 1m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "应用 {{ $labels.app }} GC频率过高，近 1 分钟 {{ $labels.gc }} GC次数：{{ $value }}"
+
+    # 流量过大发出警报。
+    - alert: 应用QPS超限
+      expr: rate(http_server_requests_seconds_count[30s]) * 15 > 100
+      for: 1m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "应用 {{ $labels.application }} 的 {{ $labels.uri }} 接口30秒内访问次数超过 100，当前值：{{ $value }}"
+
+    # 失败次数过多发出警报。
+    - alert: 应用失败请求数量超限
+      expr: rate(http_server_requests_seconds_count{status!="200"}[30s]) * 15 > 100
+      for: 1m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "应用 {{ $labels.application }} 的 {{ $labels.uri }} 接口30秒内失败次数超过100，当前值：{{ $value }}"
+
+    # 处理时间过长发出警报。
+    - alert: 应用接口耗时超限
+      expr: |
+        irate(http_server_requests_seconds_sum[1m])
+        /
+        irate(http_server_requests_seconds_count[1m])
+        > 0.5
+      for: 1m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "应用 {{ $labels.application }} 的 {{ $labels.uri }} 接口平均响应时间超过500ms，当前值：{{ $value }}"
