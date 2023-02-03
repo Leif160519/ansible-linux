@@ -5,3 +5,4 @@
 
 ## 暴露metrics
 在plugin中开启`emqx_prometheus`即可
+另外创建只读用户，用户名exporter，密码public
