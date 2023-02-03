@@ -2,9 +2,9 @@
 - shell: modprobe ip_conntrack
   ignore_errors: true
 
-- name: config /etc/system/system.conf
+- name: config /etc/systemd/system.conf
   lineinfile:
-    path: /etc/system/system.conf
+    path: /etc/systemd/system.conf
     line: "{{ item }}"
   with_items:
     - DefaultLimitNOFILE=1048576
@@ -14,8 +14,8 @@
     path: /etc/security/limits.conf
     line: "{{ item }}"
   with_items:
-    - * soft nofile 1048576
-    - * hard nofile 1048576
+    - "* soft nofile 1048576"
+    - "* hard nofile 1048576"
 
 - name: config /etc/sysctl.conf
   lineinfile:
