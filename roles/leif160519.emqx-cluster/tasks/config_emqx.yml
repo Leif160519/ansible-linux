@@ -88,7 +88,7 @@
     - lineinfile:
         path: /etc/emqx/emqx.conf
         regexp: "zone.external.await_rel_timeout"
-        line: "zone.external.await_rel_timeout = 300"
+        line: "zone.external.await_rel_timeout = 300s"
 
     - lineinfile:
         path: /etc/emqx/emqx.conf
