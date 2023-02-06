@@ -39,7 +39,7 @@ groups:
         level: P1
         channels: "@linux/feishu"
       annotations:
-        summary: "超过90天，{{ $labels.dc_name }}/{{$labels.host_name }}/{{ $labels.vm_name }}/{{ $labels.vm_snapshot_name }} 当前{{ $value | humanizeTimestamp }}"
+        summary: "超过90天，{{ $labels.dc_name }}/{{$labels.host_name }}/{{ $labels.vm_name }}/{{ $labels.vm_snapshot_name }} 当前{{ $value }}天"
 
     - alert: 服务器内存使用过高
       expr: vmware_host_memory_usage / vmware_host_memory_max > 0.8
