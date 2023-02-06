@@ -9,7 +9,7 @@ groups:
         level: P1
         channels: "@linux/feishu"
       annotations:
-        summary: "快照超过5个，{{ $labels.dc_name }}/{{$labels.host_name }}/{{ $labels.vm_name }} 当前 {{ $value }}"
+        summary: "快照超过5个，{{ $labels.dc_name }}/{{ $labels.host_name }}/{{ $labels.vm_name }} 当前 {{ $value }}"
 
     - alert: 虚拟机内存占用过高
       expr: vmware_vm_mem_usage_average >= 0.8 and vmware_vm_mem_usage_average < 0.9
@@ -19,7 +19,7 @@ groups:
         level: P1
         channels: "@linux/feishu"
       annotations:
-        summary: "超过80%，{{ $labels.dc_name }}/{{$labels.host_name }}/{{ $labels.vm_name }} 当前 {{ $value | humanizePercentage }}"
+        summary: "超过80%，{{ $labels.dc_name }}/{{ $labels.host_name }}/{{ $labels.vm_name }} 当前 {{ $value | humanizePercentage }}"
 
     - alert: 虚拟机内存占用过高
       expr: vmware_vm_mem_usage_average / 100 >= 90
@@ -29,7 +29,7 @@ groups:
         level: P1
         channels: "@linux/feishu"
       annotations:
-        summary: "超过90%，{{ $labels.dc_name }}/{{$labels.host_name }}/{{ $labels.vm_name }} 当前 {{ $value | humanizePercentage }}"
+        summary: "超过90%，{{ $labels.dc_name }}/{{ $labels.host_name }}/{{ $labels.vm_name }} 当前 {{ $value | humanizePercentage }}"
 
     - alert: 虚拟机快照过时
       expr: (time() - vmware_vm_snapshot_timestamp_seconds) / (60 * 60 * 24) >= 90
@@ -39,7 +39,17 @@ groups:
         level: P1
         channels: "@linux/feishu"
       annotations:
-        summary: "超过90天，{{ $labels.dc_name }}/{{$labels.host_name }}/{{ $labels.vm_name }}/{{ $labels.vm_snapshot_name }} 当前{{ $value }}天"
+        summary: "超过90天，{{ $labels.dc_name }}/{{ $labels.host_name }}/{{ $labels.vm_name }}/{{ $labels.vm_snapshot_name }} 当前{{ $value }}天"
+
+    - alert: 服务器宕机
+      expr: vmware_host_power_state == 0
+      for: 1m
+      labels:
+        severity: critical
+        level: P0
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "{{ $labels.dc_name }}/{{ $labels.host_name }} 失联，请检查网络/服务器状态"
 
     - alert: 服务器内存使用过高
       expr: vmware_host_memory_usage / vmware_host_memory_max > 0.8
@@ -49,7 +59,7 @@ groups:
         level: P1
         channels: "@linux/feishu"
       annotations:
-        summary: "超过80%，{{ $labels.dc_name }}/{{$labels.host_name }} 当前 {{ $value | humanizePercentage }}"
+        summary: "超过80%，{{ $labels.dc_name }}/{{ $labels.host_name }} 当前 {{ $value | humanizePercentage }}"
 
     - alert: 服务器CPU占用过高
       expr: vmware_host_cpu_usage / vmware_host_cpu_max > 0.8
@@ -59,7 +69,7 @@ groups:
         level: P1
         channels: "@linux/feishu"
       annotations:
-        summary:  "超过80%，{{ $labels.dc_name }}/{{$labels.host_name }} 当前 {{ $value | humanizePercentage }}"
+        summary:  "超过80%，{{ $labels.dc_name }}/{{ $labels.host_name }} 当前 {{ $value | humanizePercentage }}"
 
     - alert: 服务器存储使用过高
       expr: vmware_datastore_freespace_size / vmware_datastore_capacity_size < 0.1
@@ -69,4 +79,4 @@ groups:
         level: P1
         channels: "@linux/feishu"
       annotations:
-        summary: "不足10%，{{ $labels.dc_name }}/{{$labels.host_name }}/{{ $labels.ds_name }} 当前 {{ $value | humanizePercentage }}"
+        summary: "不足10%，{{ $labels.dc_name }}/{{ $labels.host_name }}/{{ $labels.ds_name }} 当前 {{ $value | humanizePercentage }}"
