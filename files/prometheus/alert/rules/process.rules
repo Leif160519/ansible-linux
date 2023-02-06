@@ -2,24 +2,24 @@ groups:
   - name: process
     rules:
     - alert: 进程数过高
-      expr: namedprocess_namegroup_num_procs > 300
+      expr: namedprocess_namegroup_num_procs > 500
       for: 1m
       labels:
         severity: warning
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "{{ $labels.groupname }} 已产生 {{ $value }} 个进程，大于300"
+        summary: "{{ $labels.groupname }} 已产生 {{ $value }} 个进程，大于500"
 
     - alert: 线程数过高
-      expr: namedprocess_namegroup_num_threads > 300
+      expr: namedprocess_namegroup_num_threads > 500
       for: 1m
       labels:
         severity: warning
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "进程 {{ $labels.groupname }} 已产生 {{ $value }} 个线程，大于300"
+        summary: "进程 {{ $labels.groupname }} 已产生 {{ $value }} 个线程，大于500"
 
     - alert: 僵尸进程告警
       expr: namedprocess_namegroup_states{state="Zombie"} > 0
