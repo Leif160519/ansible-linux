@@ -1,0 +1,135 @@
+process_names:
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - node_exporter
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - process-exporter
+{% if 'pro.filebeat' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - filebeat
+{% endif %}
+{% if 'pro.ssl' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - nginx
+{% endif %}
+{% if 'pro.nacos' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - dockerd
+{% endif %}
+{% if 'pro.zookeeper' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - dockerd
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - zookeeper-exporter
+{% endif %}
+{% if 'pro.minio' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - minio
+{% endif %}
+{% if 'pro.redis' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - redis-server
+{% endif %}
+{% if 'pro.clickhouse' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - clickhouse-server
+{% endif %}
+{% if 'pro.emqx' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - emqx
+{% endif %}
+{% if 'pro.mysql' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - mysqld
+{% endif %}
+{% if 'pro.es' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - dockerd
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - elasticsearch_exporter
+{% endif %}
+{% if 'pro.mfs.master' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - mfsmaster
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - mfsmetalogger
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - mfschunkserver
+{% endif %}
+{% if 'pro.mfs.slaver' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - mfsmetalogger
+{% endif %}
+{% if 'pro.mfs.chunkserver' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - mfschunkserver
+{% endif %}
+{% if 'pro.mfs.client' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - mfsmount
+{% endif %}
+{% if 'pro.k8s' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - kubelet
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - dockerd
+{% endif %}
+{% if 'pro.p8s' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - dockerd
+{% endif %}
+{% if 'pro.p8s' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - prometheus
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - alertmanager
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - blackbox_exporter
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - PrometheusAlert
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - consul
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - consulmanager
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - loki
+{% endif %}
+{% if 'pro.jmx' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - promtail
+{% endif %}
+{% if 'pro.backup' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - mysqld_exporter
+{% endif %}

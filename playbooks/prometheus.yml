@@ -30,6 +30,7 @@
     jmx_exporter_root_dir: /opt/jmx_exporter
     promtail_root_dir: /opt/promtail
     loki_root_dir: /opt/loki
+    process_exporter_root_dir: /opt/process_exporter
 
     prometheus_version: 2.40.5
     victoria_metrics_version: 1.82.1
@@ -48,6 +49,7 @@
     jmx_exporter_version: 0.17.0
     promtail_version: v2.7.1
     loki_version: v2.7.1
+    process_exporter_version: 0.7.10
 
     prometheus_tag: prometheus-{{ prometheus_version }}.linux-amd64
     victoria_metrics_tag: victoria-metrics-linux-amd64-v{{ victoria_metrics_version }}
@@ -66,6 +68,7 @@
     jmx_exporter_tag: jmx_prometheus_javaagent-{{ jmx_exporter_version }}
     promtail_tag: promtail-linux-amd64
     loki_tag: loki-linux-amd64
+    process_exporter_tag: process-exporter-{{ process_exporter_version }}.linux-amd64
 
     prometheus_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/{{ prometheus_tag }}.tar.gz
     victoria_metrics_url: https://github.com/victoria-metrics/victoria-metrics/releases/download/v1.79.0/{{ victoria_metrics_tag }}.tar.gz
@@ -84,6 +87,7 @@
     jmx_exporter_url: https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/{{ jmx_exporter_version }}/{{ jmx_exporter_tag }}.jar
     promtail_url: https://github.com/grafana/loki/releases/download/{{ promtail_version }}/{{ promtail_tag }}.zip
     loki_url: https://github.com/grafana/loki/release/download/{{ loki_version }}/{{ loki_tag}}.zip
+    process_exporter_url: https://github.com/ncabatoff/process-exporter/releases/download/v{{ process_exporter_version }}/{{ process_exporter_tag }}.tar.gz
   handlers:
     - name: reload alertmanager
       service:
@@ -130,6 +134,16 @@
     - name: restart vmware_exporter
       service:
         name: vmware_exporter
+        state: restarted
+        daemon_reload: true
+    - name: reload process_exporter
+      service:
+        name: process_exporter
+        state: reloaded
+        daemon_reload: true
+    - name: restart process_exporter
+      service:
+        name: process_exporter
         state: restarted
         daemon_reload: true
   tasks:
@@ -1185,6 +1199,58 @@
             mode: 0644
             owner: prometheus
             group: prometheus
+      # }}}
+
+    - name: process_exporter # {{{
+      tags: process_exporter
+      block:
+        - name: stat process_exporter
+          stat:
+            path: "{{ process_exporter_root_dir }}"
+          register: p
+
+        - name: unarchive process_exporter
+          unarchive:
+            src: "{{ process_exporter_url }}"
+            dest: /opt
+            owner: prometheus
+            group: prometheus
+            remote_src: true
+          when: p.stat.exists == false
+
+        - name: rename process_exporter dir
+          shell: mv /opt/{{ process_exporter_tag }} {{ process_exporter_root_dir }}
+          when: p.stat.exists == false
+
+        - name: create process_exporter link
+          file:
+            src: "{{ process_exporter_root_dir }}/process-exporter"
+            dest: /usr/local/bin/process-exporter
+            force: true
+            stat: link
+
+        - name: create process_exporter service
+          template:
+            src: files/prometheus/service/process_exporter.service.j2
+            dest: /lib/systemd/system/process_exporter.service
+            mode: 0644
+          notify: restart process_exporter
+
+        - name: create process_exporter config
+          template:
+            src: files/prometheus/exporter/process_exporter.yml.j2
+            dest: /etc/prometheus/conf.d/process_exporter.yml
+            mode: 0644
+            owner: prometheus
+            group: prometheus
+          notify: reload process_exporter
+
+        - name: start process_exporter service
+          service:
+            name: process_exporter
+            state: started
+            daemon_reload: true
+            enabled: true
       # }}}
 
     - name: vmware_exporter # {{{

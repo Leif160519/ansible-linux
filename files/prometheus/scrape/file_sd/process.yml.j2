@@ -1,0 +1,22 @@
+{% for item in prometheus_targets_node %}
+{%- set os = [] -%}
+{%- set idc = [] -%}
+{%- set env = [] -%}
+- targets: ['{{ hostvars[item]['ansible_host'] }}:9256']
+  labels:
+    {% for group in hostvars[item]['group_names'] -%}
+    {%- if group | regex_search('os\.(u\d+|[crf].*\d+)') -%}
+    {{ os.append(group | regex_replace('^(.*)\.(.*)$','\\2')) }}
+    {%- endif -%}
+    {%- if group | regex_search('idc\.') -%}
+    {{ idc.append(group | regex_replace('^(.*)\.(.*)$', '\\2')) }}
+    {%- endif -%}
+    {%- if group | regex_search('env\.') -%}
+    {{ env.append(group | regex_replace('^(.*)\.(.*)$', '\\2')) }}
+    {%- endif -%}
+    {%- endfor -%}
+    all:  "{{ item }}"
+    os:   "{{ os|unique|join('#') }}"
+    idc:  "{{ idc|unique|join('#') }}"
+    env:  "{{ env|unique|join('#') }}"
+{% endfor %}
