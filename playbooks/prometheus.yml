@@ -146,6 +146,11 @@
         name: process_exporter
         state: restarted
         daemon_reload: true
+    - name: restart victoria-metrics
+      service:
+        name: victoria-metrics
+        state: restarted
+        daemon_reload: true
   tasks:
     - name: user and group and directories
       tags: [common]
@@ -227,7 +232,7 @@
 
       - name: create unarchive dir
         file:
-          path: /opt/victoria-metrics
+          path: "{{ victoria_metrics_root_dir }}"
           state: directory
           owner: prometheus
           group: prometheus
@@ -236,7 +241,7 @@
       - name: unarchive victoria-metrics
         unarchive:
           src: "{{ victoria_metrics_url }}"
-          dest: /opt/victoria-metrics
+          dest: "{{ victoria_metrics_root_dir }}"
           owner: prometheus
           group: prometheus
           remote_src: true
@@ -256,6 +261,7 @@
           src: files/prometheus/service/victoria-metrics.service.j2
           dest: /lib/systemd/system/victoria-metrics.service
           mode: 0644
+        notify: restart victoria-metrics
 
       - name: start victoria-metrics service
         service:
