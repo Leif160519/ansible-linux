@@ -57,7 +57,7 @@ groups:
       labels:
         severity: warning
         channels: "@linux/feishu;"
-        level: P1
+        level: P0
       annotations:
         summary: "进程 {{ $labels.groupname }} 已退出"
 
