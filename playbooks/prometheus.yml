@@ -238,6 +238,15 @@
           group: prometheus
           mode: 0755
 
+      - name: create data dir
+        file:
+          path: "{{ victoria_metrics_data_dir }}"
+          state: directory
+          owner: prometheus
+          group: prometheus
+          mode: 0755
+
+
       - name: unarchive victoria-metrics
         unarchive:
           src: "{{ victoria_metrics_url }}"
