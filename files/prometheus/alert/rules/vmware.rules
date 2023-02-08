@@ -79,4 +79,4 @@ groups:
         level: P1
         channels: "@linux/feishu"
       annotations:
-        summary: "不足10%，{{ $labels.dc_name }}/{{ $labels.host_name }}/{{ $labels.ds_name }} 当前 {{ $value | humanizePercentage }}"
+        summary: "不足10%，{{ $labels.dc_name }}/{{ $labels.ds_name }} 当前 {{ $value | humanizePercentage }}"
