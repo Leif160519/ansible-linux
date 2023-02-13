@@ -40,14 +40,14 @@
     var: result.stdout_lines
 
 - name: output cluster nodes
-  shell: "{{ redis_root_dir }}/src/redis-cli cluster nodes"
+  shell: "{{ redis_root_dir }}/src/redis-cli -a {{ redis_password }} cluster nodes"
   register: nodes_info
 
 - debug:
     var: result.stdout_lines
 
 - name: output cluster info
-  shell: "{{ redis_root_dir }}/src/redis-cli cluster info"
+  shell: "{{ redis_root_dir }}/src/redis-cli -a {{ redis_password }} cluster info"
   register: cluster_info
 
 - debug:
