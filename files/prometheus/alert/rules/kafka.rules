@@ -22,7 +22,7 @@ groups:
         summary: "Kafka topic 副本数小于 2，topic 名称：{{ $labels.topic }}，当前 {{ $value }}"
 
     - alert: Kafka 消费组滞后
-      expr: kafka_consumergroup_lag{job="kafka",env="prod"} > 2000
+      expr: kafka_consumergroup_lag{job="kafka"} > 2000
       for: 1m
       labels:
         severity: warning
@@ -33,7 +33,7 @@ groups:
 
     - alert: Kafka 消费组堆积
       for: 1m
-      expr: sum(kafka_consumergroup_lag{job="kafka",env="prod"}) by (job,env,idc,consumergroup,topic,all,instance) > 2000
+      expr: sum(kafka_consumergroup_lag{job="kafka"}) by (job,env,idc,consumergroup,topic,all,instance) > 2000
       labels:
         serverity: warning
         channels: "@linux/feishu;"
