@@ -1,22 +1,42 @@
 groups:
   - name: kafka rule
     rules:
-    - alert: Kafka Topics 副本
-      expr: sum(kafka_topic_partition_in_sync_replica{job="kafka"}) by (all,os,instance,job,topic) < 1
-      for: 0m
-      labels:
-        severity: critical
-        channels: "@linux/P0;@linux/call;"
-        level: P0
-      annotations:
-        summary: "Kafka topic 同步分区数小于1，当前 {{ $value }}"
-
-    - alert: Kafka 消费组
-      expr: sum(kafka_consumergroup_lag{job="kafka"}) by (all,os,instance,job,consumergroup) > 50
+    - alert: kafka 节点宕机
+      expr: kafka_brokers{job="kafka"} < 3
       for: 1m
       labels:
         severity: critical
+        channels: "@linux/P0;"
+        level: P0
+      annotations:
+        summary: "kafka 节点 {{ $labels.instance }} 宕机"
+
+    - alert: Kafka Topics 副本
+      expr: sum(kafka_topic_partition_in_sync_replica{job="kafka"}) by (job,env,idc,topic,all,instance) < 2
+      for: 1m
+      labels:
+        severity: critical
+        channels: "@linux/P0;"
+        level: P0
+      annotations:
+        summary: "Kafka topic 副本数小于 2，topic 名称：{{ $labels.topic }}，当前 {{ $value }}"
+
+    - alert: Kafka 消费组滞后
+      expr: kafka_consumergroup_lag{job="kafka"} > 2000
+      for: 1m
+      labels:
+        severity: warning
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "Kafka 消费组总数超过50，当前 {{ $value }}"
+        summary: "consumergroup：{{ $labels.consumergroup  }}, topic： {{ $labels.topic }} 消费滞后超过 2000， 当前 {{ $value }}"
+
+    - alert: Kafka 消费组堆积
+      for: 1m
+      expr: sum(kafka_consumergroup_lag{job="kafka"}) by (job,env,idc,consumergroup,topic,all,instance) > 2000
+      labels:
+        serverity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "consumergroup：{{ $labels.consumergroup  }}, topic： {{ $labels.topic }} 堆积大于 2000，当前 {{ $value }}"
