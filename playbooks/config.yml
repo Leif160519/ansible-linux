@@ -148,7 +148,7 @@
 
 - name: 5.Disable selinux # {{{
   hosts: all:!off
-  tags: config, seliux
+  tags: config, selinux
   tasks:
     - block:
         - lineinfile:
@@ -624,6 +624,11 @@
             - net.core.somaxconn = 65535
 
         - shell: sysctl -p
+          ignore_errors: true
+          register: result
+
+        - debug:
+            var: result.stdout_lines
 # }}}
 
 - name: 17.config vim # {{{
