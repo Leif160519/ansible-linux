@@ -33,7 +33,7 @@
     process_exporter_root_dir: /opt/process_exporter
 
     prometheus_version: 2.40.5
-    victoria_metrics_version: v1.87.0
+    victoria_metrics_version: v1.87.1
     alertmanager_version: 0.24.0
     node_exporter_version: 1.4.0
     blackbox_exporter_version: 0.22.0
@@ -71,7 +71,7 @@
     process_exporter_tag: process-exporter-{{ process_exporter_version }}.linux-amd64
 
     prometheus_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/{{ prometheus_tag }}.tar.gz
-    victoria_metrics_url: https://github.com/victoria-metrics/victoria-metrics/releases/download/{{ victoria_metrics_version }}/{{ victoria_metrics_tag }}.tar.gz
+    victoria_metrics_url: https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/{{ victoria_metrics_version }}/{{ victoria_metrics_tag }}.tar.gz
     alertmanager_url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/{{ alertmanager_tag }}.tar.gz
     node_exporter_url: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/{{ node_exporter_tag }}.tar.gz
     blackbox_exporter_url: https://github.com/prometheus/blackbox_exporter/releases/download/v{{ blackbox_exporter_version }}/{{ blackbox_exporter_tag }}.tar.gz
