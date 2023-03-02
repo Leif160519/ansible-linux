@@ -42,6 +42,16 @@ groups:
       annotations:
         summary: "不足500MiB，{{ $labels.mountpoint }} 亟需清理，当前 {{ $value | humanize1024 }}B"
 
+    - alert: Inodes 剩余空间
+      expr: 1 - node_filesystem_files_free{job=~"node",fstype=~"ext.?|xfs",mountpoint !~".*(pod|docker).*"} / node_filesystem_files{job=~"node",fstype=~"ext.?|xfs",mountpoint !~".*(pod|docker).*"} > 0.8
+      for: 2m
+      labels:
+        severity: warning
+        channels: "@linux/feishu"
+        level: P1
+      annotations:
+        summary: "不足20%，{{ $labels.mountpoint }} 亟需清理，当前 {{ $value | humanizePercentage }}"
+
     - alert: CPU负载
       expr: |
         avg(irate(node_cpu_seconds_total{mode="idle"}[5m])) by (all,os,instance,job,mode)< 0.01
