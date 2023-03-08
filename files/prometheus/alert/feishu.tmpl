@@ -4,7 +4,8 @@
 *✅[{{$v.labels.alertname}}]({{ $var }})*
 告警状态：{{$v.status}}
 告警级别：{{ $v.labels.level }}
-故障地址：{{ $v.labels.instance }}
+{{- if $v.labels.instance }}
+故障地址：{{ $v.labels.instance }}{{ end -}}
 {{- if $v.labels.all }}
 故障主机：{{ $v.labels.all }}{{ end -}}
 开始时间：{{ GetCSTtime $v.startsAt }}
@@ -18,7 +19,8 @@
 *⛔[{{$v.labels.alertname}}]({{ $var }})*
 告警状态：{{$v.status}}
 告警级别：{{ $v.labels.level }}
-故障地址：{{ $v.labels.instance }}
+{{- if $v.labels.instance }}
+故障地址：{{ $v.labels.instance }}{{ end -}}
 {{- if $v.labels.all }}
 故障主机：{{ $v.labels.all }}{{ end -}}
 开始时间：{{ GetCSTtime $v.startsAt }}
