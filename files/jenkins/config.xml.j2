@@ -6,14 +6,16 @@
   <numExecutors>5</numExecutors>
   <mode>EXCLUSIVE</mode>
   <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
-  <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.814.vc82988f54b_10">
+  <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.834.v622da_57f702c">
     <host>{{ ansible_host }}</host>
     <port>{{ target_ssh_port }}</port>
     <credentialsId>{{ credentials_id }}</credentialsId>
-    <launchTimeoutSeconds>60</launchTimeoutSeconds>
+    <launchTimeoutSeconds>600</launchTimeoutSeconds>
     <maxNumRetries>10</maxNumRetries>
     <retryWaitTime>15</retryWaitTime>
-    <sshHostKeyVerificationStrategy class="hudson.plugins.sshslaves.verifiers.NonVerifyingKeyVerificationStrategy"/>
+    <sshHostKeyVerificationStrategy class="hudson.plugins.sshslaves.verifiers.ManuallyTrustedKeyVerificationStrategy">
+      <requireInitialManualTrust>false</requireInitialManualTrust>
+    </sshHostKeyVerificationStrategy>
     <tcpNoDelay>true</tcpNoDelay>
   </launcher>
   <label></label>

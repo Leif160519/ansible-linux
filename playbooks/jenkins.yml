@@ -24,11 +24,13 @@
           when: java_result.stdout is defined
 
         - template:
-            src: files/jenkins/config.xml.j2
-            dest: {{ jenkins_root_dir }}/nodes/{{ inventory_hostname }}/config.xml
+            src: "{{ item }}"
+            dest: {{ jenkins_root_dir }}/nodes/{{ inventory_hostname }}/{{ item | basename | regex_replace('.j2')}}
             owner: jenkins
             group: jenkins
             mode: 0644
+          with_fileglob:
+            - "files/jenkins/*.j2"
           delegate_to: jenkins-server
           when: java_result.stdout is defined
       when: java_result.rc == 0
