@@ -30,5 +30,5 @@
 描述信息：{{ $v.annotations.description }}{{ end -}}
 {{ end -}}
 {{ end -}}
-{{ $urimsg:=""}}{{ range $key,$value:=.commonLabels }}{{ $urimsg = print $urimsg $key "%3D%22" $value "%22%2C" }}{{ end }}
-[屏蔽该告警]({{ $var }}/#/silences/new?filter=%7B{{ SplitString $urimsg 0 -3 }}%7D)
+{{ $urimsg:=""}}{{ range $key,$value:=.commonLabels }}{{ $urimsg = print $urimsg $key "=\"" $value "\"," }}{{ end }}
+{{ $data:=urlquery $urimsg }}[点我屏蔽该告警]({{ $var }}/#/silences/new?filter=%7B{{ SplitString $data 0 -3 }}%7D)
