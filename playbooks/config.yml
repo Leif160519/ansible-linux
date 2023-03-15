@@ -10,63 +10,39 @@
 - name: 1.Configure ssh  # {{{
   hosts: all:!off
   tags: config, ssh
+  handlers:
+    - name: reload sshd
+      service:
+        name: sshd
+        state: reloaded
+        daemon_reload: true
+        enabled: true
   tasks:
     - block:
         - lineinfile:
-            dest: /etc/ssh/sshd_config
-            regexp: '^(#|)UseDNS'
-            line: 'UseDNS no'
-
-        - lineinfile:
-            dest: /etc/ssh/sshd_config
-            regexp: '^(#|)GSSAPIAuthentication'
-            line: 'GSSAPIAuthentication no'
-
-        - lineinfile:
-            dest: /etc/ssh/sshd_config
-            regexp: '^(#|)ClientAliveInterval'
-            line: 'ClientAliveInterval 60'
-
-        - lineinfile:
-            dest: /etc/ssh/sshd_config
-            regexp: '^(#|)ClientAliveCountMax'
-            line: 'ClientAliveCountMax 60'
-
-        - lineinfile:
-            dest: /etc/ssh/sshd_config
-            regexp: "^(#|)PermitRootLogin"
-            line: "PermitRootLogin without-password"
-
-        - lineinfile:
-            dest: /etc/ssh/sshd_config
-            regexp: "^(#|)PasswordAuthentication"
-            line: "PasswordAuthentication yes"
-
-        - lineinfile:
-            dest: /etc/ssh/sshd_config
-            regexp: "^(#|)PermitEmptyPasswords"
-            line: "PermitEmptyPasswords no"
-
-        - lineinfile:
-            dest: /etc/ssh/ssh_config
-            regexp: '^(#|)   StrictHostKeyChecking'
-            line: '    StrictHostKeyChecking no'
+            path: /etc/ssh/sshd_config
+            regexp: "{{ item.before }}"
+            line: "{{ item.after }}"
+          with_items:
+            - {"before" : "^#*UseDNS.*", "after": "UseDNS no"}
+            - {"before" : "^#*GSSAPIAuthentication.*", "after": "GSSAPIAuthentication no"}
+            - {"before" : "^#*ClientAliveInterval.*", "after": "ClientAliveInterval 60"}
+            - {"before" : "^#*ClientAliveCountMax.*", "after": "ClientAliveCountMax 60"}
+            - {"before" : "^#*PermitRootLogin.*", "after": "PermitRootLogin without-password"}
+            - {"before" : "^#*PasswordAuthentication.*", "after": "PasswordAuthentication yes"}
+            - {"before" : "^#*PermitEmptyPasswords.*", "after": "PermitEmptyPasswords no"}
+          notify: reload sshd
 
         - lineinfile:
             path: /etc/ssh/ssh_config
-            line: "{{ item }}"
+            regexp: "{{ item.before }}"
+            line: "{{ item.after }}"
           with_items:
-            - "    ServerAliveInterval 20"
-            - "    ServerAliveCountMax 999"
-
-        - lineinfile:
-            dest: /etc/ssh/ssh_config
-            regexp: "    GSSAPIAuthentication yes"
-            line: "    GSSAPIAuthentication no"
-
-        - service:
-            name: sshd
-            state: reloaded
+            - {"before" : "^#*    StrictHostKeyChecking.*", "after": "    StrictHostKeyChecking no"}
+            - {"before" : "^#*    ServerAliveInterval.*", "after": "    ServerAliveInterval 20"}
+            - {"before" : "^#*    ServerAliveCountMax.*", "after": "    ServerAliveCountMax 999"}
+            - {"before" : "^#*    GSSAPIAuthentication.*", "after": "    GSSAPIAuthentication no"}
+          notify: reload sshd
   # }}}
 
 - name: 2.Configure hostname & hosts # {{{
