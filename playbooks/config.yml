@@ -631,7 +631,7 @@
             var: result.stdout_lines
 # }}}
 
-- name: 17.config vim # {{{
+- name: 25.config vim # {{{
   hosts: all:!off
   tags: vim
   tasks:
@@ -646,4 +646,25 @@
             owner: root
             group: root
             mode: 0644
+# }}}
+
+- name: 26.config journal # {{{
+  hosts: all:!off
+  tags: config, journal
+  handlers:
+    - name: restart systemd-journald
+      service:
+        name: systemd-journald
+        state: restarted
+        daemon_reload: true
+        enabled: true
+  tasks:
+    - lineinfile:
+        path: /etc/systemd/journald.conf
+        regexp: "{{ item.before }}"
+        line: "{{ item.after }}"
+      with_items:
+        - {"before": "#SystemMaxUse=" , "after": "SystemMaxUse=2048M"}
+        - {"before": "#ForwardToSyslog=" , "after": "ForwardToSyslog=no"}
+      notify: restart systemd-journald
 # }}}
