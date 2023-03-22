@@ -87,6 +87,7 @@ moosefs_active_quotas_current_inodes{path="mfs_path_3"} 761
 ## 5.参考
 - [MFS(二)---mfs使用 数据恢复 StorageClass详解][2]
 - [Centos下MooseFS（MFS）分布式存储共享环境部署记录][3]
+- [moosefs-3-0-users-manual.pdf][7]
 
 [1]: https://moosefs.com/download/
 [2]: https://blog.csdn.net/qq_35887546/article/details/106973960
@@ -94,3 +95,4 @@ moosefs_active_quotas_current_inodes{path="mfs_path_3"} 761
 [4]: https://blog.51cto.com/u_15127621/2770922
 [5]: https://github.com/Leif160519/docker-script/tree/master/moosefs
 [6]: https://grafana.com/grafana/dashboards/16700-moosefs-overview/
+[7]: https://moosefs.com/Content/Downloads/moosefs-3-0-users-manual.pdf
