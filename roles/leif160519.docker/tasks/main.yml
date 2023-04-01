@@ -30,4 +30,5 @@
     owner: root
     group: root
   when: ctop_path.stat.exists == false
+  ignore_errors: true
 
