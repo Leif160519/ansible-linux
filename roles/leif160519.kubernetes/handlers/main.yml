@@ -1,0 +1,10 @@
+---
+- name: apply sysctl
+  shell: sysctl -p
+  ignore_errors: true
+  register: sysctl_result
+
+- name: output sysctl result
+  debug:
+    var: sysctl_result.stdout_lines
+  when: sysctl_result.rc == 0

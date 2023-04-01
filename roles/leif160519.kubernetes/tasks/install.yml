@@ -1,0 +1,61 @@
+---
+- name: install tools
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - nfs-utils
+    - wget
+  when: ansible_os_family == "RedHat"
+
+- name: install tools
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - nfs-common
+    - wget
+  when: ansible_os_family == "Debian"
+
+- name: install kubeadm, kubectl, kubelet
+  block:
+    - name: make apt support ssl transport
+      apt:
+        name: apt-transport-https
+        state: present
+
+    - name: download gpg key
+      shell: curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -
+      ignore_errors: false
+
+    - name: add kubernetes souce list
+      lineinfile:
+        path: /etc/apt/sources.list.d/kubernetes.list
+        create: true
+        regexp: "kubernetes"
+        line: "deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main"
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: update cache
+      apt:
+        update_cache: true
+
+    - name: install kubeadm, kubectl, kubelet
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - kubelet
+        - kubeadm
+        - kubectl
+
+    - name: start kubelet service
+      service:
+        name: kubelet
+        state: stated
+        enabled: true
+        daemon_reload: true
+
+  when: ansible_os_family == "Debian"

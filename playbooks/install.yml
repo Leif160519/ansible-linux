@@ -699,6 +699,7 @@
     mirrors4: https://registry.docker-cn.com
     log_max_file: 3
     log_max_size: 10m
+    cgroupdriver: cgroupfs
   roles:
     - role: roles/leif160519.docker
   # }}}

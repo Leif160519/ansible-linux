@@ -1,0 +1,68 @@
+---
+- name: config hosts infomation
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+  with_items:
+   - "{{ hostvars['k8s-master-01']['ansible_host'] }} k8s-master-01"
+   - "{{ hostvars['k8s-node-01']['ansible_host'] }} k8s-node-01"
+   - "{{ hostvars['k8s-node-02']['ansible_host'] }} k8s-node-02"
+   - "{{ hostvars['k8s-node-03']['ansible_host'] }} k8s-node-03"
+
+- name: stop filewalld service
+  service:
+    name: filewalld
+    state: stopped
+    daemon_reload: true
+    enabled: false
+  when: ansible_os_family == "RedHat"
+
+- name: close selinux
+  lineinfile:
+    path: /etc/selinux/config
+    regexp: "enforcing"
+    line: "disabled"
+  when: ansible_os_family == "RedHat"
+
+- name: close selinux temporary
+  shell: setenforce 0
+  ignore_errors: true
+  when: ansible_os_family == "RedHat"
+
+- name: check swap status
+  shell: free -mh | grep -i swap | awk '{print $2}' | grep "0B"
+  register: swap_status
+
+- assert:
+    that: swap_status.rc == 0
+    success_msg: "swap has been closed"
+    fail_msg: "swap not closed, will close swap"
+
+- name: close swap
+  shell: swapoff -a
+  ignore_errors: true
+  when: not swap_status.rc == 0
+
+- name: modify fstab
+  lineinfile:
+    path: /etc/fstab
+    regexp: "swap"
+    state: absent
+
+- name: config sysctl.conf
+  lineinfile:
+    path: /etc/sysctl.conf
+    line: "{{ item }}"
+  with_items:
+    - "net.ipv4.ip_forward = 1"
+    - "net.bridge.bridge-nf-call-ip6tables = 1"
+    - "net.bridge.bridge-nf-call-iptables = 1"
+    - "net.ipv6.conf.all.disable_ipv6 = 1"
+    - "net.ipv6.conf.default.disable_ipv6 = 1"
+    - "net.ipv6.conf.lo.disable_ipv6 = 1"
+    - "net.ipv6.conf.all.forwarding = 1"
+  notify:
+    - apply sysctl
+    - output sysctl result
+
+

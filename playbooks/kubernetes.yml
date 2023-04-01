@@ -1,0 +1,49 @@
+- name: Check docker environment
+  hosts: pro.k8s
+  tasks:
+    - shell: systemctl status docker | grep -i running
+      register: docker_check
+    
+    - assert:
+        that: docker_check.rc == 0
+        success_msg: "Docker has been installed, continue to install Kubernetes"   
+        fail_msg: "Docker is not installed, will install Docker"
+
+- name: Install Docker
+  hosts: pro.k8s
+  tags: never, docker
+  vars:
+    docker_root_dir: /var/lib/docker
+    address: 198.18.0.0/16
+    size: 24
+    mirrors1: http://hub-mirror.c.163.com
+    mirrors2: https://registry.cn-hangzhou.aliyuncs.com
+    mirrors3: http://docker.mirrors.ustc.edu.cn
+    mirrors4: https://registry.docker-cn.com
+    log_max_file: 3
+    log_max_size: 10m
+    cgroupdriver: systemd
+  roles:
+    - role: roles/leif160519.docker
+      when: not docker_check.rc == 0
+
+- name: Check hardware environment
+  hosts: pro.k8s
+  tasks:
+    - shell: lscpu | grep "^CPU(s):" | awk '{print $NF}'
+      register: cpu_info
+
+    - assert:
+        that: cpu_info.stdout_lines[0] | int >= 2
+        fail_msg: "The number of cpu cors is less than 2, the minimum requirements for cluster are not met, currently {{ cpu_info.stdout_lines[0] }} cores"
+        success_msg: "The number of cpu cores meets the conditions, currently {{ cpu_info.stdout_lines[0] }} cores"
+
+- name: Install Kubernetes
+  hosts: pro.k8s
+  vars:
+    k8s_version: 1.25
+  roles:
+    - role: roles/leif160519.kubernetes
+      when:
+        - docker_check.rc == 0
+        - cpu_info.stdout_lines[0] | int >= 2
