@@ -42,6 +42,9 @@
       apt:
         update_cache: true
 
+    - name: dpkg config
+      shell: dpkg --configure -a
+
     - name: install kubeadm, kubectl, kubelet
       apt:
         name: "{{ item }}"
@@ -54,7 +57,7 @@
     - name: start kubelet service
       service:
         name: kubelet
-        state: stated
+        state: started
         enabled: true
         daemon_reload: true
 
