@@ -44,3 +44,7 @@ emqx-cluster-2          ansible_host=192.168.0.152
 es-cluster-1            ansible_host=192.168.0.161
 es-cluster-2            ansible_host=192.168.0.162
 es-cluster-3            ansible_host=192.168.0.163
+k8s-master-01           ansible_host=192.168.31.81
+k8s-node-01             ansible_host=192.168.31.91
+k8s-node-02             ansible_host=192.168.31.92
+k8s-node-03             ansible_host=192.168.31.93

@@ -12,6 +12,7 @@ pro.emqx
 pro.mysql
 pro.ingress
 pro.es
+pro.k8s
 # }}}
 
 [pro.minio] # {{{ minio 集群
@@ -106,4 +107,11 @@ mysql-server
 es-cluster-1
 es-cluster-2
 es-cluster-3
+# }}}
+
+[pro.k8s] # {{{ kubernetes
+k8s-master-01
+k8s-node-01
+k8s-node-02
+k8s-node-03
 # }}}

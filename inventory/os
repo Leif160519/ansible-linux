@@ -72,6 +72,11 @@ minio-cluster-4
 # }}}3
 
 [os.u2004] # {{{3
+k620
+k8s-master-01
+k8s-node-01
+k8s-node-02
+k8s-node-03
 ingress-server
 mysql-server
 backuppc-server
