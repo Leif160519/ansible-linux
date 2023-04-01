@@ -323,7 +323,7 @@
 
 - name: 14.Configure git #{{{
   hosts: all:!off
-  tags: config, git
+  tags: never, git
   vars:
     username: root
     groupname: root
