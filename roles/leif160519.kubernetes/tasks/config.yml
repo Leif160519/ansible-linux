@@ -9,28 +9,36 @@
    - "{{ hostvars['k8s-node-02']['ansible_host'] }} k8s-node-02"
    - "{{ hostvars['k8s-node-03']['ansible_host'] }} k8s-node-03"
 
-- name: stop filewalld service
-  service:
-    name: filewalld
-    state: stopped
-    daemon_reload: true
-    enabled: false
-  when: ansible_os_family == "RedHat"
+- name: config redhat os
+  block:
+    - name: stop filewalld service
+      service:
+        name: filewalld
+        state: stopped
+        daemon_reload: true
+        enabled: false
+    
+    - name: close selinux
+      lineinfile:
+        path: /etc/selinux/config
+        regexp: "enforcing"
+        line: "disabled"
 
-- name: close selinux
-  lineinfile:
-    path: /etc/selinux/config
-    regexp: "enforcing"
-    line: "disabled"
-  when: ansible_os_family == "RedHat"
+    - name: check selinux status
+      shell: getenforce | grep Disabled
+      changed_when: false
+      register: selinux_status
+    
+    - name: close selinux temporary
+      shell: setenforce 0
+      ignore_errors: true
+      when: not selinux_status.rc == 0
 
-- name: close selinux temporary
-  shell: setenforce 0
-  ignore_errors: true
   when: ansible_os_family == "RedHat"
 
 - name: check swap status
   shell: free -mh | grep -i swap | awk '{print $2}' | grep "0B"
+  changed_when: false
   register: swap_status
 
 - assert:
@@ -64,5 +72,3 @@
   notify:
     - apply sysctl
     - output sysctl result
-
-

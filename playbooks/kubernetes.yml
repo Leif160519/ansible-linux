@@ -2,6 +2,7 @@
   hosts: pro.k8s
   tasks:
     - shell: systemctl status docker | grep -i running
+      changed_when: false
       register: docker_check
     
     - assert:
@@ -31,6 +32,7 @@
   hosts: pro.k8s
   tasks:
     - shell: lscpu | grep "^CPU(s):" | awk '{print $NF}'
+      changed_when: false
       register: cpu_info
 
     - assert:
