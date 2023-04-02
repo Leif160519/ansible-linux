@@ -1,4 +1,6 @@
 ---
-- include_tasks: config.yml
+- include_tasks: config_os.yml
 
-- include_tasks: install.yml
+- include_tasks: install_k8s.yml
+
+- include_tasks: init_k8s.yml
