@@ -4,10 +4,10 @@
     - shell: systemctl status docker | grep -i running
       changed_when: false
       register: docker_check
-    
+
     - assert:
         that: docker_check.rc == 0
-        success_msg: "Docker has been installed, continue to install Kubernetes"   
+        success_msg: "Docker has been installed, continue to install Kubernetes"
         fail_msg: "Docker is not installed, will install Docker"
 
 - name: Install Docker

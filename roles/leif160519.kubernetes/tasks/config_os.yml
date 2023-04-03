@@ -17,7 +17,7 @@
         state: stopped
         daemon_reload: true
         enabled: false
-    
+
     - name: close selinux
       lineinfile:
         path: /etc/selinux/config
@@ -28,7 +28,7 @@
       shell: getenforce | grep Disabled
       changed_when: false
       register: selinux_status
-    
+
     - name: close selinux temporary
       shell: setenforce 0
       ignore_errors: true

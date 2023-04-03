@@ -65,7 +65,7 @@
       shell: systemctl status kubelet | grep -i running
       changed_when: false
       register: kubelet_status
-      
+
     - assert:
         that: kubelet_status.rc == 0
         success_msg: "kubelet service started successfully"
