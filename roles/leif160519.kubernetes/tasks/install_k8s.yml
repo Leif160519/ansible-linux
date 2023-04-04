@@ -2,19 +2,21 @@
 - name: install tools
   package:
     name: "{{ item }}"
-    state: present
+    state: latest
   with_items:
     - nfs-utils
     - wget
+    - containerd.io
   when: ansible_os_family == "RedHat"
 
 - name: install tools
   package:
     name: "{{ item }}"
-    state: present
+    state: latest
   with_items:
     - nfs-common
     - wget
+    - containerd
   when: ansible_os_family == "Debian"
 
 - name: install kubeadm, kubectl, kubelet
@@ -50,25 +52,9 @@
         name: "{{ item }}"
         state: present
       with_items:
-        - kubelet
-        - kubeadm
-        - kubectl
+        - kubelet={{ k8s_version }}-00
+        - kubeadm={{ k8s_version }}-00
+        - kubectl={{ k8s_version }}-00
 
-    - name: start kubelet service
-      service:
-        name: kubelet
-        state: started
-        enabled: true
-        daemon_reload: true
-
-    - name: check kubelet service status
-      shell: systemctl status kubelet | grep -i running
-      changed_when: false
-      register: kubelet_status
-
-    - assert:
-        that: kubelet_status.rc == 0
-        success_msg: "kubelet service started successfully"
-        fail_msg: "kubelet service started failed, please check !"
 
   when: ansible_os_family == "Debian"

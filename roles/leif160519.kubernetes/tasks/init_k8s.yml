@@ -1,65 +1,102 @@
 ---
-- name: perform preflight
-  shell: kubeadm init phase preflight
-  timeout: 10
-  changed_when: false
-  ignore_errors: true
+- name: init kubernetes master
+  block:
+    - name: init kubernetes
+      shell: kubeadm init --pod-network-cidr={{ pod_network }} --image-repository {{ image_repository }} --apiserver-advertise-address={{ hostvars['k8s-master-01']['ansible_host'] }} --kubernetes-version=v{{ k8s_version }}
+      ignore_errors: true
 
-- name: list required mirrors
-  shell: kubeadm config images list
-  changed_when: false
-  register: require_mirror
+    - name: start kubelet service
+      service:
+        name: kubelet
+        state: started
+        enabled: true
+        daemon_reload: true
+
+    - name: check kubelet service status
+      shell: systemctl status kubelet | grep -i running
+      changed_when: false
+      register: kubelet_status
+
+    - assert:
+        that: kubelet_status.rc == 0
+        success_msg: "kubelet service started successfully"
+        fail_msg: "kubelet service started failed, please check !"
+
+    - name: as root user, run
+      shell: |
+        export KUBECONFIG=/etc/kubernetes/admin.conf
+        kubectl get nodes
+      register: cluster_info
+
+    - debug:
+        var: cluster_info.stdout_lines
+
+    - name: config calico.yaml
+      tags: calico
+      template:
+        dest: /root/calico.yaml
+        src: calico.yaml.j2
+        mode: 0644
+
+    - name: apply calico
+      tags: calico
+      shell: kubectl apply -f /root/calico.yaml
+
+    - name: config kube-flannel.yml
+      tags: never, flannel
+      template:
+        dest: /root/kube-flannel.yml
+        src: kube-flannel.yml.j2
+        mode: 0644
+
+    - name: apply flannel
+      tags: never, flannel
+      shell: kubectl apply -f /root/kube-flannel.yml
+
+  when: inventory_hostname == "k8s-master-01"
+
+- name: get join token
+  shell: |
+    export KUBECONFIG=/etc/kubernetes/admin.conf
+    kubeadm token create --print-join-command
+  register: join_command
+  when: inventory_hostname == "k8s-master-01"
 
 - debug:
-    var: require_mirror.stdout_lines
+    var: join_command.stdout_lines
+  when: inventory_hostname == "k8s-master-01"
 
-- name: list required mirrors prefix
-  shell: kubeadm config images list | awk -F/ '{print $1}' | uniq
-  changed_when: false
-  register: mirrors_prefix
+- name: join worker
+  shell: "{{ join_command.stdout_lines[0] }}"
+  when: not inventory_hostname == "k8s-master-01"
 
-- assert:
-    that: mirrors_prefix is defined
-    success_msg: "mirrors_prefix is {{ mirrors_prefix.stdout_lines }}"
-    fail_msg: "mirrors_prefix is not defined"
+- name: config kubectl completion
+  lineinfile:
+    path: /etc/profile
+    line: "source <(kubectl completion bash)"
 
-- name: list apiserver version
-  shell: kubeadm config images list  | grep apiserver | awk -F':' '{print $NF}'
-  changed_when: false
-  register: apiserver_version
+- name: config dashboard yaml
+  template:
+    dest: /root/{{ item }}
+    src: "{{ item }}.j2"
+    mode: 0644
+  when: inventory_hostname == "k8s-master-01"
+  with_items:
+    - dashboard.yaml
+    - dashboard-admin.yaml
 
-- assert:
-    that: apiserver_version is defined
-    success_msg: "apiserver_version is {{ apiserver_version.stdout_lines }}"
-    fail_msg: "apiserver_version is not defined"
+- name: install dashboard yaml
+  shell: |
+    export KUBECONFIG=/etc/kubernetes/admin.conf
+    kubectl apply -f /root/dashboard.yaml
+    kubectl apply -f /root/dashboard-admin.yaml
+  when: inventory_hostname == "k8s-master-01"
 
-- name: download the image required by kubeadm from aliyun
-  shell: kubeadm config images pull --image-repository=registry.aliyuncs.com/google_containers
-
-- name: show docker images
-  shell: docker images | grep google
-  changed_when: false
-  register: docker_images
-
-- assert:
-    that: docker_images.rc == 0
-    success_msg: "images pull successfully"
-    fail_msg: "images pull failed !"
+- name: get dashboard token
+  shell: |
+    export KUBECONFIG=/etc/kubernetes/admin.conf
+    kubectl -n kubernetes-dashboard describe secret admin-user
+  register: token_result
 
 - debug:
-    var: docker_images.stdout_lines
-  when: docker_images.rc == 0
-
-- name: rename docker images
-  shell: docker tag registry.aliyuncs.com/google_containers/kube-apiserver:{{ apiserver_version}} {{ mirrors_prefix.stdout_lines }}/kube-apiserver:{{ apiserver_version.stdout_lines }}
-  when: docker_images.rc == 0
-
-- name: list docker images
-  shell: docker images | grep "{{ mirrors_prefix.stdout_lines }}"
-  changed_when: false
-  register: after_rename_images
-
-- assert:
-    that: after_rename_images.rc == 0
-    success_msg: "rename docker images successfully"
-    fail_msg: "rename docker images failed"
+    var: token_result.stoudt_lines

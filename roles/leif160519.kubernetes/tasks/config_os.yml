@@ -37,19 +37,19 @@
   when: ansible_os_family == "RedHat"
 
 - name: check swap status
-  shell: free -mh | grep -i swap | awk '{print $2}' | grep "0B"
+  shell: free -mh | grep -i swap | awk '{print $2}'
   changed_when: false
   register: swap_status
 
-- assert:
-    that: swap_status.rc == 0
-    success_msg: "swap has been closed"
-    fail_msg: "swap not closed, will close swap"
+    #- assert:
+    #    that: swap_status.stdout_lines == "0B"
+    #    success_msg: "swap has been closed"
+    #    fail_msg: "swap not closed, will close swap"
 
 - name: close swap
   shell: swapoff -a
   ignore_errors: true
-  when: not swap_status.rc == 0
+  when: not swap_status.rc == "0B"
 
 - name: modify fstab
   lineinfile:
