@@ -70,6 +70,12 @@
   shell: "{{ join_command.stdout_lines[0] }}"
   when: not inventory_hostname == "k8s-master-01"
 
+- shell: label nodes
+  shell: |
+    export KUBECONFIG=/etc/kubernetets/admin.conf
+    kubectl label nodes {{ inventory_hostname }} node-role.kubernetes.io/{{ inventory_hostname }}=
+  when: not inventory_hostname == "k8s-master-01"
+
 - name: config kubectl completion
   lineinfile:
     path: /etc/profile

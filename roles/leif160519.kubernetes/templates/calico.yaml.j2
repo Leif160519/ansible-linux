@@ -4566,7 +4566,7 @@ spec:
             - name: CLUSTER_TYPE
               value: "k8s,bgp"
             - name: IP_AUTODETECTION_METHOD
-              value: "interface=ens.*"
+              value: "interface={{ ansible_default_ipv4['interface'] }}"
             # Auto-detect the BGP IP address.
             - name: IP
               value: "autodetect"
