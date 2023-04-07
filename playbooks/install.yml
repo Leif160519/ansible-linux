@@ -1080,6 +1080,10 @@
         create: true
       when: ansible_os_family == "Debian"
 
+    - apt:
+        update_cache: true
+      when: ansible_os_family == "Debian"
+
     - package:
         name: moosefs-client
         state: latest
