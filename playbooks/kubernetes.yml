@@ -45,7 +45,7 @@
   vars:
     pod_network: 192.18.0.0/16
     image_repository: registry.aliyuncs.com/google_containers
-    k8s_version: 1.23.7
+    k8s_version: 1.23.17
   roles:
     - role: roles/leif160519.kubernetes
       when:
