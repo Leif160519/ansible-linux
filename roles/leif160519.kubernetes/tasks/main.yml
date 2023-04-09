@@ -3,6 +3,4 @@
 
 - include_tasks: install_k8s.yml
 
-- include_tasks: prepare_images.yml
-
 - include_tasks: init_k8s.yml
