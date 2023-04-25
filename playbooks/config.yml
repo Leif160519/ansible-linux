@@ -598,6 +598,7 @@
             - net.core.rmem_max = 12582912
             - net.core.wmem_max = 12582912
             - net.core.somaxconn = 65535
+            - vm.max_map_count = 655360
 
         - shell: sysctl -p
           ignore_errors: true
