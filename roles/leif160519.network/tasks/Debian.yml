@@ -1,28 +1,45 @@
 - name: create config file # {{{
   block:
-    - template:
-        src: 00-installer-config.yaml.j2
-        dest: "{{ item.path }}"
-        mode: 0644
-      with_items:
-        - "{{ network_config.files }}"
+    - name: "> = Ubuntu18.04 include netplan"
+      block:
+        - template:
+            src: 00-installer-config.yaml.j2
+            dest: "{{ item.path }}"
+            mode: 0644
+          with_items:
+            - "{{ network_config.files }}"
+        - lineinfile:
+            path: /etc/systemd/resolved.conf
+            regexp: "^#DNS="
+            line: "DNS={{ dns1 }} {{ dns2 }}"
+          notify: restart systemd-resolved
+
+        - file:
+            dest: /etc/resolv.conf
+            src: /run/systemd/resolve/resolv.conf
+            state: link
+            force: true
       when: network_config.files | length != 0 and ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,">=")
 
-    - template:
-        src: 00-installer-config.yaml.j2
-        dest: /etc/netplan/00-installer-config.yaml
-        mode: 0644
-        owner: root
-        group: root
+    - name: "> = Ubuntu18.04 not include netplan"
+      block:
+        - template:
+            src: 00-installer-config.yaml.j2
+            dest: /etc/netplan/00-installer-config.yaml
+            mode: 0644
+            owner: root
+            group: root
       when: network_config.files | length == 0 and ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,">=")
 
-    - template:
-        src: interfaces.j2
-        dest: /etc/network/interfaces
-        mode: 0644
-        owner: root
-        group: root
-      when: ansible_os_family == "Debian"
+    - name: "< Ubuntu18.04 or Debian not include netplan"
+      block:
+        - template:
+            src: interfaces.j2
+            dest: /etc/network/interfaces
+            mode: 0644
+            owner: root
+            group: root
+      when: ansible_distribution == "Debian" and (ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,"<"))
 # }}}
 
 - name: apply config # {{{
@@ -33,5 +50,7 @@
     - service:
         name: networking
         state: restarted
+        enabled: true
+        daemon_reload: true
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_version is version(ubuntu_version,"<"))  or (ansible_distribution == "Debian")
 # }}}
