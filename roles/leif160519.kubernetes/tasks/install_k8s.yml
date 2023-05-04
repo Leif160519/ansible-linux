@@ -19,7 +19,7 @@
     - containerd
   when: ansible_os_family == "Debian"
 
-- name: install kubeadm, kubectl, kubelet
+- name: install kubeadm, kubectl, kubelet(Debian)
   block:
     - name: make apt support ssl transport
       apt:
@@ -52,9 +52,31 @@
         name: "{{ item }}"
         state: present
       with_items:
-        - kubelet={{ k8s_version }}-00
-        - kubeadm={{ k8s_version }}-00
-        - kubectl={{ k8s_version }}-00
-
+        - "kubelet={{ k8s_version }}-00"
+        - "kubeadm={{ k8s_version }}-00"
+        - "kubectl={{ k8s_version }}-00"
 
   when: ansible_os_family == "Debian"
+
+- name: install kubeadm, kubectl, kubelet(RedHat)
+  block:
+    - name: config repo
+      copy:
+        dest: /etc/yum.repos.d/kubernetes.repo
+        src: kubernetes.repo
+
+    - name: update cache
+      yum:
+        update_cache: true
+
+    - name: install kubeadm, kubectl, kubelet
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - "kubelet-{{ k8s_version }}"
+        - "kubadm-{{ k8s_version }}"
+        - "kubectl-{{ k8s_version }}"
+
+  when: ansible_os_family == "RedHat"
+
