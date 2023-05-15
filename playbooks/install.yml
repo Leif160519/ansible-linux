@@ -84,6 +84,7 @@
             - cmatrix                       # 终端打印矩阵
             - httperf                       # web压测工具
             - nmon                          # 显示系统信息和性能
+            - bashtop
           when: ansible_os_family == "Debian"
           ignore_errors: yes
       # }}}
@@ -138,6 +139,8 @@
             - wget
             - iftop                         # 网络工具
             - htop
+            - nmon
+            - atop
             - iotop                         # iotop命令是一个用来监视磁盘I/O使用状况的top类工具
             - nethogs                       # 是一个开源的命令行工具（类似于Linux的top命令），用来按进程或程序实时统计网络带宽使用率
             - mrtg                          # 是通过SNMP 协议，向运行snmp协议主机询问相关的资料后，主机传递数值给MRTG ，然后MRTG 再绘制成网页上的图表
