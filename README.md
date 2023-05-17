@@ -187,11 +187,11 @@ gitinspector <git_dir> -HTLlrw --since="2021-01-01" -F html > index.html
 git-bars
  ```
 
-### 八、已知的问题(截止2021-02-01)
+## 八、已知的问题(截止2021-02-01)
 - ansible中的service模块(systemd版本:245.4)与内核版本为5.8的linux不兼容，会报`FAILED! => {"changed": false, "msg": "Service is in unknown state", "status": {}}`，建议内核版本5.8基础上升级systemd版本至245.7及以上或降级Linux内核版本,详情参看:[Service is in unknown state #71528][4] | [ansible fails with systemd 245.4][5]
 - 当执行ntp.yml时，若远程机器是ubuntu20.04的系统请将ansible版本升级至2.9.8以上或使用2.10(使用pip3而不是apt安装)，详情参看:[Problems on Ubuntu 20.04 #86][6]
 
-### 九、监控其他指标
+## 九、监控其他指标
 #### 1. 监控nginx
 执行nginx_exporter之前，需提前配置好nginx中的/stub_status,剧本中使用的是8080端口，也可以更换成其他端口，另外，监控信息最好只对p8s服务器开放访问，其他ip可以禁止，配置示例如下：
 ```
@@ -210,7 +210,7 @@ server {
 
 Grafana dashboard可以使用[9964][25]
 
-### 十、Grafana所需Dashboard一览表
+## 十、Grafana所需Dashboard一览表
 |                    监控点               |               Dashboard                                 |
 |-----------------------------------------|---------------------------------------------------------|
 | Linux服务器状态 | [1 Node Exporter Dashboard 22/04/17 通用Job分组版][9] |
@@ -231,7 +231,7 @@ Grafana dashboard可以使用[9964][25]
 | jvm 监控| [JMX Overview][34],[Kubernetes JMX Dashboard][35],[JVM (Actuator)][36] |
 | [VMware ESXi Import][38],[VMware VM][39],[VMware stats][40]|
 
-### 十一、参考
+## 十一、参考
 - [ConsulManager][16]
 - [prometheus对接飞书告警][17]
 - [PrometheusAlert][18]
@@ -240,6 +240,10 @@ Grafana dashboard可以使用[9964][25]
 - [prometheus监控nginx][21]
 - [Prometheus 监控 nginx][22]
 - [prometheus远端存储之VictoriaMetrics][23]
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=leif160519/ansible-linux&type=Date)](https://star-history.com/#leif160519/ansible-linux&Date)
 
 [1]:  https://docs.ansible.com/
 [2]:  https://github.com/Leif160519/centos-script
