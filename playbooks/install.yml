@@ -574,13 +574,13 @@
           shell: npm config set registry https://registry.npmmirror.com
           ignore_errors: yes
 
-        - name: 安装工具n
-          shell: npm install n -g
-          ignore_errors: yes
-
-        - name: 安装最新稳定版nodejs
-          shell: n stable
-          ignore_errors: yes
+#        - name: 安装工具n
+#          shell: npm install n -g
+#          ignore_errors: yes
+#
+#        - name: 安装最新稳定版nodejs
+#          shell: n stable
+#          ignore_errors: yes
 
         - name: 安装cnpm
           shell: npm install -g cnpm
