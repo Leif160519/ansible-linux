@@ -1,19 +1,24 @@
 ---
-- shell: /usr/bin/gcc --version | head -1 | awk '{print $NF}'
+- name: get gcc version
+  shell: /usr/bin/gcc --version | head -1 | awk '{print $NF}'
   register: gcc_installed_version
 
-- shell: /usr/bin/vim --version | grep IMproved | awk '{print $5}'
+- name: install vim  # 确保vim版本在8.1.2269及以上
+  package:
+    name: vim
+    state: latest
+
+- name: get vim installed version
+  shell: /usr/bin/vim --version | grep IMproved | awk '{print $5}'
   register: vim_installed_version
 
-- name: install vim and related dependencies  # 确保vim版本在8.1.2269及以上
-  package:
-    name: "{{ item }}"
-    state: latest
-  with_items:
-    - vim
-    - golang-go
-    - make
-    - cmake
-    - clang
-    - python3
-    - g++-8
+- name: get vim patch version
+  shell: /usr/bin/vim --version | grep patches | awk -F[,/-] '{print $NF}' | tr -d ' '
+  register: vim_installed_patch_version
+
+- name: get vim full version
+  set_fact:
+    vim_installed_full_version: "{{ vim_installed_version.stdout }}.{{ vim_installed_patch_version.stdout }}"
+
+- debug:
+    var: vim_installed_full_version

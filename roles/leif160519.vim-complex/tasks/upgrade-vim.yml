@@ -5,11 +5,19 @@
           repo: jonathonf/vim
       ignore_errors: yes
 
-    - name: install latest vim
+    - name: install vim and related dependencies  # 确保vim版本在8.1.2269及以上
       package:
-        name: vim
+        name: "{{ item }}"
         state: latest
-  when: vim_installed_version.stdout is version(vim_version,"<")
+      with_items:
+        - vim
+        - golang-go
+        - make
+        - cmake
+        - clang
+        - python3
+        - g++-8
+  when: vim_installed_full_version is version(vim_version,"<")
 
 - name: config g++ env
   shell: update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8
