@@ -1,0 +1,8 @@
+Host github.com
+    HostName github.com
+    GSSAPIAuthentication no
+    IdentityFile ~/.ssh/id_rsa
+Host !github.com
+    HostName *-*
+    GSSAPIAuthentication no
+    IdentityFile ~/.ssh/id_rsa

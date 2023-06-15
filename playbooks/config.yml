@@ -327,11 +327,25 @@
   vars:
     username: root
     groupname: root
+    git_email: yzluofei@126.com
+    git_name: leif160519
   tasks:
     - block:
         - template:
             src: files/gitconfig.j2
             dest: ~{{ username }}/.gitconfig
+            owner: "{{ username }}"
+            group: "{{ groupname }}"
+            mode: 0644
+
+        - file:
+            path: ~{{ username }}/.ssh
+            state: directory
+            mode: 0700
+
+        - template:
+            src: files/ssh-config.j2
+            dest: ~{{ username }}/.ssh/config
             owner: "{{ username }}"
             group: "{{ groupname }}"
             mode: 0644

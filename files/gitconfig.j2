@@ -1,4 +1,6 @@
-# {{{
+[user]
+    email = {{ git_email }}
+    name = {{ git_name }}
 [core]
     quotepath = false
     editor = vim
@@ -30,9 +32,8 @@
     default = current
 [gui]
     fontdiff = -family \"Andale Mono\" -size 10 -weight normal -slant roman -underline 0 -overstrike 0
-# }}}
 
-[tig] # {{{
+[tig]
     line-graphics = no
     tab-size = 4
 [tig "color"]
@@ -48,23 +49,20 @@
     diff = . next
     stage = , previous
     stage = . next
-# }}}
 
-[color] #{{{
+[color]
     status = auto
     diff = auto
     branch = auto
     interactive = auto
 [color "diff"]
     frag = magenta
-#}}}
 
-[branch "master"] # {{{
+[branch "master"]
     remote = origin
     merge = refs/heads/master
-# }}}
 
-[merge] # {{{
+[merge]
     tool = persistent
 [mergetool "persistent"]
     # ref Brian Phillips @http://stackoverflow.com/questions/585844/merging-with-git-mergetool
@@ -76,9 +74,8 @@
         +\":nmap <ESC>1 :diffget BASE<CR>:diffupdate<CR>\" \
         +\":nmap <ESC>2 :diffget LOCAL<CR>:diffupdate<CR>\" \
         +\":nmap <ESC>3 :diffget REMOTE<CR>:diffupdate<CR>\" "
-#}}}
 
-[alias] # {{{
+[alias]
     ci  = commit
     ce  = commit --allow-empty
     cm  = commit --amend
@@ -132,7 +129,6 @@
     dup = svn rebase
     dll = svn log --oneline --limit=20
     dls = svn log
-# }}}
 
 #[http]
 #       proxy = http://127.0.0.1:3128
