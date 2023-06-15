@@ -73,7 +73,12 @@
   ignore_errors: yes
   when: youcompleteme.stat.exists == false
 
-- shell: ~{{ username }}/.vim/bundle/YouCompleteMe/install.py --all --verbose
+- name: install cmake
+  package:
+    name: cmake
+    state: present
+
+- shell: ~{{ username }}/.vim/bundle/YouCompleteMe/install.py --all --verbose --force
   ignore_errors: yes
   when: youcompleteme.stat.exists == true
   # }}}
