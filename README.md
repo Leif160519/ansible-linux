@@ -40,6 +40,7 @@ ansible-linux
     ├── leif160519.emqx-cluster           // 安装emqx集群
     ├── leif160519.fstab                  // 配置/etc/fstab中的挂载点
     ├── leif160519.kafka-cluster          // 安装kafka集群2.x
+    ├── leif160519.kubernetes             // 安装kubernetes集群(kubeadm)
     ├── leif160519.minio-cluster          // 安装minio集群
     ├── leif160519.monit                  // 安装monit，监控moosefs
     ├── leif160519.moosefs                // 安装moosefs分布式存储集群
@@ -148,7 +149,7 @@ ansible-playbook -u root -i inventory playbooks/node_exporter.yml  -l 'jenkins-s
 ```
 
 ## 六、说明
-- 1.prometheus自带三条规则，分别为"分区剩余空间不足2%","分区剩余空间使用预计不足4h"和"ping有丢包"
+- 1.prometheus安装完成后，默认加载了若干规则，详情请参看`files/prometheus/alert/rules/`
 - 2.项目中的部分文件已经配置了在vim下的自动折叠功能(依据标志),其他折叠方式如下：
 
 ```
