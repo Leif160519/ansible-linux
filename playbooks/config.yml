@@ -47,7 +47,7 @@
 
 - name: 2.Configure hostname & hosts # {{{
   hosts: all:!off
-  tags: config, host
+  tags: never, host
   tasks:
     - block:
         - name: configure hostname
