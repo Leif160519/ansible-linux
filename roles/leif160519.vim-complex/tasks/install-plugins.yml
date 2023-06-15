@@ -78,9 +78,11 @@
     name: cmake
     state: present
 
-- shell: ~{{ username }}/.vim/bundle/YouCompleteMe/install.py --all --verbose --force
+- shell: ~{{ username }}/.vim/bundle/YouCompleteMe/install.py --all --verbose
   ignore_errors: yes
-  when: youcompleteme.stat.exists == true
+  when:
+    - youcompleteme.stat.exists == true
+    - username is not root
   # }}}
 
 - stat: # {{{ | 安装缩进线插件
