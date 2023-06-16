@@ -1,10 +1,12 @@
-C0='\[\e[0m\]'
-C1='\[\e[1;31m\]'
-C2='\[\e[1;32m\]'
-C3='\[\e[1;33m\]'
-C6='\[\e[1;36m\]'
+C0='\[\e[0m\]'    # 白色
+C1='\[\e[1;31m\]' # 红色
+C2='\[\e[1;32m\]' # 浅绿色
+C3='\[\e[1;33m\]' # 黄色
+C4='\[\e[1;34m\]' # 蓝色
+C5='\[\e[1;35m\]' # 紫色
+C6='\[\e[1;36m\]' # 深绿色
 if [ $(id -u) -eq 0 ]; then # you are root, make the prompt red
-    PS1="${debian_chroot:+($debian_chroot)}${C1}\\u@{{ inventory_hostname }}${C6}:\\w${C0}\\$ "
+    PS1="[${C1}\u${C3}@${C2}\h${C6} \w${C0}] \\$ "
 else
-    PS1="${debian_chroot:+($debian_chroot)}${C2}\\u@{{ inventory_hostname }}${C6}:\\w${C0}\\$ "
+    PS1="[${C4}\u${C3}@${C2}\h${C6} \w${C0}] \\$ "
 fi
