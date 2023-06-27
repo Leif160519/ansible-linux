@@ -600,7 +600,6 @@
             - net.ipv4.tcp_keepalive_time = 600
             - net.ipv4.tcp_max_syn_backlog = 65536
             - net.ipv4.tcp_max_orphans=262114
-            - net.ipv4.tcp_max_tw_buckets = 5000
             - net.ipv4.tcp_rmem = 10240 87380 12582912
             - net.ipv4.tcp_synack_retries = 2
             - net.ipv4.tcp_syncookies = 1
