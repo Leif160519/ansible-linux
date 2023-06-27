@@ -1,7 +1,10 @@
-官方文档 : [Ansible Documentation][1]
-
 ## 一、说明
-本项目源自：[centos-script][2] | [ubuntu-script][3]
+- Ansible官方文档 : [Ansible Documentation][1]
+- 本项目源自：[centos-script][2] | [ubuntu-script][3]
+- 项目已通过安全扫描，清放心使用
+
+[![Security Status](https://www.murphysec.com/platform3/v31/badge/1673634678183116800.svg)](https://www.murphysec.com/console/report/1673634678069870592/1673634678183116800)
+
 
 ## 二、项目介绍
 - 使用到的特性：lineinfile,blockinfile,template,user,roles,package,apt,yum,service,systemd,handlers,notify等
