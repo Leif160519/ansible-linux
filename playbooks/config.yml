@@ -542,15 +542,15 @@
             dest: /etc/security/limits.conf
             line: "{{ item }}"
           with_items:
-            - "*    soft    core      5242880"
-            - "*　　soft　　nofile　　500000000"
-            - "*　　hard　　nofile　　500000000"
-            - "*    soft    noproc    500000000"
-            - "*    hard    noproc    500000000"
-            - "root　　soft　　nofile　　500000000"
-            - "root　　hard　　nofile　　500000000"
-            - "root    soft    noproc    500000000"
-            - "root    hard    noproc    500000000"
+            - "*    soft    core      5000000"
+            - "*　　soft　　nofile　　5000000"
+            - "*　　hard　　nofile　　5000000"
+            - "*    soft    noproc    5000000"
+            - "*    hard    noproc    5000000"
+            - "root　　soft　　nofile　　5000000"
+            - "root　　hard　　nofile　　5000000"
+            - "root    soft    noproc    5000000"
+            - "root    hard    noproc    5000000"
 # }}}
 
 - name: 24.config sysctl # {{{
@@ -562,7 +562,7 @@
             path: /etc/sysctl.conf
             line: "{{ item }}"
           with_items:
-            - fs.file-max = 6815744
+            - fs.file-max = 5000000
             - fs.nr_open = 5000000
             - kernel.core_uses_pid = 1
             - kernel.core_pattern = /var/tmp/corefile/%e-%p
@@ -575,6 +575,7 @@
             - kernel.randomize_va_space = 2
             - kernel.pid_max = 1048576
             - kernel.sysrq = 1
+            - net.netfilter.nf_conntrack_max = 5000000
             - net.ipv4.tcp_syncookies = 1
             - net.ipv4.tcp_max_syn_backlog = 65536
             - net.ipv4.tcp_max_orphans=262114
