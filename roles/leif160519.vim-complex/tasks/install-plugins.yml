@@ -82,7 +82,7 @@
   ignore_errors: yes
   when:
     - youcompleteme.stat.exists == true
-    - username is not root
+    - username != "root"
   # }}}
 
 - stat: # {{{ | 安装缩进线插件

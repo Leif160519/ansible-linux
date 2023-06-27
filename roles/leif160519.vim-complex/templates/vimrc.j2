@@ -53,7 +53,9 @@ set rtp+=~/.vim/bundle/Vundle.vim
 
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
+{% if username != "root" %}
 Plugin 'Valloric/YouCompleteMe'
+{% endif %}
 Plugin 'Yggdroot/indentLine'
 call vundle#end()
 
