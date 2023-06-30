@@ -1126,3 +1126,15 @@
         group: root
       when: f.stat.exists == false
   # }}}
+
+- name: Install kubetail # {{{
+  hosts: all:!off
+  tags: never, kubetail
+  tasks:
+    - get_url:
+        url: https://raw.githubusercontent.com/johanhaleby/kubetail/master/kubetail
+        dest: /usr/bin/kubetail
+        owner: root
+        group: root
+        mode: u+x
+# }}}
