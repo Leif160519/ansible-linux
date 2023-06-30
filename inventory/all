@@ -1,5 +1,5 @@
 [all]
-localhost                    ansible_host=0.0.0.0
+localhost                    ansible_host=127.0.0.1
 prometheus-server            ansible_host=0.0.0.0
 gitlab-server                ansible_host=0.0.0.0
 backuppc-server              ansible_host=0.0.0.0
