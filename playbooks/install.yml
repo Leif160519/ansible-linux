@@ -481,6 +481,8 @@
       vars:
         ccat_version: linux-amd64-1.1.0
         ccat_url: https://github.com/jingweno/ccat/releases/download/v1.1.0/{{ ccat_version }}.tar.gz
+        username: root
+        groupname: root
       block:
         - stat:
             path: /usr/local/bin/ccat
@@ -508,7 +510,7 @@
         - name: config bash
           lineinfile:
             dest: ~{{ username }}/.bashrc
-            line: 'alias ccat=ccat'
+            line: 'alias cat=ccat'
             owner: "{{ username }}"
             group: "{{ groupname }}"
 
@@ -589,6 +591,9 @@
 
     - name: Install highlight # {{{
       tags: never, alias, highlight
+      vars:
+        username: root
+        groupname: root
       block:
         - stat:
             path: ~{{ username }}/.zshrc
@@ -600,13 +605,13 @@
 
         - lineinfile:
             path: ~{{ username }}/.bashrc
-            line: "alias hcat='highlight -O ansi --force'"
+            line: "alias cat='highlight -O ansi --force'"
             owner: "{{ username }}"
             group: "{{ groupname }}"
 
         - lineinfile:
             path: ~{{ username }}/.zshrc
-            line: "alias hcat='highlight -O ansi --force'"
+            line: "alias cat='highlight -O ansi --force'"
             owner: "{{ username }}"
             group: "{{ groupname }}"
           when: zsh_config.stat.exists == true
@@ -614,6 +619,9 @@
 
     - name: Install lolcat # {{{
       tags: never, alias, logcat
+      vars:
+        username: root
+        groupname: root
       block:
         - stat:
             path: ~{{ username }}/.zshrc
@@ -625,13 +633,13 @@
 
         - lineinfile:
             path: ~{{ username }}/.bashrc
-            line: 'alias lcat=lolcat'
+            line: 'alias cat=lolcat'
             owner: "{{ username }}"
             group: "{{ groupname }}"
 
         - lineinfile:
             path: ~{{ username }}/.zshrc
-            line: 'alias lcat=lolcat'
+            line: 'alias cat=lolcat'
             owner: "{{ username }}"
             group: "{{ groupname }}"
           when: zsh_config.stat.exists == true
@@ -640,13 +648,17 @@
 
     - name: Install bat # {{{
       tags: never, alias, bat
+      vars:
+        username: root
+        groupname: root
       block:
         - stat:
             path: ~{{ username }}/.zshrc
           register: zsh_config
 
-        - apt:
-            deb: https://github.com/sharkdp/bat/releases/download/v0.21.0/bat_0.21.0_amd64.deb
+        - package:
+            name: bat
+            state: latest
 
         - lineinfile:
             path: ~{{ username }}/.zshrc
@@ -665,6 +677,9 @@
 
     - name: Install pygmentize # {{{
       tags: never, alias, pygmentize
+      vars:
+        username: root
+        groupname: root
       block:
         - stat:
             path: ~{{ username }}/.zshrc
@@ -676,13 +691,13 @@
 
         - lineinfile:
             path: ~{{ username }}/.bashrc
-            line: "alias pcat='pygmentize -g'"
+            line: "alias cat='pygmentize -g'"
             owner: "{{ username }}"
             group: "{{ groupname }}"
 
         - lineinfile:
             path: ~{{ username }}/.zshrc
-            line: "alias pcat='pygmentize -g'"
+            line: "alias cat='pygmentize -g'"
             owner: "{{ username }}"
             group: "{{ groupname }}"
           when: zsh_config.stat.exists == true
