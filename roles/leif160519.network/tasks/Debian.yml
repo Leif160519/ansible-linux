@@ -8,11 +8,6 @@
             mode: 0644
           with_items:
             - "{{ network_config.files }}"
-        - lineinfile:
-            path: /etc/systemd/resolved.conf
-            regexp: "^#DNS="
-            line: "DNS={{ dns1 }} {{ dns2 }}"
-          notify: restart systemd-resolved
 
         - file:
             dest: /etc/resolv.conf
