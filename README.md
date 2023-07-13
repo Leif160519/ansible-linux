@@ -233,7 +233,7 @@ Grafana dashboard可以使用[9964][25]
 | nginx vts 监控| [Nginx VTS Status][32] |
 | kafka 监控 | [Kafka Exporter Overview][33] |
 | jvm 监控| [JMX Overview][34],[Kubernetes JMX Dashboard][35],[JVM (Actuator)][36] |
-| [VMware ESXi Import][38],[VMware VM][39],[VMware stats][40]|
+| Vmware ESXI | [VMware ESXi Import][38],[VMware VM][39],[VMware stats][40]|
 
 ## 十一、参考
 - [ConsulManager][16]
