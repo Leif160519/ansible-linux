@@ -662,40 +662,25 @@
           register: bat
 
         - set_fact:
-            gnu_tag: bat-v{{ bat_version }}-x86_64-unknown-linux-gnu
-            gnu_url: https://github.com/sharkdp/bat/releases/download/v{{ bat_version }}/{{ gnu_tag }}.tar.gz
-            musl_tag: bat-v{{ bat_version }}-x86_64-unknown-linux-musl
-            musl_url: https://github.com/sharkdp/bat/releases/download/v{{ bat_version }}/{{ musl_tag }}.tar.gz
+            bat_tag: bat-v{{ bat_version }}-x86_64-unknown-linux-{{ 'gnu' if ansible_pkg_mgr == 'apt' else 'musl' }}
+
+        - set_fact:
+            bat_url: https://github.com/sharkdp/bat/releases/download/v{{ bat_version }}/{{ bat_tag }}.tar.gz
 
         - unarchive:
-            src: "{{ musl_url }}"
+            src: "{{ bat_url }}"
             dest: /tmp
             remote_src: true
-          when: ansible_os_family == "RedHat"
+          when: bat.stat.exists == false
 
         - copy:
-            src: /tmp/{{ musl_tag }}/bat
+            src: /tmp/{{ bat_tag }}/bat
             dest: /usr/bin/
             mode: u+x
             owner: root
             group: root
             remote_src: true
-          when: ansible_os_family == "RedHat"
-
-        - unarchive:
-            src: "{{ gnu_url }}"
-            dest: /tmp
-            remote_src: true
-          when: ansible_os_family == "Debian"
-
-        - copy:
-            src: /tmp/{{ gnu_tag }}/bat
-            dest: /usr/bin/
-            mode: u+x
-            owner: root
-            group: root
-            remote_src: true
-          when: ansible_os_family == "Debian"
+          when: bat.stat.exists == false
 
         - lineinfile:
             path: ~{{ username }}/.zshrc
