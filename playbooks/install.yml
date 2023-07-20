@@ -651,14 +651,51 @@
       vars:
         username: root
         groupname: root
+        bat_version: 0.23.0
       block:
         - stat:
             path: ~{{ username }}/.zshrc
           register: zsh_config
 
-        - package:
-            name: bat
-            state: latest
+        - stat:
+            path: /usr/bin/bat
+          register: bat
+
+        - set_fact:
+            gnu_tag: bat-v{{ bat_version }}-x86_64-unknown-linux-gnu
+            gnu_url: https://github.com/sharkdp/bat/releases/download/v{{ bat_version }}/{{ gnu_tag }}.tar.gz
+            musl_tag: bat-v{{ bat_version }}-x86_64-unknown-linux-musl
+            musl_url: https://github.com/sharkdp/bat/releases/download/v{{ bat_version }}/{{ musl_tag }}.tar.gz
+
+        - unarchive:
+            src: "{{ musl_url }}"
+            dest: /tmp
+            remote_src: true
+          when: ansible_os_family == "RedHat"
+
+        - copy:
+            src: /tmp/{{ musl_tag }}/bat
+            dest: /usr/bin/
+            mode: u+x
+            owner: root
+            group: root
+            remote_src: true
+          when: ansible_os_family == "RedHat"
+
+        - unarchive:
+            src: "{{ gnu_url }}"
+            dest: /tmp
+            remote_src: true
+          when: ansible_os_family == "Debian"
+
+        - copy:
+            src: /tmp/{{ gnu_tag }}/bat
+            dest: /usr/bin/
+            mode: u+x
+            owner: root
+            group: root
+            remote_src: true
+          when: ansible_os_family == "Debian"
 
         - lineinfile:
             path: ~{{ username }}/.zshrc
@@ -672,7 +709,6 @@
             line: 'alias cat="bat --theme=OneHalfDark --paging=never -p"'
             owner: "{{ username }}"
             group: "{{ groupname }}"
-      when: ansible_os_family == "Debian"
       # }}}
 
     - name: Install pygmentize # {{{
