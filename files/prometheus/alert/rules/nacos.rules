@@ -15,9 +15,9 @@ groups:
     - alert: nacos 内存使用率超过90%
       expr: |
         (
-          sum(jvm_memory_used_bytes{area="heap", job="nacos"})
+          jvm_memory_used_bytes{area="heap", job="nacos"}
           /
-          sum(jvm_memory_max_bytes{area="heap", job="nacos"}) * 100
+          jvm_memory_max_bytes{area="heap", job="nacos"} * 100
         ) > 90
       for: 2m
       labels:
