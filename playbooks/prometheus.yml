@@ -86,7 +86,7 @@
     emq_exporter_url: https://github.com/nuvo/emq_exporter/releases/download/v{{ emq_exporter_version }}/{{ emq_exporter_tag }}.tar.gz
     jmx_exporter_url: https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/{{ jmx_exporter_version }}/{{ jmx_exporter_tag }}.jar
     promtail_url: https://github.com/grafana/loki/releases/download/{{ promtail_version }}/{{ promtail_tag }}.zip
-    loki_url: https://github.com/grafana/loki/release/download/{{ loki_version }}/{{ loki_tag}}.zip
+    loki_url: https://github.com/grafana/loki/releases/download/{{ loki_version }}/{{ loki_tag}}.zip
     process_exporter_url: https://github.com/ncabatoff/process-exporter/releases/download/v{{ process_exporter_version }}/{{ process_exporter_tag }}.tar.gz
   handlers:
     - name: reload alertmanager
