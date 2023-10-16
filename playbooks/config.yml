@@ -626,6 +626,9 @@
 
 - name: 25.config vim # {{{
   hosts: all:!off
+  vars:
+    username: root
+    groupname: root
   tags: vim
   tasks:
     - block:
@@ -635,9 +638,9 @@
 
         - template:
             src: files/vimrc.j2
-            dest: /root/.vimrc
-            owner: root
-            group: root
+            dest: ~{{ username }}/.vimrc
+            owner: "{{ username }}"
+            group: "{{ groupname }}"
             mode: 0644
 # }}}
 
