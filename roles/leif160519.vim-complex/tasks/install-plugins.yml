@@ -86,6 +86,9 @@
     name: cmake
     state: present
 
+- shell: chown -R {{ username }}:{{ groupname }} ~{{ username }}/.vim
+  ignore_errors: true
+
 - shell: ~{{ username }}/.vim/bundle/YouCompleteMe/install.py --all --verbose
   ignore_errors: yes
   when:
