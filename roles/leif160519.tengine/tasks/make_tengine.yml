@@ -188,8 +188,8 @@
 - name: make install
   shell: |
     cd /opt/tengine-{{ tengine_version }}
-    make install
     make
+    make install
 
 - name: create nginx group
   group:
