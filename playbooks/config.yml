@@ -50,14 +50,19 @@
   tags: never, host
   tasks:
     - block:
+        - name: install hostname
+          package:
+            name: hostname
+            state: latest
+
         - name: configure hostname
           hostname:
             name: "{{ inventory_hostname }}"
 
-        - name: configure hosts
-          template:
-            src: files/hosts.j2
-            dest: /etc/hosts
+#        - name: configure hosts
+#          template:
+#            src: files/hosts.j2
+#            dest: /etc/hosts
   # }}}
 
 - name: 3.Masking system error reports # {{{
