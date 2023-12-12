@@ -1,7 +1,7 @@
 version: "3"
 services:
   flask-consul:
-    image: registry.cn-shenzhen.aliyuncs.com/starsl/flask-consul:latest
+    image: swr.cn-south-1.myhuaweicloud.com/starsl.cn/flask-consul:latest
     container_name: flask-consul
     hostname: flask-consul
     restart: always
@@ -11,8 +11,9 @@ services:
       consul_token: {{ consul_token }}
       consul_url: http://{{ hostvars['prometheus-server']['ansible_host'] }}:8500/v1
       admin_passwd: {{ consulmanager_passwd }}
+
   nginx-consul:
-    image: registry.cn-shenzhen.aliyuncs.com/starsl/nginx-consul:latest
+    image: swr.cn-south-1.myhuaweicloud.com/starsl.cn/nginx-consul:latest
     container_name: nginx-consul
     hostname: nginx-consul
     restart: always
@@ -20,6 +21,7 @@ services:
       - "1026:1026"
     volumes:
       - /usr/share/zoneinfo/PRC:/etc/localtime
+
   mysqld_exporter:
     image: swr.cn-south-1.myhuaweicloud.com/starsl.cn/mysqld_exporter:latest
     container_name: mysqld_exporter
