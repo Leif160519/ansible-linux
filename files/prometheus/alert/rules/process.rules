@@ -32,7 +32,7 @@ groups:
         summary: "{{ $labels.groupname }} 已产生 {{ $value }} 个僵尸进程"
 
     - alert: 进程重启
-      expr: ceil(time() - max by(all,groupname,job,instance,env,idc,state) (namedprocess_namegroup_oldest_start_time_seconds)) < 60
+      expr: ceil(time() - max by(all,groupname,job,instance,env,state) (namedprocess_namegroup_oldest_start_time_seconds)) < 60
       for: 1m
       labels:
         severity: warning
@@ -52,7 +52,7 @@ groups:
         summary: "进程 process-exporter 已退出，请检查"
 
     - alert: 进程退出
-      expr: max by(all,groupname,job,instance,env,idc,state) (delta(namedprocess_namegroup_oldest_start_time_seconds[5m])) < 0
+      expr: max by(all,groupname,job,instance,env,state) (delta(namedprocess_namegroup_oldest_start_time_seconds[5m])) < 0
       for: 1m
       labels:
         severity: warning
