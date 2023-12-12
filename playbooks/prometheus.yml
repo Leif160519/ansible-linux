@@ -1316,8 +1316,8 @@
     - set_fact:
         prometheus_targets_node: "{{ groups['all'] }}"
         prometheus_scrape_configs: "{{ prometheus_scrape_configs + lookup('template', item) | from_yaml }}"
-        prometheus_targets_nginx: "{{ groups['pro.nginx'] }"
-        prometheus_targets_mysql: "{{ groups['pro.mysql'] }"
+        prometheus_targets_nginx: "{{ groups['pro.nginx'] }}"
+        prometheus_targets_mysql: "{{ groups['pro.mysql'] }}"
         prometheus_targets_elasticsearch: "{{ groups['pro.es'] | difference(groups['off']) }}"
         prometheus_targets_zookeeper: "{{ groups['pro.zookeeper'] | difference(groups['off']) }}"
         prometheus_targets_emq: "{{ groups['pro.emqx'] | difference(groups['off']) }}"
