@@ -10,7 +10,7 @@ services:
     environment:
       consul_token: {{ consul_token }}
       consul_url: http://{{ hostvars['prometheus-server']['ansible_host'] }}:8500/v1
-      admin_passwd: {{ admin_passwd }}
+      admin_passwd: {{ consulmanager_passwd }}
   nginx-consul:
     image: registry.cn-shenzhen.aliyuncs.com/starsl/nginx-consul:latest
     container_name: nginx-consul

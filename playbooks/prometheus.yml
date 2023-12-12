@@ -21,6 +21,7 @@
     nginx_exporter_root_dir: /opt/nginx_exporter
     consul_root_dir: /opt/consul
     consulmanager_passwd: admin-123
+    consul_token: 9ce1358e-da13-4b7b-b79e-7f7b16408d47
     mysqld_exporter_root_dir: /opt/mysqld_exporter
     kminion_root_dir: /opt/kminion
     kafka_exporter_root_dir: /opt/kafka_exporter
@@ -39,7 +40,7 @@
     blackbox_exporter_version: 0.22.0
     prometheusalert_version: v4.8.2
     nginx_exporter_version: 0.10.0
-    consul_version: 1.12.2
+    consul_version: 1.14.5
     mysqld_exporter_version: 0.14.0
     kminion_version: 2.2.0
     kafka_exporter_version: 1.4.2
@@ -421,7 +422,12 @@
           with_items:
             - /opt/consul
             - /etc/consul.d
-            - /opt/applications/consul
+            - /data/consul
+
+        - name: install unzip
+          package:
+            name: unzip
+            state: present
 
         - name: unzip consul
           unarchive:
@@ -463,15 +469,6 @@
             state: started
             enabled: true
             daemon_reload: true
-
-        - name: get consul secret id
-          shell: /usr/bin/consul acl bootstrap | grep -i secretid | awk '{print $2}'
-          register: secret_id
-          failed_when: secret_id.stdout | length == 0
-
-        - set_fact:
-            consul_token: "{{ secret_id.stdout }}"
-            admin_passwd: "{{ consulmanager_passwd }}"
 
         - name: output secret id
           debug:
