@@ -1242,7 +1242,7 @@
             src: "{{ process_exporter_root_dir }}/process-exporter"
             dest: /usr/local/bin/process-exporter
             force: true
-            stat: link
+            state: link
 
         - name: create process_exporter service
           template:
