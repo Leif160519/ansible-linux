@@ -65,7 +65,7 @@ groups:
         summary: 当前活跃的连接数： {{ $value }}
 
     - alert: MySQL 当前updating状态的线程过多
-      expr: mysql_info_schema_processlist_threads{,state=~"updating"} > 100
+      expr: mysql_info_schema_processlist_threads{state=~"updating"} > 100
       for: 1m
       labels:
         severity: warning
