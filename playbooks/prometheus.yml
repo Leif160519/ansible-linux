@@ -1347,6 +1347,18 @@
         - "files/prometheus/scrape/file_sd/*.j2"
       notify: reload prometheus
 
+    - name: create static configs from file
+      copy:
+        src: "{{ item }}"
+        dest: /etc/prometheus/file_sd/
+        force: true
+        owner: prometheus
+        group: prometheus
+        mode: 0644
+      with_fileglob:
+        - files/prometheus/scrape/file_sd/*.yml
+      notify: reload prometheus
+
   roles:
     - role: roles/cloudalchemy.prometheus
       prometheus_skip_install: true
