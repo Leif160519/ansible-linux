@@ -1321,6 +1321,8 @@
         prometheus_targets_clickhouse: "{{ groups['pro.clickhouse'] | difference(groups['off']) }}"
         prometheus_targets_nacos: "{{ groups['pro.nacos'] | difference(groups['off']) }}"
         prometheus_targets_kafka: "{{ groups['pro.kafka'] | difference(groups['off']) }}"
+        prometheus_external_labels:
+          environment: "Local"
       with_fileglob:
         - "files/prometheus/scrape/*.job"
       when: inventory_hostname is match("^prometheus-server")
