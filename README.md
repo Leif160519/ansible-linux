@@ -245,6 +245,40 @@ Grafana dashboard可以使用[9964][25]
 - [Prometheus 监控 nginx][22]
 - [prometheus远端存储之VictoriaMetrics][23]
 
+## 十二、资产清单检查
+理论上，all中的资产和os中的总数保持一致，故可以在`.git/hooks`下创建如下内容的脚本`pre-commit`，以便在commit过程的时候检查资产完整性
+```
+#!/bin/bash
+workspace="/data/workspace/gitlab/ansible"
+
+function ResultOutput() {
+    if [ ! -z "$3" ];then
+        echo -e "\033[1;31m $1中存在$2中没有的资产名:$3 \033[0m"
+    else
+        echo -e "\033[1;32m $1中的资产在$2中都包含 \033[0m"
+    fi
+}
+
+
+egrep -v "\[all\]" ${workspace}/inventory/all | awk '{print $1}' | grep -v '^$' | uniq > /tmp/all
+egrep -v "\[os|#|^$" ${workspace}/inventory/os | grep -v '^os' | uniq > /tmp/os
+
+os=$(grep -v -f /tmp/all /tmp/os | tr '\n' ',')
+ResultOutput "os" "all" "${os}"
+os=$(grep -v -f /tmp/os /tmp/all | tr '\n' ',')
+ResultOutput "all" "os" "${os}"
+
+# 删除临时文件
+find /tmp/all -delete
+find /tmp/os -delete
+```
+
+脚本创建完成之后，执行
+```
+chmod +x .git/hooks/pre-commit
+```
+
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=leif160519/ansible-linux&type=Date)](https://star-history.com/#leif160519/ansible-linux&Date)
