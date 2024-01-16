@@ -1321,6 +1321,7 @@
         prometheus_targets_clickhouse: "{{ groups['pro.clickhouse'] | difference(groups['off']) }}"
         prometheus_targets_nacos: "{{ groups['pro.nacos'] | difference(groups['off']) }}"
         prometheus_targets_kafka: "{{ groups['pro.kafka'] | difference(groups['off']) }}"
+        consul_token: 9ce1358e-da13-4b7b-b79e-7f7b16408d47
         prometheus_external_labels:
           environment: "Local"
       with_fileglob:
