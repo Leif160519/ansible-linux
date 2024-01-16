@@ -1,8 +1,8 @@
-- job_name: 'consul-blackbox_exporter'
+- job_name: 'consul-blackbox'
   metrics_path: /probe
   consul_sd_configs:
     - server: '{{ hostvars['prometheus-server']['ansible_host'] }}:8500'
-      token: 'd90e9f60-8fc1-9579-2e96-1b536ff095a3'
+      token: '{{ consul_token }}'
       services: ['blackbox_exporter']
   relabel_configs:
     - source_labels: ["__meta_consul_service_metadata_instance"]

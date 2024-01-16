@@ -3,7 +3,7 @@
   scrape_timeout: 5s
   consul_sd_configs:
     - server: '{{ hostvars['prometheus-server']['ansible_host'] }}:8500'
-      token: 'd90e9f60-8fc1-9579-2e96-1b536ff095a3'
+      token: '{{ consul_token }}'
       refresh_interval: 30s
       services: ['tencent_cloud_fisher.luo_ecs']
       tags: ['linux']

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import requests,json
-consul_token = 'd90e9f60-8fc1-9579-2e96-1b536ff095a3'
+consul_token = '9ce1358e-da13-4b7b-b79e-7f7b16408d47'
 consul_url = 'http://10.1.1.24:8500/v1'
 
 with open('instance.list', 'r') as file:
