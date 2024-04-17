@@ -36,7 +36,7 @@
     dest: /etc/backuppc/hosts
     line: "{{ item.hostname }}\t0"
     regexp: "^{{ item.hostname }}"
-    state: item.state if item.state is defined else 'present'
+    state: "{{ item.state if item.state is defined else 'present' }}"
   with_items: "{{ backuppc_instance }}"
   notify: reload
 
