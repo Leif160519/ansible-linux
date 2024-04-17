@@ -2,7 +2,7 @@
 localhost                    ansible_host=127.0.0.1
 prometheus-server            ansible_host=0.0.0.0
 gitlab-server                ansible_host=0.0.0.0
-backuppc-server              ansible_host=0.0.0.0
+backuppc-server              ansible_host=192.168.31.253
 jenkins-server               ansible_host=0.0.0.0
 mysql-server                 ansible_host=0.0.0.0
 vmware-esxi-1                ansible_host=0.0.0.0
@@ -49,3 +49,5 @@ k8s-master-02                ansible_host=192.168.31.80
 k8s-node-01                  ansible_host=192.168.31.82
 k8s-node-02                  ansible_host=192.168.31.83
 k8s-node-03                  ansible_host=192.168.31.84
+template-centos7             ansible_host=192.168.31.27
+template-u2204               ansible_host=192.168.31.173

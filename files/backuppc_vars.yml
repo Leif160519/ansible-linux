@@ -18,3 +18,27 @@ extension:
     include_files:
       - "/etc/mfs/"
       - "/opt/mfs/"
+  - hostname: k8s-master-01
+    include_files:
+      - "/opt/containerd/"
+      - "/opt/kubernetes/"
+      - "/opt/etcd/"
+  - hostname: k8s-node-01
+    include_files:
+      - "/opt/containerd/"
+      - "/opt/kubernetes/"
+      - "/opt/etcd/"
+  - hostname: k8s-node-02
+    include_files:
+      - "/opt/containerd/"
+      - "/opt/kubernetes/"
+      - "/opt/etcd/"
+  - hostname: k8s-node-03
+    include_files:
+      - "/opt/containerd/"
+      - "/opt/kubernetes/"
+      - "/opt/etcd/"
+  - hostname: backuppc-server
+    include_files:
+      - "/home/backuppc/"
+      - "/etc/backuppc/"
