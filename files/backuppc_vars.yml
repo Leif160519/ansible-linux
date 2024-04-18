@@ -2,43 +2,72 @@
 extension:
   - hostname: prometheus-server
     include_files:
-      - "/etc/prometheus/"
+      - /etc/prometheus/
   - hostname: gitlab-server
     include_files:
-      - "/etc/gitlab/"
+      - /etc/gitlab/
   - hostname: mfsmaster
     include_files:
-      - "/etc/mfs/"
-      - "/opt/mfs/"
+      - /etc/mfs/
+      - /opt/mfs/
   - hostname: mfs-master
     include_files:
-      - "/etc/mfs/"
-      - "/opt/mfs/"
+      - /etc/mfs/
+      - /opt/mfs/
   - hostname: mfs-metalogger
     include_files:
-      - "/etc/mfs/"
-      - "/opt/mfs/"
+      - /etc/mfs/
+      - /opt/mfs/
   - hostname: k8s-master-01
     include_files:
-      - "/opt/containerd/"
-      - "/opt/kubernetes/"
-      - "/opt/etcd/"
+      - /opt/containerd/
+      - /opt/kubernetes/
+      - /opt/etcd/
+      - /var/lib/etcd/
+      - /var/lib/kubelet
+      - /var/lib/cri-docker
+      - /etc/keepalived/
+      - /etc/mfs/
+      - /var/lib/mfs/
   - hostname: k8s-node-01
     include_files:
-      - "/opt/containerd/"
-      - "/opt/kubernetes/"
-      - "/opt/etcd/"
+      - /opt/containerd/
+      - /opt/kubernetes/
+      - /opt/etcd/
+      - /var/lib/etcd/
+      - /var/lib/kubelet
+      - /var/lib/cri-docker
+      - /var/lib/mysql/
+      - /etc/mysql/
+      - /etc/redis/
+      - /var/lib/redis/
+      - /etc/keepalived/
+      - /etc/mfs/
+      - /var/lib/mfs/
   - hostname: k8s-node-02
     include_files:
-      - "/opt/containerd/"
-      - "/opt/kubernetes/"
-      - "/opt/etcd/"
+      - /opt/containerd/
+      - /opt/kubernetes/
+      - /opt/etcd/
+      - /var/lib/etcd/
+      - /var/lib/kubelet/
+      - /var/lib/cri-docker/
+      - /opt/gitea/
+      - /etc/keepalived/
+      - /etc/mfs/
+      - /var/lib/mfs/
   - hostname: k8s-node-03
     include_files:
-      - "/opt/containerd/"
-      - "/opt/kubernetes/"
-      - "/opt/etcd/"
+      - /opt/containerd/
+      - /opt/kubernetes/
+      - /opt/etcd/
+      - /var/lib/etcd/
+      - /var/lib/kubelet
+      - /var/lib/cri-docker
+      - /etc/keepalived/
+      - /etc/mfs/
+      - /var/lib/mfs/
   - hostname: backuppc-server
     include_files:
-      - "/home/backuppc/"
-      - "/etc/backuppc/"
+      - /home/backuppc/
+      - /etc/backuppc/
