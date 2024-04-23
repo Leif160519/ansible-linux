@@ -26,6 +26,7 @@ os.centos7
 # }}}3
 
 [os.centos7] # {{{3
+frp-client
 template-centos7
 emqx-cluster-1
 emqx-cluster-2
