@@ -72,3 +72,4 @@ extension:
     include_files:
       - /home/backuppc/
       - /etc/backuppc/
+      - /data/minio/
