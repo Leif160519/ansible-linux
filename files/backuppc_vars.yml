@@ -73,3 +73,5 @@ extension:
       - /home/backuppc/
       - /etc/backuppc/
       - /data/minio/
+  - hostname: frp-client
+      - /opt/frp/
