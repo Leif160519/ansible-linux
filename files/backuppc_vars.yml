@@ -30,6 +30,7 @@ extension:
       - /etc/mfs/
       - /var/lib/mfs/
       - /etc/rsync.conf
+      - /etc/nginx/
   - hostname: k8s-node-01
     include_files:
       - /opt/containerd/
