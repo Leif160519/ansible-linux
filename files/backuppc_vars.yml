@@ -31,6 +31,7 @@ extension:
       - /var/lib/mfs/
       - /etc/rsync.conf
       - /etc/nginx/
+      - /etc/monit/
   - hostname: k8s-node-01
     include_files:
       - /opt/containerd/
@@ -46,6 +47,7 @@ extension:
       - /etc/keepalived/
       - /etc/mfs/
       - /var/lib/mfs/
+      - /etc/monit/
   - hostname: k8s-node-02
     include_files:
       - /opt/containerd/
@@ -58,6 +60,7 @@ extension:
       - /etc/keepalived/
       - /etc/mfs/
       - /var/lib/mfs/
+      - /etc/monit/
   - hostname: k8s-node-03
     include_files:
       - /opt/containerd/
@@ -69,11 +72,14 @@ extension:
       - /etc/keepalived/
       - /etc/mfs/
       - /var/lib/mfs/
+      - /etc/monit/
   - hostname: backuppc-server
     include_files:
       - /home/backuppc/
       - /etc/backuppc/
       - /data/minio/
+      - /etc/monit/
   - hostname: frp-client
     include_files:
       - /opt/frp/
+      - /etc/monit/
