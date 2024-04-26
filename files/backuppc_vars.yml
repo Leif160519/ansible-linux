@@ -79,6 +79,9 @@ extension:
       - /etc/backuppc/
       - /data/minio/
       - /etc/monit/
+      - /etc/exports
+      - /var/lib/nfs/
+      - /data/nfs/
   - hostname: frp-client
     include_files:
       - /opt/frp/
