@@ -20,7 +20,7 @@ gens_mfs_master_monit_services__to_merge:
 
   - name: available
     type: program
-    target: "/bin/sh -c 'mfsdirinfo /mnt/mfs/ | tee /mnt/mfs/@leif160519/.watchdog_by_monit'"
+    target: "/bin/sh -c 'mfsdirinfo /mnt/mfs/ | tee /mnt/mfs/@peanut/.watchdog_by_monit'"
     extend: "with timeout 10 seconds"
     rules: |
       if status != 0 for 2 cycles then alert
@@ -38,3 +38,26 @@ gens_mfs_master_monit_services__to_merge:
     extend: "with timeout 10 seconds"
     rules: |
       if status != 0 for 2 cycles then alert
+
+  - name: mfsmetalogger
+    type: process
+    target: "/var/lib/mfs/.mfsmetalogger.lock"
+    rules: |
+      if changed pid then alert
+      alert icf65zvzab@pomail.net
+
+  - name: changelog
+    type: file
+    target: "/var/lib/mfs/changelog_ml.0.mfs"
+    rules: |
+      if not exist for 3 cycles then alert
+      if timestamp is older than 10 minutes then alert
+      alert icf65zvzab@pomail.net on { timestamp }
+
+  - name: metadata
+    type: file
+    target: "/var/lib/mfs/metadata_ml.mfs.back"
+    rules: |
+      if not exist for 3 cycles then alert
+      if timestamp is older than 2 days then alert
+      alert icf65zvzab@pomail.net on { timestamp }

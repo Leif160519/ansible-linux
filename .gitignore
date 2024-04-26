@@ -1,3 +1,4 @@
+modules/action_plugins/__pycache__
 inventory/all_tmp
 inventory/os_tmp
 playbooks/test.yml
