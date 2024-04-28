@@ -86,3 +86,4 @@ extension:
     include_files:
       - /opt/frp/
       - /etc/monit/
+      - /data/
