@@ -1,14 +1,14 @@
 {{- define "wechat.default.message" -}}
 {{- range .Alerts -}}
 {{- if le .EndsAt.Unix 0 -}}
-🔥 {{ .Labels.alertname }}
+🔥🔥 {{ .Labels.alertname }}
 🚀 告警级别: {{ .Labels.severity }}
 🏷️ 故障地址: {{ .Labels.instance }}
 🕓 开始时间: {{ .StartsAt.Local.Format "2006-01-02 15:04:05" }}
 📝 告警摘要: {{ .Annotations.summary }}
 {{ end -}}
 {{- if gt .EndsAt.Unix 0 -}}
-✅ {{ .Labels.alertname }}
+✅✅ {{ .Labels.alertname }}
 🚀 告警级别: {{ .Labels.severity }}
 🏷️ 故障地址: {{ .Labels.instance }}
 🕓 开始时间: {{ .StartsAt.Local.Format "2006-01-02 15:04:05" }}
