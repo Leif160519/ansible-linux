@@ -1,0 +1,40 @@
+{{ $var := .externalURL}}{{ range $k,$v:=.alerts -}}
+{{ if eq $v.status "resolved" -}}
+## [Prometheus恢复信息]($v.generatorURL)💨
+
+##### 🌟<font color="#02b340">【恢复名称】✅</font>[{{$v.labels.alertname}}]({{$var}})✅{{ if $v.labels.severity }}
+##### 🌟<font color="#02b340">【恢复级别】</font>
+{{- if eq $v.labels.severity "info" }}info 
+{{- else if eq $v.labels.severity "warning" }}warning
+{{- else if eq $v.labels.severity "critical" }}critical
+{{- else if eq $v.labels.severity "error" }}error 
+{{ else }}{{ $v.labels.severity }}
+{{ end -}}
+{{ end }}
+##### 🌟<font color="#02b340">【当前状态】</font><font color="#67C23A">已恢复</font>
+##### 🌟<font color="#02b340">【开始时间】</font>{{GetCSTtime $v.startsAt}}
+##### 🌟<font color="#02b340">【结束时间】</font>{{GetCSTtime $v.endsAt}}
+##### 🌟<font color="#02b340">【恢复区域】</font>{{$v.labels.number}} in {{$v.labels.channel}}
+
+**<font color="#02b340">{{$v.annotations.description}}</font>**
+{{ else -}}
+## [Prometheus告警信息]($v.generatorURL)💨
+
+##### 🌟<font color="#FF0000">【告警名称】🔔</font>[{{$v.labels.alertname}}]({{$var}})🔔{{ if $v.labels.severity }}
+##### 🌟<font color="#FF0000">【告警级别】</font>
+{{- if eq $v.labels.severity "info"}}info
+{{- else if eq $v.labels.severity "warning"}}warning 🔥
+{{- else if eq $v.labels.severity "critical"}}critical 💔💔
+{{- else if eq $v.labels.severity "error"}}error 🔥🔥❌
+{{ else }}{{ $v.labels.severity }}
+{{ end -}}
+{{ end }}
+##### 🌟<font color="#FF0000">【当前状态】</font><font color="#E6A23C">需要处理</font>
+##### 🌟<font color="#FF0000">【开始时间】</font>{{GetCSTtime $v.startsAt}}
+##### 🌟<font color="#FF0000">【故障区域】</font>{{$v.labels.number}} in {{$v.labels.channel}}
+
+**<font color="#E6A23C">{{$v.annotations.description}}</font>**💨💨
+
+## ✨[点我去屏蔽告警]({{$var}})✨
+{{ end -}}
+{{ end }}
