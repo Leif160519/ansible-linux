@@ -11,7 +11,7 @@
 若备份的路径中是非`/`下的挂载路径，则backuppc会默认不备份，需要修改rsync参数：
 打开backuppc首页=左手边选择“修改服务器配置”-切换到“传输”选项卡-在`RsyncArgs`选项中删除`--one-file-system`参数-点击”保存“
 
-官方文档解释：http:<backuppc-server>:<backuppc-port>/BackupPC_Admin?action=view&type=docs#_conf_rsyncsharename_
+官方文档解释：`http:<backuppc-server>:<backuppc-port>/BackupPC_Admin?action=view&type=docs#_conf_rsyncsharename_`
 ```
 $Conf{RsyncShareName} = '/';
 Share name to backup. For $Conf{XferMethod} = "rsync" this should be a file system path, eg '/' or '/home'.
