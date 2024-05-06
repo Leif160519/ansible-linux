@@ -1,0 +1,17 @@
+[idc]
+[idc:children]
+aliyun
+local
+
+[idc.aliyun]
+
+[idc.local]
+backuppc-server
+frp-client
+k8s-master-01
+k8s-node-01
+k8s-node-02
+k8s-node-03
+w2dc01
+fs-server
+w11lab01

@@ -52,3 +52,6 @@ k8s-node-03                  ansible_host=192.168.31.84
 template-centos7             ansible_host=192.168.31.27
 template-u2204               ansible_host=192.168.31.173
 frp-client                   ansible_host=192.168.31.251
+fs-server                    ansible_host=192.168.31.248
+w2dc01                       ansible_host=192.168.31.181        ansible_port=3389
+w11lab01                     ansible_host=192.168.31.252        ansible_port=3389

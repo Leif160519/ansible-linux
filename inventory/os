@@ -2,6 +2,7 @@
 [os:children] # 发行版 {{{
 os.debian
 os.redhat
+os.windows
 # }}}
 
 [os.debian:children] # debian 系 {{{
@@ -93,6 +94,7 @@ prometheus-server
 # }}}3
 
 [os.u2204] # {{{ 3
+fs-server
 backuppc-server
 template-u2204
 # }}}3
@@ -103,4 +105,9 @@ template-u2204
 # }}}
 
 [os.debian10] # {{{
+# }}}
+
+[os.windows] # {{{
+w2dc01
+w11lab01
 # }}}
