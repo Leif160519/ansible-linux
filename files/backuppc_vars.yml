@@ -80,8 +80,10 @@ extension:
     include_files:
       - /home/backuppc/
       - /etc/backuppc/
-      - /data/minio/
       - /etc/monit/
+  - hostname: fs-server
+    include_files:
+      - /data/minio/
       - /etc/exports
       - /var/lib/nfs/
       - /data/nfs/
