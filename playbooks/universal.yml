@@ -21,3 +21,6 @@
 
 # 配置backuppc
 - import_playbook: backuppc.yml
+
+# 添加资产到jumpserver
+- import_playbook: jumpserver.yml

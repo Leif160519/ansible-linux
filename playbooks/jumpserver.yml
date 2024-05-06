@@ -1,0 +1,4 @@
+- hosts: all
+  connection: local
+  roles:
+    - role: roles/leif160519.jumpserver

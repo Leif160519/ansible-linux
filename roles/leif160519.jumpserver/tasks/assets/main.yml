@@ -1,0 +1,120 @@
+---
+- include: nodes.yml
+
+- include: labels.yml
+
+- include: admin_user.yml
+
+- include: domains.yml
+
+- set_fact:
+    comment_list: []
+
+- set_fact:
+    comment_list: "{{ comment_list + apps | default('') }}"
+  when: apps is defined
+
+- set_fact:
+    comment_list: "{{ comment_list + comment | default('') }}"
+  when: comment is defined
+
+- name: query assets node id  # {{{
+  uri:
+    url: "{{ api.assets.assets }}?hostname={{ inventory_hostname }}"
+    method: GET
+    headers:
+      accept: "application/json"
+      Authorization: "Token {{ private_token }}"
+    return_content: true
+    timeout: 10
+    status_code: 200
+    validate_certs: no
+  register: query_result
+  failed_when: query_result.status not in [200]
+# }}}
+
+- name: create assets node  # {{{
+  uri:
+    url: "{{ api.assets.assets }}"
+    method: POST
+    headers:
+      accept: "application/json"
+      Authorization: "Token {{ private_token }}"
+      Content-Type: "application/json"
+    timeout: 10
+    body_format: json
+    body:
+      hostname: "{{ inventory_hostname }}"
+      ip: "{{ ansible_host }}"
+      platform: "{{ 'Windows' if 'os.windows' in group_names else 'Linux' }}"
+      protocols: [ "{{ 'rdp' if 'os.windows' in group_names else 'ssh' }}/{{ ansible_port }}" ]
+      admin_user: "{{ '' if 'os.windows' in group_names else admin_user }}"
+      nodes: "{{ node_list }}"
+      labels: "{{ label_list }}"
+      comment: "{{ comment_list | join(',') }}"
+      domain: "{{ domain | default('') }}"
+    return_content: true
+    status_code: 400,201
+    validate_certs: no
+  register: create_result
+  failed_when: create_result.status not in [400,201]
+  changed_when:
+    - create_result.status in [201]
+    - create_result.changed is true
+  when:
+    - query_result.status in [200]
+    - query_result.json | length == 0
+    - not ('off' in group_names)
+# }}}
+
+- name: update assets node  # {{{
+  uri:
+    url: "{{ api.assets.assets }}{{ query_result.json[0].id }}/"
+    method: PUT
+    headers:
+      accept: "application/json"
+      Authorization: "Token {{ private_token }}"
+      Content-Type: "application/json"
+    timeout: 10
+    body_format: json
+    body:
+      hostname: "{{ inventory_hostname }}"
+      ip: "{{ ansible_host }}"
+      platform: "{{ 'Windows' if 'os.windows' in group_names else 'Linux' }}"
+      protocols: [ "{{ 'rdp' if 'os.windows' in group_names else 'ssh' }}/{{ ansible_port }}" ]
+      admin_user: "{{ '' if 'os.windows' in group_names else admin_user }}"
+      nodes: "{{ node_list }}"
+      labels: "{{ label_list }}"
+      comment: "{{ comment_list | join(',') }}"
+      domain: "{{ domain | default('') }}"
+    return_content: true
+    status_code: 200
+    validate_certs: no
+  register: update_result
+  failed_when: update_result.status not in [200]
+  when:
+    - query_result.status in [200]
+    - query_result.json | length != 0
+    - not ('off' in group_names)
+# }}}
+
+- name: delete assets node  # {{{
+  uri:
+    url: "{{ api.assets.assets }}{{ query_result.json[0].id }}/"
+    method: DELETE
+    headers:
+      accept: "application/json"
+      Authorization: "Token {{ private_token }}"
+      Content-Type: "application/json"
+    timeout: 10
+    body_format: json
+    return_content: true
+    status_code: 204
+    validate_certs: no
+  register: delete_result
+  failed_when: delete_result.status not in [204]
+  when:
+    - query_result.status in [200]
+    - query_result.json | length != 0
+    - ('off' in group_names)
+# }}}

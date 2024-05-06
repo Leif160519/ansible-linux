@@ -1,0 +1,33 @@
+---
+- set_fact:
+    label_list: []
+
+- set_fact: # {{{ os
+    label_list: "{{ label_list + assets.labels.os.centos }}"
+  when: ('os.centos' in group_names)
+
+- set_fact:
+    label_list: "{{ label_list + assets.labels.os.ubuntu }}"
+  when: ('os.ubuntu' in group_names)
+
+- set_fact:
+    label_list: "{{ label_list + assets.labels.os.windows }}"
+  when: ('os.windows' in group_names)
+# }}}
+
+- set_fact: # {{{ env
+    label_list: "{{ label_list + assets.labels.env.prod }}"
+  when: ('env.prod' in group_names)
+
+- set_fact:
+    label_list: "{{ label_list + assets.labels.env.test }}"
+  when: ('env.test' in group_names)
+
+- set_fact:
+    label_list: "{{ label_list + assets.labels.env.pre }}"
+  when: ('env.pre' in group_names)
+
+- set_fact:
+    label_list: "{{ label_list + assets.labels.env.dev }}"
+  when: ('env.dev' in group_names)
+# }}}

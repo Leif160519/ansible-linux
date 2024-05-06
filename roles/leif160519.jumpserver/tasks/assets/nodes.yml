@@ -1,0 +1,17 @@
+---
+- set_fact:
+    node_list: []
+
+- set_fact:
+    apps: []
+  when: apps is not defined
+
+- set_fact: # {{{ idc.aliyun
+    node_list: "{{ node_list + assets.nodes.default.aliyun.root }}"
+  when: ('idc.aliyun' in group_names)
+# }}}
+
+- set_fact: # {{{ idc.local
+    node_list: "{{ node_list + assets.nodes.default.local.root }}"
+  when: ('idc.local' in group_names)
+# }}}

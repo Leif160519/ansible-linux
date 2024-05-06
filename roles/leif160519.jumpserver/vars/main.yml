@@ -1,0 +1,38 @@
+---
+server: jumpserver.github.icu
+api_prefix: "{{ server }}/api/v1"
+private_token: 5f9da0a9c4132952b94e7b40a172ccc57b703a5b
+
+api:
+  assets:
+    assets: "https://{{ api_prefix }}/assets/assets/"
+    system_users: "https://{{ api_prefix }}/assets/system-users/"
+  applications:
+    applications: "https://{{ api_prefix }}/applications/applications/"
+  perms:
+    application_permissions: "https://{{ api_prefix }}/perms/application-permissions/"
+user_groups:
+  default:
+    - 5f95e4b3-4fce-4cb3-9976-66ee2185a974
+assets:
+  nodes:
+    default:
+      root:
+        - b131fab7-253c-46ea-ad2a-bd73cb008668
+      aliyun:
+        root:
+          - 8b7e9431-f47b-46a9-a5b0-438cd88826c9
+      local:
+        root:
+          - f01461d6-591c-494f-8f1c-b723a4c183d6
+  labels:
+    os:
+      ubuntu:
+        - 78f3cd56-da34-427f-9d15-bf98704959d1
+      centos:
+        - 046399f6-d978-4670-b8af-f5648ee07853
+      windows:
+        - d42df35c-60e2-48ef-b083-47eccf5a2b3d
+  users:
+    root: d7b52ec3-7f21-43b2-af53-85e36246bfd5
+    self: d86f7b5a-de97-4e19-8e2f-20b951f8fb18
