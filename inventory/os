@@ -1,5 +1,6 @@
 [os]
 [os:children] # 发行版 {{{
+os.synology
 os.debian
 os.redhat
 os.windows
@@ -110,4 +111,8 @@ template-u2204
 [os.windows] # {{{
 w2dc01
 w11lab01
+# }}}
+
+[os.synology] # {{{
+synology
 # }}}
