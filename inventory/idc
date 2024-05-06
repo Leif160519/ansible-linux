@@ -1,7 +1,7 @@
 [idc]
 [idc:children]
-aliyun
-local
+idc.aliyun
+idc.local
 
 [idc.aliyun]
 
