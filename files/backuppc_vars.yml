@@ -87,6 +87,7 @@ extension:
       - /etc/exports
       - /var/lib/nfs/
       - /data/nfs/
+      - /etc/monit/
   - hostname: frp-client
     include_files:
       - /opt/frp/

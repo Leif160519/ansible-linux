@@ -13,9 +13,15 @@ pro.mysql
 pro.ingress
 pro.es
 pro.k8s
+pro.nfs
+pro.rsync
+pro.keepalived
+pro.etcd
+pro.frp
 # }}}
 
 [pro.minio] # {{{ minio 集群
+fs-server
 minio-proxy
 minio-cluster-1
 minio-cluster-2
@@ -31,24 +37,33 @@ pro.mfs.chunks
 pro.mfs.client
 
 [pro.mfs.master]
+k8s-master-01
 mfs-master
 
 [pro.mfs.slaver]
+k8s-node-01
+k8s-node-02
+k8s-node-03
 mfs-chunkserver-1
 mfs-chunkserver-2
 mfs-chunkserver-3
 
 [pro.mfs.chunks]
+k8s-node-01
+k8s-node-02
+k8s-node-03
 mfs-chunkserver-1
 mfs-chunkserver-2
 mfs-chunkserver-3
 
 [pro.mfs.client]
+k8s-master-01
 mfs-master
 backuppc-server
 # }}}
 
 [pro.redis] # {{{ redis 集群
+k8s-node-01
 redis-cluster-master-1
 redis-cluster-master-2
 redis-cluster-master-3
@@ -82,6 +97,7 @@ clickhouse-cluster-2
 # }}}
 
 [pro.nginx] # {{{ nginx节点
+k8s-master-01
 nginx-web-01
 nginx-web-02
 # }}}
@@ -96,6 +112,7 @@ emqx-cluster-2
 # }}}
 
 [pro.mysql] # {{{ mysql
+k8s-node-01
 mysql-server
 # }}}
 
@@ -106,9 +123,42 @@ es-cluster-3
 # }}}
 
 [pro.k8s] # {{{ kubernetes
-k8s-master-02
+[pro.k8s:children]
+pro.k8s.master
+pro.k8s.node
+
+[pro.k8s.master]
+k8s-master-01
+
+[pro.k8s.node]
 k8s-master-01
 k8s-node-01
 k8s-node-02
 k8s-node-03
+# }}}
+
+[pro.nfs] # {{{ nfs
+fs-server
+# }}}
+
+[pro.rsync] # {{{ rsync
+k8s-master-01
+# }}}
+
+[pro.keepalived] # {{{ keepalived
+k8s-master-01
+k8s-node-01
+k8s-node-02
+k8s-node-03
+# }}}
+
+[pro.etcd] # {{{ etcd
+k8s-master-01
+k8s-node-01
+k8s-node-02
+k8s-node-03
+# }}}
+
+[pro.frp] # {{{ frp
+frp-client
 # }}}

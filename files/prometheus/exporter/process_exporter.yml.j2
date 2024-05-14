@@ -5,6 +5,12 @@ process_names:
   - name: "{{'{{'}}.Matches{{'}}'}}"
     cmdline:
       - process-exporter
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - monit
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - dockerd
 {% if 'pro.filebeat' in group_names %}
   - name: "{{'{{'}}.Matches{{'}}'}}"
     cmdline:
@@ -128,8 +134,56 @@ process_names:
     cmdline:
       - promtail
 {% endif %}
-{% if 'pro.backup' in group_names %}
+{% if 'pro.k8s.master' in group_names %}
   - name: "{{'{{'}}.Matches{{'}}'}}"
     cmdline:
-      - mysqld_exporter
+      - containerd
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - kube-proxy
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - kube-scheduler
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - kubelet
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - kube-controller-manager
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - kube-apiserver
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - cri-docker
+{% endif %}
+{% if 'pro.nginx' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - nginx
+{% endif %}
+{% if 'pro.keepalived' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - keepalived
+{% endif %}
+{% if 'pro.rsync' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - rsync
+{% endif %}
+{% if 'pro.nfs' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - nfsd
+{% endif %}
+{% if 'pro.etcd' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - etcd
+{% endif %}
+{% if 'pro.frp' in group_names %}
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - frp
 {% endif %}
