@@ -1,6 +1,10 @@
 ---
 - name: init kubernetes master
   block:
+    - name: pull images
+      shell: kubeadm config --image-repository registry.aliyuncs.com/google_containers  --kubernetes-version=v1.25.14 images list | awk '{print "docker pull  "$0}' | bash
+      ignore_errors: true
+
     - name: init kubernetes
       shell: kubeadm init --pod-network-cidr={{ pod_network }} --image-repository {{ image_repository }} --apiserver-advertise-address={{ hostvars['k8s-master-01']['ansible_host'] }} --kubernetes-version=v{{ k8s_version }}
       ignore_errors: true
