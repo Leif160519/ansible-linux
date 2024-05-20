@@ -1,20 +1,30 @@
 {{- define "wechat.default.message" -}}
 {{- range .Alerts -}}
 {{- if le .EndsAt.Unix 0 -}}
-🔥🔥 {{ .Labels.alertname }}
-🚀 告警级别: {{ .Labels.severity }}
-🏷️ 故障地址: {{ .Labels.instance }}
-🕓 开始时间: {{ .StartsAt.Local.Format "2006-01-02 15:04:05" }}
-📝 告警摘要: {{ .Annotations.summary }}
+🔥 {{ .Labels.alertname }}
+告警级别: {{ .Labels.severity }}
+{{- if .Labels.all }}
+故障主机: {{ .Labels.all }}
 {{ end -}}
-{{- if gt .EndsAt.Unix 0 -}}
-✅✅ {{ .Labels.alertname }}
-🚀 告警级别: {{ .Labels.severity }}
-🏷️ 故障地址: {{ .Labels.instance }}
-🕓 开始时间: {{ .StartsAt.Local.Format "2006-01-02 15:04:05" }}
-🕓 恢复时间: {{ .EndsAt.Local.Format "2006-01-02 15:04:05" }}
-🕓 持续时间: {{ (.EndsAt.Sub .StartsAt).Truncate 1000000000 }}
-📝 告警摘要: {{ .Annotations.summary }}
+{{- if .Labels.comment }}
+主机备注: {{ .Labels.comment }}
 {{ end -}}
+故障地址: {{ .Labels.instance }}
+开始时间: {{ .StartsAt.Local.Format "2006-01-02 15:04:05" }}
+告警摘要: {{ .Annotations.summary }}{{ end -}}
+{{ else }}
+✅ {{ .Labels.alertname }}
+告警级别: {{ .Labels.severity }}
+{{- if .Labels.all }}
+故障主机: {{ .Labels.all }}
+{{ end -}}
+{{- if .Labels.comment }}
+主机备注: {{ .Labels.comment }}
+{{ end -}}
+故障地址: {{ .Labels.instance }}
+开始时间: {{ .StartsAt.Local.Format "2006-01-02 15:04:05" }}
+恢复时间: {{ .EndsAt.Local.Format "2006-01-02 15:04:05" }}
+持续时间: {{ (.EndsAt.Sub .StartsAt).Truncate 1000000000 }}
+告警摘要: {{ .Annotations.summary }}{{ end -}}
 {{ end -}}
 {{ end -}}
