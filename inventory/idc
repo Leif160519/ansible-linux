@@ -6,6 +6,7 @@ idc.local
 [idc.aliyun]
 
 [idc.local]
+k8s-node-04
 synology
 backuppc-server
 frp-client

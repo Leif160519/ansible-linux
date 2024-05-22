@@ -95,6 +95,7 @@ prometheus-server
 # }}}3
 
 [os.u2204] # {{{ 3
+k8s-master-04
 fs-server
 backuppc-server
 template-u2204

@@ -135,6 +135,7 @@ k8s-master-01
 k8s-node-01
 k8s-node-02
 k8s-node-03
+k8s-node-04
 # }}}
 
 [pro.nfs] # {{{ nfs
@@ -157,6 +158,7 @@ k8s-master-01
 k8s-node-01
 k8s-node-02
 k8s-node-03
+k8s-node-04
 # }}}
 
 [pro.frp] # {{{ frp
