@@ -100,6 +100,9 @@ process_names:
   - name: "{{'{{'}}.Matches{{'}}'}}"
     cmdline:
       - dockerd
+  - name: "{{'{{'}}.Matches{{'}}'}}"
+    cmdline:
+      - cri-dockerd
 {% endif %}
 {% if 'pro.p8s' in group_names %}
   - name: "{{'{{'}}.Matches{{'}}'}}"
@@ -155,7 +158,7 @@ process_names:
       - kube-apiserver
   - name: "{{'{{'}}.Matches{{'}}'}}"
     cmdline:
-      - cri-docker
+      - cri-dockerd
 {% endif %}
 {% if 'pro.nginx' in group_names %}
   - name: "{{'{{'}}.Matches{{'}}'}}"
