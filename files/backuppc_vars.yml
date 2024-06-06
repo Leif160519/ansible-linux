@@ -83,6 +83,20 @@ extension:
       - /var/lib/kubelet
       - /var/lib/cri-docker
       - /etc/monit/
+  - hostname: k8s-node-05
+    include_files:
+      - /opt/containerd/
+      - /opt/kubernetes/
+      - /var/lib/kubelet
+      - /var/lib/cri-docker
+      - /etc/monit/
+  - hostname: k8s-node-06
+    include_files:
+      - /opt/containerd/
+      - /opt/kubernetes/
+      - /var/lib/kubelet
+      - /var/lib/cri-docker
+      - /etc/monit/
   - hostname: backuppc-server
     include_files:
       - /home/backuppc/

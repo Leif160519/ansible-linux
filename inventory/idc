@@ -7,6 +7,8 @@ idc.local
 
 [idc.local]
 k8s-node-04
+k8s-node-05
+k8s-node-06
 synology
 backuppc-server
 frp-client
