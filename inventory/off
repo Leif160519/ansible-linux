@@ -1,4 +1,6 @@
 [off] # 下线的机器
+k8s-node-05
+k8s-node-06
 k8s-master-02
 prometheus-server
 gitlab-server
