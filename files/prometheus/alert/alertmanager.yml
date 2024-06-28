@@ -10,11 +10,16 @@ templates:
   - /etc/prometheus/conf.d/email.tmpl
 
 inhibit_rules:
-  - source_match:
+  - source_match:  # 严重抑制警告
       severity: critical
     target_match:
       severity: warning
     equal: [ all, alertname ]
+  - source_match: ## 节点失联抑制进程退出
+      alertname: 节点失联
+    target_match:
+      alertname: 进程退出
+    equal: [ all ]
 
 route:
   group_by: ['alertname','job']
