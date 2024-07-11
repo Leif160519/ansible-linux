@@ -2,21 +2,10 @@
 {{- if eq $v.status "resolved" }}
 **[恢复信息]({{ $v.generatorURL }})**
 *✅[{{$v.labels.alertname}}]({{ $var }})*
-告警状态：{{$v.status}}
-告警级别：{{ $v.labels.level }}
-{{- if $v.labels.instance }}
-故障地址：{{ $v.labels.instance }}{{ end -}}
-{{- if $v.labels.all }}
-故障主机：{{ $v.labels.all }}{{ end -}}
-开始时间：{{ GetCSTtime $v.startsAt }}
-结束时间：{{ GetCSTtime $v.endsAt }}
-当前时间：{{ GetCSTtime "" }}
-摘要信息：{{ $v.annotations.summary }}
-{{- if $v.annotations.description }}
-描述信息：{{ $v.annotations.description }}{{ end -}}
-{{ else }}
+{{ else -}}
 **[告警信息]({{ $v.generatorURL }})**
 *⛔[{{$v.labels.alertname}}]({{ $var }})*
+{{ end -}}
 告警状态：{{$v.status}}
 告警级别：{{ $v.labels.level }}
 {{- if $v.labels.instance }}
@@ -24,11 +13,12 @@
 {{- if $v.labels.all }}
 故障主机：{{ $v.labels.all }}{{ end -}}
 开始时间：{{ GetCSTtime $v.startsAt }}
+{{- if eq $v.status "resolved" }}
+结束时间：{{ GetCSTtime $v.endsAt }}{{ end }}
 当前时间：{{ GetCSTtime "" }}
 摘要信息：{{ $v.annotations.summary }}
 {{- if $v.annotations.description }}
 描述信息：{{ $v.annotations.description }}{{ end -}}
-{{ end -}}
 {{ end -}}
 {{ $urimsg:=""}}{{ range $key,$value:=.commonLabels }}{{ $urimsg = print $urimsg $key "=\"" $value "\"," }}{{ end }}
 {{ $data:=urlquery $urimsg }}[点我屏蔽该告警]({{ $var }}/#/silences/new?filter=%7B{{ SplitString $data 0 -3 }}%7D)
