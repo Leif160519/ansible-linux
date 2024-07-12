@@ -1,0 +1,42 @@
+exporter:
+  listen_address: ':9943'
+  metrics_path: /metrics
+  enable_crc32_metric: true
+  enable_nb_line_metric: true
+  working_directory: "/"
+  files:
+{% if ansible_os_family == "Debian" %}
+    - patterns: ["/boot/grub/grub.cfg"]
+    - patterns: ["/var/spool/cron/crontabs/*"]
+{% endif %}
+{% if ansible_os_family == "Debian" %}
+{% if ansible_distribution_version is version('16.04', '<=') %}
+    - patterns: ["/etc/network/interfaces"]
+{% endif %}
+{% endif %}
+{% if ansible_distribution == "Ubuntu" %}
+{% if ansible_distribution_version is version('18.04', '>=') %}
+    - patterns: ["/etc/netplan/*"]
+{% endif %}
+{% endif %}
+{% if ansible_os_family == "RedHat" %}
+    - patterns: ["/etc/sysconfig/network-scripts/ifcfg-*"]
+    - patterns: ["/var/spool/cron/*"]
+{% endif %}
+    - patterns: ["/root/.ssh/*"]
+    - patterns: ["/etc/fstab"]
+    - patterns: ["/etc/ssh/ssh*_config"]
+    - patterns: ["/etc/profile"]
+    - patterns: ["/etc/passwd"]
+    - patterns: ["/etc/group"]
+    - patterns: ["/etc/shadow"]
+    - patterns: ["/etc/gshadow"]
+    - patterns: ["/etc/sudoers"]
+    - patterns: ["/etc/sudoers.d/*"]
+    - patterns: ["/etc/default/grub"]
+    - patterns: ["/etc/crontab"]
+{% if (filestat_instance | length) > 0 %}
+{% for item in filestat_instance[0] %}
+    - patterns: ["{{ item }}"]
+{% endfor %}
+{% endif %}
