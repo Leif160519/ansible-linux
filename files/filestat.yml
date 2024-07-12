@@ -24,7 +24,7 @@ filestat:
       - /etc/kubernetes/cfg/*
       - /etc/etcd/bin/*
       - /etc/etcd/cfg/*
-      = /etc/etcd/ssl/*
+      - /etc/etcd/ssl/*
   - hostname: k8s-node-03
     include_files:
       - /etc/kubernetes/ssl/*
