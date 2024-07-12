@@ -9,6 +9,8 @@ filestat:
       - /etc/etcd/bin/*
       - /etc/etcd/cfg/*
       - /etc/etcd/ssl/*
+      - /etc/keepalived/*
+      - /etc/mfs/*
   - hostname: k8s-node-01
     include_files:
       - /etc/kubernetes/ssl/*
@@ -17,6 +19,8 @@ filestat:
       - /etc/etcd/bin/*
       - /etc/etcd/cfg/*
       - /etc/etcd/ssl/*
+      - /etc/keepalived/*
+      - /etc/mfs/*
   - hostname: k8s-node-02
     include_files:
       - /etc/kubernetes/ssl/*
@@ -25,6 +29,8 @@ filestat:
       - /etc/etcd/bin/*
       - /etc/etcd/cfg/*
       - /etc/etcd/ssl/*
+      - /etc/keepalived/*
+      - /etc/mfs/*
   - hostname: k8s-node-03
     include_files:
       - /etc/kubernetes/ssl/*
@@ -33,6 +39,8 @@ filestat:
       - /etc/etcd/bin/*
       - /etc/etcd/cfg/*
       - /etc/etcd/ssl/*
+      - /etc/keepalived/*
+      - /etc/mfs/*
   - hostname: k8s-node-04
     include_files:
       - /etc/kubernetes/ssl/*
