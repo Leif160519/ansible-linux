@@ -1,0 +1,12 @@
+groups:
+  - name: filestat rule
+    rules:
+    - alert: 配置文件
+      expr: |
+        delta(file_content_hash_crc32{path!~".*.swp"}[5m]) != 0
+      for: 2m
+      labels:
+        severity: warning
+        level: P1
+      annotations:
+        summary: "{{ $labels.path }} 已被修改"

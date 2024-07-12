@@ -1,0 +1,47 @@
+---
+filestat:
+  - hostname: k8s-master-01
+    include_files:
+      - /etc/nginx/*
+      - /etc/kubernetes/ssl/*
+      - /etc/kubernetes/bin/*
+      - /etc/kubernetes/cfg/*
+      - /etc/etcd/bin/*
+      - /etc/etcd/cfg/*
+      = /etc/etcd/ssl/*
+  - hostname: k8s-node-01
+    include_files:
+      - /etc/kubernetes/ssl/*
+      - /etc/kubernetes/bin/*
+      - /etc/kubernetes/cfg/*
+      - /etc/etcd/bin/*
+      - /etc/etcd/cfg/*
+      = /etc/etcd/ssl/*
+  - hostname: k8s-node-02
+    include_files:
+      - /etc/kubernetes/ssl/*
+      - /etc/kubernetes/bin/*
+      - /etc/kubernetes/cfg/*
+      - /etc/etcd/bin/*
+      - /etc/etcd/cfg/*
+      = /etc/etcd/ssl/*
+  - hostname: k8s-node-03
+    include_files:
+      - /etc/kubernetes/ssl/*
+      - /etc/kubernetes/bin/*
+      - /etc/kubernetes/cfg/*
+      - /etc/etcd/bin/*
+      - /etc/etcd/cfg/*
+      = /etc/etcd/ssl/*
+  - hostname: k8s-node-04
+    include_files:
+      - /etc/kubernetes/ssl/*
+      - /etc/kubernetes/bin/*
+      - /etc/kubernetes/cfg/*
+  - hostname: backuppc-server
+    include_files:
+      - /etc/backuppc/*
+      - /home/backuppc/*
+  - hostname: fs-server
+    include_files:
+      - /etc/exports

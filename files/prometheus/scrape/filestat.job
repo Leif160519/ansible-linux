@@ -1,0 +1,4 @@
+- job_name: "filestat"
+  file_sd_configs:
+    - files: [ "/etc/prometheus/file_sd/filestat.yml" ]
+  honor_labels: true
