@@ -32,6 +32,7 @@
             name: "{{ item }}"
             state: latest
           with_items:
+            - rsync
             - yum-utils
             - epel-release
             - nagios                        # 主要用于监控一台或者多台本地主机及远程的各种信息，包括本机资源及对外的服务等
