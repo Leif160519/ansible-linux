@@ -222,7 +222,6 @@
             - highlight                     # 高亮显示
             - speedtest-cli                 # 带宽测试工具
             - pwgen                         # 一个生成随机、无特殊含义但可以正常拼读的密码
-            - slurm                         # 网卡监控
           ignore_errors: yes
       # }}}
 

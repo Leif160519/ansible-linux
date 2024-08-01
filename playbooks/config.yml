@@ -237,14 +237,6 @@
             path: /etc/bash.d
             state: directory
 
-        - template:
-            src: files/bash.d/bash-ps1.sh.j2
-            dest: /etc/bash.d/bash-ps1.sh
-            force: yes
-            mode: 0755
-            owner: root
-            group: root
-
         - copy:
             src: "{{ item }}"
             dest: /etc/bash.d/
@@ -252,7 +244,16 @@
             owner: root
             group: root
           with_fileglob:
-            - "files/bash.d/*.sh"
+            - "files/bash.d/bash-*.sh"
+
+        - copy:
+            src: "{{ item }}"
+            dest: /etc/profile.d/
+            mode: 0644
+            owner: root
+            group: root
+          with_fileglob:
+            - files/bash.d/systeminfl.sh
 
         - blockinfile:
             dest: "~{{ username }}/.bashrc"
@@ -268,7 +269,6 @@
                 done
                 unset i
               fi
-
   # }}}
 
 - name: 11.Configure clock & time zone # {{{
