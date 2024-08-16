@@ -59,3 +59,4 @@ fs-server                    ansible_host=192.168.31.248
 w2dc01                       ansible_host=192.168.31.181        ansible_port=3389
 w11lab01                     ansible_host=192.168.31.252        ansible_port=3389
 synology                     ansible_host=192.168.31.250
+gpt-server                   ansible_host=192.168.31.150
