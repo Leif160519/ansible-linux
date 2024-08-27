@@ -49,3 +49,4 @@ template-centos7
 template-u2204
 synology
 frp-client
+gpt-server
