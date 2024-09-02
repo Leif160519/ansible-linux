@@ -9,7 +9,7 @@
 ```
 vars:
   docker_root_dir: /var/lib/docker
-  address: 198.18.0.0/16
+  address: 172.16.0.0/16
   size: 24
   mirrors1: http://hub-mirror.c.163.com
   mirrors2: https://b9pmyelo.mirror.aliyuncs.com
