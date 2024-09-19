@@ -6,7 +6,6 @@ exporter:
   working_directory: "/"
   files:
 {% if ansible_os_family == "Debian" %}
-    - patterns: ["/boot/grub/grub.cfg"]
     - patterns: ["/var/spool/cron/crontabs/*"]
 {% endif %}
 {% if ansible_os_family == "Debian" %}
