@@ -112,7 +112,7 @@ cd /mnt/mfsmeta
 
 # 4.根据关键字查找元数据
 find trash/ -type f -name "*file1*"
-trash/00E/0000000E|dir1|file1    #查找到的这样的才是数据文件
+trash/00E/0000000E|dir1|file1    #查找到的这样的才是数据文件,若查找出多个，选最下面那个即可，一般是按照时间升序排列的
 
 # 5.进入查找到的目录
 cd trash/00E/
