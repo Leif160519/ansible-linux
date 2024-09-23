@@ -84,10 +84,48 @@ moosefs_active_quotas_current_inodes{path="mfs_path_3"} 761
 
 #### f.使用grafana看板：[Moosefs Overview][6]
 
-## 5.参考
+## 5.数据删除恢复
+- 删除数据
+```
+# 1.删除某个文件
+find dir1/file1 -delete
+
+# 2.查看dir1的垃圾回收时间
+mfsgettrashtime /mnt/mfs/dir1/
+/mnt/mfs/dir1/: 86400	#这里的计数是秒，超过这个时间就会永久删除
+
+```
+
+- 恢复数据
+```
+# 1.创建目录以存放元数据
+mkdir /mnt/mfsmeta
+
+# 2.挂载moosefs元数据
+mfsmount -m /mnt/mfsmeta/
+
+# 3.进入元数据目录
+cd /mnt/mfsmeta
+
+# 4.根据关键字查找元数据
+find trash/ -type f -name "*file1*"
+trash/00E/0000000E|dir1|file1	#查找到的这样的才是数据文件
+
+# 5.进入查找到的目录
+cd trash/00E/
+
+# 6.将查找到的元数据移动到不删除目录中
+mv '0000000E|dir1|file1' undel/
+
+# 7.检查文件是否恢复
+cat /mnt/mfs/dir1/file1
+```
+
+## 6.参考
 - [MFS(二)---mfs使用 数据恢复 StorageClass详解][2]
 - [Centos下MooseFS（MFS）分布式存储共享环境部署记录][3]
 - [moosefs-3-0-users-manual.pdf][7]
+- [MooseFS数据恢复][8]
 
 [1]: https://moosefs.com/download/
 [2]: https://blog.csdn.net/qq_35887546/article/details/106973960
@@ -96,3 +134,4 @@ moosefs_active_quotas_current_inodes{path="mfs_path_3"} 761
 [5]: https://github.com/Leif160519/docker-script/tree/master/moosefs
 [6]: https://grafana.com/grafana/dashboards/16700-moosefs-overview/
 [7]: https://moosefs.com/Content/Downloads/moosefs-3-0-users-manual.pdf
+[8]: https://blog.csdn.net/Howei__/article/details/106357517/#MooseFS_368
