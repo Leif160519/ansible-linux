@@ -94,6 +94,9 @@ find dir1/file1 -delete
 mfsgettrashtime /mnt/mfs/dir1/
 /mnt/mfs/dir1/: 86400	#这里的计数是秒，超过这个时间就会永久删除
 
+# 3.若垃圾回收时间过短，且根据判断短时间内数据无法完全恢复的话，可以先将垃圾回收设置成无限大
+mfssettrashtime 86400000000 -R /mnt/mfs/dir1/
+
 ```
 
 - 恢复数据
@@ -109,7 +112,7 @@ cd /mnt/mfsmeta
 
 # 4.根据关键字查找元数据
 find trash/ -type f -name "*file1*"
-trash/00E/0000000E|dir1|file1	#查找到的这样的才是数据文件
+trash/00E/0000000E|dir1|file1    #查找到的这样的才是数据文件
 
 # 5.进入查找到的目录
 cd trash/00E/
