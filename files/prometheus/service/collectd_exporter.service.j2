@@ -1,0 +1,24 @@
+{{ ansible_managed | comment }}
+
+
+[Unit]
+Description=collectd_exporter
+After=network-online.target
+
+[Service]
+Type=simple
+Environment="GOMAXPROCS={{ ansible_processor_vcpus|default(ansible_processor_count) }}"
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/opt/collectd_exporter/collectd_exporter \
+  --web.listen-address=:9103 \
+  --collectd.listen-address=:25826
+
+ProtectSystem=full
+
+SyslogIdentifier=prometheus
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

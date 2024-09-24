@@ -15,6 +15,7 @@
     # vms数据保留时间(单位:月)
     victoria_metrics_retention_period: 6
     alertmanager_root_dir: /opt/alertmanager
+    collectd_exporter_root_dir: /opt/collectd_exporter
     node_exporter_root_dir: /opt/node_exporter
     blackbox_exporter_root_dir: /opt/black_exporter
     prometheusalert_root_dir: /opt/prometheusalert
@@ -37,6 +38,7 @@
     prometheus_version: 2.40.5
     victoria_metrics_version: v1.87.1
     alertmanager_version: 0.24.0
+    collectd_exporter_version: 0.6.0
     node_exporter_version: 1.4.0
     blackbox_exporter_version: 0.22.0
     prometheusalert_version: v4.8.2
@@ -57,6 +59,7 @@
     prometheus_tag: prometheus-{{ prometheus_version }}.linux-amd64
     victoria_metrics_tag: victoria-metrics-linux-amd64-{{ victoria_metrics_version }}
     alertmanager_tag: alertmanager-{{ alertmanager_version }}.linux-amd64
+    collectd_exporter_tag: collectd_exporter-{{ collectd_exporter_version }}.linux-amd64
     node_exporter_tag: node_exporter-{{ node_exporter_version }}.linux-amd64
     blackbox_exporter_tag: blackbox_exporter-{{ blackbox_exporter_version }}.linux-amd64
     prometheusalert_tag: "{{ prometheusalert_version }}"
@@ -77,6 +80,7 @@
     prometheus_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/{{ prometheus_tag }}.tar.gz
     victoria_metrics_url: https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/{{ victoria_metrics_version }}/{{ victoria_metrics_tag }}.tar.gz
     alertmanager_url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/{{ alertmanager_tag }}.tar.gz
+    collectd_exporter_url: https://github.com/prometheus/collectd_exporter/releases/download/v{{ collectd_exporter_version }}/{{ collectd_exporter_tag }}.tar.gz
     node_exporter_url: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/{{ node_exporter_tag }}.tar.gz
     blackbox_exporter_url: https://github.com/prometheus/blackbox_exporter/releases/download/v{{ blackbox_exporter_version }}/{{ blackbox_exporter_tag }}.tar.gz
     prometheusalert_url: https://github.com/feiyu563/PrometheusAlert/releases/download/{{ prometheusalert_tag }}/linux.zip
@@ -359,6 +363,50 @@
       - name: 启动alertmanager服务
         service:
           name: alertmanager
+          state: started
+          daemon_reload: true
+          enabled: true
+        # }}}
+
+    - name: collectd_exporter # {{{
+      tags: [never, collectd_exporter]
+      block:
+      - name: stat collectd_exporter
+        stat:
+          path: "{{ collectd_exporter_root_dir }}"
+        register: c
+
+      - name: 解压collectd_exporter安装包
+        unarchive:
+          src: "{{ collectd_exporter_url }}"
+          dest: /opt
+          owner: prometheus
+          group: prometheus
+          remote_src: yes
+        when: c.stat.exists == false
+
+      - name: 重命名collectd_exporter目录
+        command: mv /opt/{{ collectd_exporter_tag }} {{ collectd_exporter_root_dir }}
+        when: c.stat.exists == false
+
+      - name: 创建collectd_exporter软链接
+        file:
+          src: "{{ collectd_exporter_root_dir }}/{{ item }}"
+          dest: "/usr/local/bin/{{ item }}"
+          state: link
+          force: true
+        with_items:
+          - collectd_exporter
+
+      - name: 创建collectd_exporter服务
+        template:
+          src: files/prometheus/service/collectd_exporter.service.j2
+          dest: /lib/systemd/system/collectd_exporter.service
+          mode: 0644
+
+      - name: 启动collectd_exporter服务
+        service:
+          name: collectd_exporter
           state: started
           daemon_reload: true
           enabled: true
