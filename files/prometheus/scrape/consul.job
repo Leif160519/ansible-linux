@@ -1,0 +1,4 @@
+- job_name: consul
+  static_configs:
+    - targets:
+        - {{ ansible_host }}:9107

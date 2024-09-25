@@ -1,0 +1,23 @@
+{{ ansible_managed | comment }}
+
+
+[Unit]
+Description=domain_exporter
+After=network-online.target
+
+[Service]
+Type=simple
+Environment="GOMAXPROCS={{ ansible_processor_vcpus|default(ansible_processor_count) }}"
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/opt/domain_exporter/domain_exporter \
+    --bind=":9222"
+
+ProtectSystem=full
+
+SyslogIdentifier=prometheus
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

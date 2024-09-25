@@ -1,0 +1,12 @@
+- job_name: domain
+  metrics_path: /probe
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - target_label: __address__
+      replacement: {{ ansible_host }}:9222 # domain_exporter address
+    - target_label: instance
+      source_labels: [__param_target]
+  static_configs:
+    - targets:
+      - baidu.com

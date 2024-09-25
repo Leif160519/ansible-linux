@@ -1,0 +1,22 @@
+groups:
+  - name: ssl-exporter
+    rules:
+    - alert: 证书有效期
+      expr: ssl_cert_not_after - time() / 86400 < 7
+      for: 1m
+      labels:
+        severity: warning
+        level: P1
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "剩余 {{ $value }}d"
+
+    - alert: 证书有效期
+      expr: ssl_cert_not_after - time() / 3600  < 24
+      for: 1m
+      labels:
+        severity: critical
+        level: P0
+        channels: "@linux/feishu;"
+      annotations:
+        summary: "不足24h,剩余 {{ $value }}h"

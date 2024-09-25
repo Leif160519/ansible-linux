@@ -16,6 +16,9 @@
     victoria_metrics_retention_period: 6
     alertmanager_root_dir: /opt/alertmanager
     collectd_exporter_root_dir: /opt/collectd_exporter
+    consul_exporter_root_dir: /opt/consul_exporter
+    ssl_exporter_root_dir: /opt/ssl_exporter
+    domain_exporter_root_dir: /opt/domain_exporter
     node_exporter_root_dir: /opt/node_exporter
     blackbox_exporter_root_dir: /opt/black_exporter
     prometheusalert_root_dir: /opt/prometheusalert
@@ -39,6 +42,9 @@
     victoria_metrics_version: v1.87.1
     alertmanager_version: 0.24.0
     collectd_exporter_version: 0.6.0
+    consul_exporter_version: 0.12.1
+    ssl_exporter_version: 2.4.3
+    domain_exporter_version: 1.23.0
     node_exporter_version: 1.4.0
     blackbox_exporter_version: 0.22.0
     prometheusalert_version: v4.8.2
@@ -60,6 +66,9 @@
     victoria_metrics_tag: victoria-metrics-linux-amd64-{{ victoria_metrics_version }}
     alertmanager_tag: alertmanager-{{ alertmanager_version }}.linux-amd64
     collectd_exporter_tag: collectd_exporter-{{ collectd_exporter_version }}.linux-amd64
+    consul_exporter_tag: consul_exporter-{{ consul_exporter_version }}.linux-amd64
+    ssl_exporter_tag: ssl_exporter_{{ consul_exporter_version }}_linux_amd64
+    domain_exporter_tag: domain_exporter_{{ domain_exporter_version }}_linux_amd64
     node_exporter_tag: node_exporter-{{ node_exporter_version }}.linux-amd64
     blackbox_exporter_tag: blackbox_exporter-{{ blackbox_exporter_version }}.linux-amd64
     prometheusalert_tag: "{{ prometheusalert_version }}"
@@ -81,6 +90,9 @@
     victoria_metrics_url: https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/{{ victoria_metrics_version }}/{{ victoria_metrics_tag }}.tar.gz
     alertmanager_url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/{{ alertmanager_tag }}.tar.gz
     collectd_exporter_url: https://github.com/prometheus/collectd_exporter/releases/download/v{{ collectd_exporter_version }}/{{ collectd_exporter_tag }}.tar.gz
+    consul_exporter_url: https://github.com/prometheus/consul_exporter/releases/download/v{{ consul_exporter_version }}/{{ consul_exporter_tag }}.tar.gz
+    ssl_exporter_url: https://github.com/ribbybibby/ssl_exporter/releases/download/v{{ ssl_exporter_version }}/{{ ssl_exporter_tag }}.tar.gz
+    domain_exporter_url: https://github.com/caarlos0/domain_exporter/releases/download/v{{ domain_exporter_version }}/{{ domain_exporter_tag }}.tar.gz
     node_exporter_url: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/{{ node_exporter_tag }}.tar.gz
     blackbox_exporter_url: https://github.com/prometheus/blackbox_exporter/releases/download/v{{ blackbox_exporter_version }}/{{ blackbox_exporter_tag }}.tar.gz
     prometheusalert_url: https://github.com/feiyu563/PrometheusAlert/releases/download/{{ prometheusalert_tag }}/linux.zip
@@ -407,6 +419,146 @@
       - name: 启动collectd_exporter服务
         service:
           name: collectd_exporter
+          state: started
+          daemon_reload: true
+          enabled: true
+        # }}}
+
+    - name: ssl_exporter # {{{
+      tags: [never, ssl_exporter]
+      block:
+      - name: stat ssl_exporter
+        stat:
+          path: "{{ ssl_exporter_root_dir }}"
+        register: s
+
+      - name: 创建解压文件夹
+        file:
+          path: /opt/ssl_exporter
+          state: directory
+          owner: prometheus
+          group: prometheus
+          mode: 0755
+
+      - name: 解压ssl_exporter安装包
+        unarchive:
+          src: "{{ ssl_exporter_url }}"
+          dest: /opt/ssl_exporter
+          owner: prometheus
+          group: prometheus
+          remote_src: yes
+        when: s.stat.exists == false
+
+      - name: 创建ssl_exporter软链接
+        file:
+          src: "{{ ssl_exporter_root_dir }}/{{ item }}"
+          dest: "/usr/local/bin/{{ item }}"
+          state: link
+          force: true
+        with_items:
+          - ssl_exporter
+
+      - name: 创建ssl_exporter服务
+        template:
+          src: files/prometheus/service/ssl_exporter.service.j2
+          dest: /lib/systemd/system/ssl_exporter.service
+          mode: 0644
+
+      - name: 启动ssl_exporter服务
+        service:
+          name: ssl_exporter
+          state: started
+          daemon_reload: true
+          enabled: true
+        # }}}
+
+    - name: consul_exporter # {{{
+      tags: [never, consul_exporter]
+      block:
+      - name: stat consul_exporter
+        stat:
+          path: "{{ consul_exporter_root_dir }}"
+        register: c
+
+      - name: 解压consul_exporter安装包
+        unarchive:
+          src: "{{ consul_exporter_url }}"
+          dest: /opt
+          owner: prometheus
+          group: prometheus
+          remote_src: yes
+        when: c.stat.exists == false
+
+      - name: 重命名consul_exporter目录
+        command: mv /opt/{{ consul_exporter_tag }} {{ consul_exporter_root_dir }}
+        when: c.stat.exists == false
+
+      - name: 创建consul_exporter软链接
+        file:
+          src: "{{ consul_exporter_root_dir }}/{{ item }}"
+          dest: "/usr/local/bin/{{ item }}"
+          state: link
+          force: true
+        with_items:
+          - consul_exporter
+
+      - name: 创建consul_exporter服务
+        template:
+          src: files/prometheus/service/consul_exporter.service.j2
+          dest: /lib/systemd/system/consul_exporter.service
+          mode: 0644
+
+      - name: 启动consul_exporter服务
+        service:
+          name: consul_exporter
+          state: started
+          daemon_reload: true
+          enabled: true
+        # }}}
+
+    - name: domain_exporter # {{{
+      tags: [never, domain_exporter]
+      block:
+      - name: stat domain_exporter
+        stat:
+          path: "{{ domain_exporter_root_dir }}"
+        register: d
+
+      - name: 创建解压文件夹
+        file:
+          path: /opt/domain_exporter
+          state: directory
+          owner: prometheus
+          group: prometheus
+          mode: 0755
+
+      - name: 解压domain_exporter安装包
+        unarchive:
+          src: "{{ domain_exporter_url }}"
+          dest: /opt/domain_exporter
+          owner: prometheus
+          group: prometheus
+          remote_src: yes
+        when: d.stat.exists == false
+
+      - name: 创建domain_exporter软链接
+        file:
+          src: "{{ domain_exporter_root_dir }}/{{ item }}"
+          dest: "/usr/local/bin/{{ item }}"
+          state: link
+          force: true
+        with_items:
+          - domain_exporter
+
+      - name: 创建domain_exporter服务
+        template:
+          src: files/prometheus/service/domain_exporter.service.j2
+          dest: /lib/systemd/system/domain_exporter.service
+          mode: 0644
+
+      - name: 启动domain_exporter服务
+        service:
+          name: domain_exporter
           state: started
           daemon_reload: true
           enabled: true
