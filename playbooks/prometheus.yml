@@ -47,7 +47,7 @@
     domain_exporter_version: 1.23.0
     node_exporter_version: 1.4.0
     blackbox_exporter_version: 0.22.0
-    prometheusalert_version: v4.8.2
+    prometheusalert_version: v4.9.1
     nginx_exporter_version: 0.10.0
     consul_version: 1.14.5
     mysqld_exporter_version: 0.14.0
