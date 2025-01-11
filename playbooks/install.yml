@@ -1156,3 +1156,20 @@
         group: root
         mode: u+x
 # }}}
+
+- name: Install fzf # {{{
+  hosts: all:&os.centos
+  tags: never, fzf
+  tasks:
+    - unarchive:
+        src: https://github.com/junegunn/fzf/releases/download/v0.57.0/fzf-0.57.0-linux_amd64.tar.gz
+        dest: /usr/bin/
+        owner: root
+        group: root
+        mode: u+x
+        remote_src: true
+
+    - lineinfile:
+        path: /etc/profile
+        line: 'eval "$(fzf --bash)"'
+# }}}
