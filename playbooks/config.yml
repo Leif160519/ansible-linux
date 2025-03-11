@@ -254,6 +254,18 @@
             group: root
           with_fileglob:
             - files/bash.d/systeminfo.sh
+          when: not ('os.synology' in group_names)
+
+        - copy:
+            src: "{{ item }}"
+            dest: /etc/profile.d/
+            mode: 0644
+            owner: root
+            group: root
+          with_fileglob:
+            - files/bash.d/systeminfo-synology.sh
+          when: ('os.synology' in group_names)
+
 
         - blockinfile:
             dest: "~{{ username }}/.bashrc"
