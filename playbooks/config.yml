@@ -59,6 +59,11 @@
           hostname:
             name: "{{ inventory_hostname }}"
 
+        - name: configure hosts
+          lineinfile:
+            file: /etc/hosts
+            line: "{{ ansible_host }} {{ inventory_hostname }}"
+
 #        - name: configure hosts
 #          template:
 #            src: files/hosts.j2
