@@ -144,6 +144,7 @@
             - atop
             - iotop                         # iotop命令是一个用来监视磁盘I/O使用状况的top类工具
             - nethogs                       # 是一个开源的命令行工具（类似于Linux的top命令），用来按进程或程序实时统计网络带宽使用率
+            - numactl
             - mrtg                          # 是通过SNMP 协议，向运行snmp协议主机询问相关的资料后，主机传递数值给MRTG ，然后MRTG 再绘制成网页上的图表
             - telnet
             - traceroute
