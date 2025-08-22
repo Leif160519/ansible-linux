@@ -1,4 +1,11 @@
 ---
+- name: Make sure /etc/backuppc/pc directory is exists
+  file:
+    path: /etc/backup/pc
+    state: directory
+    owner: "backuppc"
+    group: "backuppc"
+    mode: 0755
 
 - name: TEMPLATE | Put host specific config on BackupPC server
   tags: client
