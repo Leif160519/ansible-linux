@@ -6,6 +6,7 @@
     owner: "backuppc"
     group: "backuppc"
     mode: 0755
+  run_once: true
 
 - name: TEMPLATE | Put host specific config on BackupPC server
   tags: client
