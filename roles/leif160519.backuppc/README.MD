@@ -1,6 +1,6 @@
 ## 使用ansible管理backuppc备份
 - 项目改造于[HanXHX/ansible-backuppc][1]
-- backuppc部署参考：[backuppc][https://github.com/Leif160519/docker-script/tree/master/backuppc]
+- backuppc部署参考：[backuppc](https://github.com/Leif160519/docker-script/tree/master/backuppc)
 
 ## 注意
 - 资产名称必须为小写
