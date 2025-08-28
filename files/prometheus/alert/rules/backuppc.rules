@@ -92,4 +92,4 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "{{ $labels.all }}超过12h，当前{{ $value }}h"
+        summary: "{{ $labels.all }}超过12h，当前{{ $value | humanize }}h"
