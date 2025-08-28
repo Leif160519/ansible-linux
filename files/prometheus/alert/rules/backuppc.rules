@@ -54,7 +54,7 @@ groups:
       annotations:
         summary: "{{ $labels.all }}超过15天未全备"
 
-    - alert: 增量备份间隔异常，超过设定值2倍
+    - alert: 增备间隔异常
       expr: time() - backuppc_hosts_incr_age > 2*backuppc_hosts_incr_period
       for: 2m
       labels:
@@ -62,7 +62,7 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "{{ $labels.all }}增量备份间隔异常，检查备份策略配置"
+        summary: "{{ $labels.all }}超过设定值2倍，检查备份策略配置"
 
     - alert: 磁盘inode耗尽风险
       expr: backuppc_disk_inode_usage > 80
@@ -92,4 +92,4 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "全备持续时间过长，超过12h"
+        summary: "超过12h"
