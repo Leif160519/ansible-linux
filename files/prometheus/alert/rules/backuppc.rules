@@ -72,7 +72,7 @@ groups:
         channels: "@linux/feishu;"
         level: P0
       annotations:
-        summary: "剩余inode不足20%"
+        summary: "{{ $labels.instance }}剩余inode不足20%，当前{{ $value }}%"
 
     - alert: 备份速率异常下降
       expr: backuppc_hosts_full_rate < (avg_over_time(backuppc_hosts_full_rate[24h]) * 0.5)
@@ -82,14 +82,14 @@ groups:
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "低于历史平均50%，检查存储性能和带宽"
+        summary: "{{ $labels.all }}低于历史平均50%，检查存储性能和带宽"
 
     - alert: 全备时间过长
-      expr: time() - backuppc_hosts_full_duration > 12 * 3600
+      expr: backuppc_hosts_full_duration / 3600 > 12
       for: 2m
       labels:
         severity: warning
         channels: "@linux/feishu;"
         level: P1
       annotations:
-        summary: "超过12h"
+        summary: "{{ $labels.all }}超过12h，当前{{ $value }}h"
