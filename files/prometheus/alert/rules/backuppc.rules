@@ -53,3 +53,43 @@ groups:
         level: P1
       annotations:
         summary: "{{ $labels.all }}超过15天未全备"
+
+    - alert: 增量备份间隔异常，超过设定值2倍
+      expr: time() - backuppc_hosts_incr_age > 2*backuppc_hosts_incr_period
+      for: 2m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "{{ $labels.all }}增量备份间隔异常，检查备份策略配置"
+
+    - alert: 磁盘inode耗尽风险
+      expr: backuppc_disk_inode_usage > 80
+      for: 2m
+      labels:
+        severity: critical
+        channels: "@linux/feishu;"
+        level: P0
+      annotations:
+        summary: "剩余inode不足20%"
+
+    - alert: 备份速率异常下降
+      expr: backuppc_hosts_full_rate < (avg_over_time(backuppc_hosts_full_rate[24h]) * 0.5)
+      for: 2m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "低于历史平均50%，检查存储性能和带宽"
+
+    - alert: 全备时间过长
+      expr: time() - backuppc_hosts_full_duration > 12 * 3600
+      for: 2m
+      labels:
+        severity: warning
+        channels: "@linux/feishu;"
+        level: P1
+      annotations:
+        summary: "全备持续时间过长，超过12h"
