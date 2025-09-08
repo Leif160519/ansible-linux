@@ -642,6 +642,8 @@
             - vm.dirty_background_ratio = 5
             - vm.dirty_expire_centisecs = 3000
             - vm.dirty_writeback_centisecs = 500
+            - vm.overcommit_memory = 1
+            - vm.overcommit_ratio = 50
 
         - shell: sysctl -p
           ignore_errors: true
