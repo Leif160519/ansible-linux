@@ -12,7 +12,7 @@
   tags: client
   template:
     src: host_config.pl.j2
-    dest: '/etc/backuppc/pc/{{ item.hostname }}.pl'
+    dest: '/etc/backuppc/pc/{{ item.hostname | lower }}.pl'
     owner: backuppc
     group: backuppc
     mode: 0640
@@ -23,7 +23,7 @@
   tags: client
   template:
     src: host_config.pl.j2
-    dest: '/etc/backuppc/pc/{{ inventory_hostname }}.pl'
+    dest: /etc/backuppc/pc/{{ inventory_hostname | lower }}.pl
     owner: backuppc
     group: backuppc
     mode: 0640
@@ -32,7 +32,7 @@
 - name: FILE | Delete config if needed
   tags: client
   file:
-    path: '/etc/backuppc/pc/{{ item.hostname }}.pl'
+    path: /etc/backuppc/pc/{{ item.hostname | lower }}.pl
     state: absent
   with_items: "{{ backuppc_instance }}"
   when: item.state is defined and item.state == 'absent'
@@ -42,8 +42,8 @@
   tags: client
   lineinfile:
     dest: /etc/backuppc/hosts
-    line: "{{ item.hostname }}\t0"
-    regexp: "^{{ item.hostname }}"
+    line: "{{ item.hostname | lower }}\t0"
+    regexp: "^{{ item.hostname | lower }}"
     state: "{{ item.state if item.state is defined else 'present' }}"
   with_items: "{{ backuppc_instance }}"
   notify: reload
@@ -52,7 +52,7 @@
   tags: client
   lineinfile:
     dest: /etc/backuppc/hosts
-    line: "{{ inventory_hostname }}\t0"
-    regexp: "^{{ inventory_hostname }}"
+    line: "{{ inventory_hostname | lower }}\t0"
+    regexp: "^{{ inventory_hostname | lower }}"
   when: backuppc_instance | length == 0
   notify: reload
