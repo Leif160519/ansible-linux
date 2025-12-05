@@ -733,7 +733,6 @@
     docker_root_dir: /var/lib/docker
     address: 172.16.0.0/16
     size: 24
-    mirrors: http://cloudsx.top
     log_max_file: 3
     log_max_size: 10m
     cgroupdriver: cgroupfs
