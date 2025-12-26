@@ -1,8 +1,8 @@
 ---
 - name: config redis service file
   template:
-    dest: /lib/systemd/system/redis.service
-    src: redis.service.j2
+    dest: /lib/systemd/system/redis-server.service
+    src: redis-server.service.j2
     owner: root
     group: root
     mode: 0644
