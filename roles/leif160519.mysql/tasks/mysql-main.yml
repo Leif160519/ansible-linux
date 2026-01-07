@@ -43,10 +43,17 @@
     group: root
     mode: 0755
 
+- name: Download Mysql
+  get_url:
+    url: "{{ mysql_url }}"
+    dest: /tmp/
+    owner: root
+    group: root
+
 - name: Unarchive package
   unarchive:
     copy: false
-    src: "{{ mysql_url }}"
+    src: "/tmp/{{ mysql_version }}.tar.xz"
     dest: /tmp
     owner: mysql
     group: mysql
