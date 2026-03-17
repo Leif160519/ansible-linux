@@ -300,7 +300,7 @@
           with_items:
             - adduser
             - libfontconfig1
-            - python-apt
+            - python3-apt
             - python3-apt
           when: ansible_os_family == "Debian"
 
