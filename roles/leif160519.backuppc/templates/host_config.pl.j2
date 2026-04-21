@@ -43,16 +43,16 @@ $Conf{BackupFilesOnly} = {
   ]
 };
 
-{% if item.exclude_files is defined %}
 $Conf{BackupFilesExclude} = {
   '*' => [
      '/tmp/'
+{% if item.exclude_files is defined %}
 {% for item in item.exclude_files %}
     ,'{{ item }}'
 {% endfor %}
+{% endif %}
   ]
 };
-{% endif %}
 
 {% if item.more is defined %}
 # More options...
