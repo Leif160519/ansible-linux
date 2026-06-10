@@ -645,6 +645,7 @@
             - vm.dirty_writeback_centisecs = 500
             - vm.overcommit_memory = 1
             - vm.overcommit_ratio = 50
+            - vm.swappiness = 10
 
         - shell: sysctl -p
           ignore_errors: true
