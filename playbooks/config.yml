@@ -703,3 +703,35 @@
         - shell: echo 10 > /proc/sys/vm/swappiness
           ignore_errors: true
 # }}}
+
+- name: 26.disable cloud-init network config # {{{
+  hosts: os.debian:!off
+  tags: config, cloud-init
+  tasks:
+    - lineinfile:
+        path: /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+        create: true
+        line: "network: {config: disabled}"
+        owner: root
+        group: root
+      when: ansible_os_family == "Debian"
+# }}}
+
+- name: 27.Set ntpdate cronjob
+  hosts: os.linux:!off
+  tags: config,cron-ntpdate
+  tasks:
+    - package:
+        name: ntpdate
+        state: present
+
+    - cron:
+        minute: "*/10"
+        hour: "*"
+        day: "*"
+        month: "*"
+        weekday: "*"
+        job: "ntpdate ntp.aliyun.com"
+        name: "Time synchronization with AD server"
+        state: present
+        user: root
