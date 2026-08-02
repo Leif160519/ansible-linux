@@ -699,6 +699,7 @@
 - name: 25.config swappiness # {{{
   hosts: all:!off
   tags: config,swap,swappiness
+  tasks:
     - block:
         - shell: echo 10 > /proc/sys/vm/swappiness
           ignore_errors: true
