@@ -52,6 +52,7 @@
             state: latest
           with_items:
             - apt-utils
+            - arping
             - rar
             - unrar
             - p7zip-full
