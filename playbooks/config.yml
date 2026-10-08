@@ -314,6 +314,9 @@
             group: "{{ groupname }}"
             line: 'SELECTED_EDITOR="/usr/bin/vim.basic"'
             state: present
+
+        - shell: update-alternatives --set editor /usr/bin/vim.basic
+          ignore_errors: true
           # }}}
 
 - name: 13.Rewrite cron templates  # {{{
