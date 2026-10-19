@@ -740,3 +740,19 @@
         state: present
         user: root
 # }}}
+
+- name: 28.disable systemd-networkd-wait-online & NetworkManager-wait-online service # {{{
+  hosts: os.debian:!off
+  tags: never, network-wait-online
+  tasks:
+  - service:
+      name: "{{ item }}"
+      state: stopped
+      enabled: false
+      masked: true
+      daemon_reload: true
+    with_items:
+      - systemd-networkd-wait-online
+      - NetworkManager-wait-online
+    ignore_errors: true
+# }}}
