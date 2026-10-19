@@ -721,7 +721,7 @@
       when: ansible_os_family == "Debian"
 # }}}
 
-- name: 27.Set ntpdate cronjob
+- name: 27.Set ntpdate cronjob # {{{
   hosts: os.linux:!off
   tags: config,cron-ntpdate
   tasks:
@@ -739,3 +739,4 @@
         name: "Time synchronization with AD server"
         state: present
         user: root
+# }}}
