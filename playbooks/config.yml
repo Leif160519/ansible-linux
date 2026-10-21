@@ -735,7 +735,7 @@
         day: "*"
         month: "*"
         weekday: "*"
-        job: "ntpdate ntp.aliyun.com"
+        job: "ntpdate ntp.aliyun.com && hwclock --systohc"
         name: "Time synchronization with AD server"
         state: present
         user: root
