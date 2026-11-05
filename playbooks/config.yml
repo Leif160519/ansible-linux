@@ -484,12 +484,14 @@
     - block:
         - shell: ls /var/mail/
           register: file_list
+          ignore_errors: true
 
         - file:
             path: "/var/mail/{{ item }}"
             state: absent
           with_items:
             - "{{ file_list.stdout_lines }}"
+          when: file_list.stdout_lines is defined
 # }}}
 
 - name: 19.create sshkey # {{{
