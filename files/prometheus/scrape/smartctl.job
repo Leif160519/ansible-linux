@@ -1,0 +1,4 @@
+- job_name: "smartctl"
+  file_sd_configs:
+    - files: [ "/etc/prometheus/file_sd/smartctl.yml" ]
+  honor_labels: true

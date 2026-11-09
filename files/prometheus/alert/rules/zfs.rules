@@ -1,0 +1,42 @@
+groups:
+  - name: zfs storage health rule
+    rules:
+      - alert: ZFS存储池健康异常
+        expr: zfs_pool_health > 0
+        for: 1m
+        labels:
+          severity: critical
+          level: P0
+          channels: "@linux/feishu;"
+        annotations:
+          summary: "主机标签: {{ $labels.all }} 上的 ZFS 存储池 (Pool: {{ $labels.pool }}) 状态异常，健康码为 {{ $value }} (0=正常, 1=降级, 2=故障)"
+
+      - alert: ZFS存储池容量预警
+        expr: (zfs_pool_allocated_bytes / zfs_pool_size_bytes) > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          level: P1
+          channels: "@linux/feishu;"
+        annotations:
+          summary: "主机标签: {{ $labels.all }} 上的 ZFS 存储池 (Pool: {{ $labels.pool }}) 容量占用超过 85%，当前占用率: {{ $value | humanizePercentage }}"
+
+      - alert: ZFS存储池容量严重告警
+        expr: (zfs_pool_allocated_bytes / zfs_pool_size_bytes) > 0.92
+        for: 2m
+        labels:
+          severity: critical
+          level: P0
+          channels: "@linux/feishu;"
+        annotations:
+          summary: "主机标签: {{ $labels.all }} 上的 ZFS 存储池 (Pool: {{ $labels.pool }}) 容量严重告警，已超过 92%，当前占用率: {{ $value | humanizePercentage }}"
+
+      - alert: ZFS存储池碎片率过高
+        expr: zfs_pool_fragmentation_ratio > 0.75
+        for: 30m
+        labels:
+          severity: warning
+          level: P2
+          channels: "@linux/feishu;"
+        annotations:
+          summary: "主机标签: {{ $labels.all }} 上的 ZFS 存储池 (Pool: {{ $labels.pool }}) 碎片率过高，当前碎片率: {{ $value | humanizePercentage }}"

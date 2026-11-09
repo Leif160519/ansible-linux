@@ -1,0 +1,4 @@
+- job_name: "zfs"
+  file_sd_configs:
+    - files: [ "/etc/prometheus/file_sd/zfs.yml" ]
+  honor_labels: true
