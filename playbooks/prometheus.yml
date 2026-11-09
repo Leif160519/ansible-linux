@@ -37,6 +37,8 @@
     loki_root_dir: /opt/loki
     process_exporter_root_dir: /opt/process_exporter
     filestat_exporter_root_dir: /opt/filestat_exporter
+    zfs_exporter_root_dir: /opt/zfs_exporter
+    smartctl_exporter_root_dir: /opt/smartctl_exporter
 
     prometheus_version: 2.40.5
     victoria_metrics_version: v1.87.1
@@ -61,6 +63,8 @@
     loki_version: v2.7.1
     process_exporter_version: 0.7.10
     filestat_exporter_version: v0.3.5
+    zfs_exporter_version: 2.5.1
+    smartctl_exporter_version: 0.15.0
 
     prometheus_tag: prometheus-{{ prometheus_version }}.linux-amd64
     victoria_metrics_tag: victoria-metrics-linux-amd64-{{ victoria_metrics_version }}
@@ -85,6 +89,8 @@
     loki_tag: loki-linux-amd64
     process_exporter_tag: process-exporter-{{ process_exporter_version }}.linux-amd64
     filestat_exporter_tag: filestat_exporter-{{ filestat_exporter_version }}.linux-amd64
+    zfs_exporter_tag: zfs_exporter-{{ zfs_exporter_version }}.linux-amd64
+    smartctl_exporter_tag: smartctl_exporter-{{ smartctl_exporter_version }}.linux-amd64
 
     prometheus_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/{{ prometheus_tag }}.tar.gz
     victoria_metrics_url: https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/{{ victoria_metrics_version }}/{{ victoria_metrics_tag }}.tar.gz
@@ -109,6 +115,8 @@
     loki_url: https://github.com/grafana/loki/releases/download/{{ loki_version }}/{{ loki_tag}}.zip
     process_exporter_url: https://github.com/ncabatoff/process-exporter/releases/download/v{{ process_exporter_version }}/{{ process_exporter_tag }}.tar.gz
     filestat_exporter_url: https://github.com/michael-doubez/filestat_exporter/releases/download/{{ filestat_exporter_version }}/{{ filestat_exporter_tag }}.tar.gz
+    zfs_exporter_url: https://github.com/pdf/zfs_exporter/releases/download/v{{ zfs_exporter_version }}/{{ zfs_exporter_tag }}.tar.gz
+    smartctl_exporter_url: https://github.com/prometheus-community/smartctl_exporter/releases/download/v{{ smartctl_exporter_version }}/{{ smartctl_exporter_tag }}.tar.gz
 
     filestat_instance: '{{ filestat | selectattr("hostname","equalto", inventory_hostname) | map(attribute="include_files") | list }}'
   vars_files:
@@ -179,6 +187,26 @@
     - name: restart filestat_exporter
       service:
         name: filestat_exporter
+        state: restarted
+        daemon_reload: true
+    - name: reload zfs_exporter
+      service:
+        name: zfs_exporter
+        state: reloaded
+        daemon_reload: true
+    - name: restart zfs_exporter
+      service:
+        name: zfs_exporter
+        state: restarted
+        daemon_reload: true
+    - name: reload smartctl_exporter
+      service:
+        name: smartctl_exporter
+        state: reloaded
+        daemon_reload: true
+    - name: restart smartctl_exporter
+      service:
+        name: smartctl_exporter
         state: restarted
         daemon_reload: true
     - name: restart victoria-metrics
@@ -1530,6 +1558,92 @@
         - name: start filestat_exporter service
           service:
             name: filestat_exporter
+            state: started
+            daemon_reload: true
+            enabled: true
+      # }}}
+
+    - name: zfs_exporter # {{{
+      tags: zfs_exporter
+      block:
+        - name: stat zfs_exporter
+          stat:
+            path: "{{ zfs_exporter_root_dir }}"
+          register: z
+
+        - name: unarchive zfs_exporter
+          unarchive:
+            src: "{{ zfs_exporter_url }}"
+            dest: /opt
+            owner: prometheus
+            group: prometheus
+            remote_src: true
+          when: z.stat.exists == false
+
+        - name: rename zfs_exporter dir
+          shell: mv /opt/{{ zfs_exporter_tag }} {{ zfs_exporter_root_dir }}
+          when: z.stat.exists == false
+
+        - name: create zfs_exporter link
+          file:
+            src: "{{ zfs_exporter_root_dir }}/zfs_exporter"
+            dest: /usr/local/bin/zfs_exporter
+            force: true
+            state: link
+
+        - name: create zfs_exporter service
+          template:
+            src: files/prometheus/service/zfs_exporter.service.j2
+            dest: /lib/systemd/system/zfs_exporter.service
+            mode: 0644
+          notify: restart zfs_exporter
+
+        - name: start zfs_exporter service
+          service:
+            name: zfs_exporter
+            state: started
+            daemon_reload: true
+            enabled: true
+      # }}}
+
+    - name: smartctl_exporter # {{{
+      tags: smartctl_exporter
+      block:
+        - name: stat smartctl_exporter
+          stat:
+            path: "{{ smartctl_exporter_root_dir }}"
+          register: z
+
+        - name: unarchive smartctl_exporter
+          unarchive:
+            src: "{{ smartctl_exporter_url }}"
+            dest: /opt
+            owner: prometheus
+            group: prometheus
+            remote_src: true
+          when: z.stat.exists == false
+
+        - name: rename smartctl_exporter dir
+          shell: mv /opt/{{ smartctl_exporter_tag }} {{ smartctl_exporter_root_dir }}
+          when: z.stat.exists == false
+
+        - name: create smartctl_exporter link
+          file:
+            src: "{{ smartctl_exporter_root_dir }}/smartctl_exporter"
+            dest: /usr/local/bin/smartctl_exporter
+            force: true
+            state: link
+
+        - name: create smartctl_exporter service
+          template:
+            src: files/prometheus/service/smartctl_exporter.service.j2
+            dest: /lib/systemd/system/smartctl_exporter.service
+            mode: 0644
+          notify: restart smartctl_exporter
+
+        - name: start smartctl_exporter service
+          service:
+            name: smartctl_exporter
             state: started
             daemon_reload: true
             enabled: true

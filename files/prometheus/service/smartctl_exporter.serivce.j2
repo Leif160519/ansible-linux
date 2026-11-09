@@ -1,0 +1,22 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=smartctl_exporter
+After=network-online.target
+
+[Service]
+Type=simple
+Environment="GOMAXPROCS={{ ansible_processor_vcpus|default(ansible_processor_count) }}"
+User=root
+Group=root
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/smartctl_exporter \
+    --web.listen-address=0.0.0.0:9633
+
+ProtectSystem=full
+
+SyslogIdentifier=prometheus
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
