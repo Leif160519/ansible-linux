@@ -747,7 +747,7 @@
   hosts: os.debian:!off
   tags: never, network-wait-online
   tasks:
-  - service:
+  - systemd:
       name: "{{ item }}"
       state: stopped
       enabled: false
@@ -757,4 +757,26 @@
       - systemd-networkd-wait-online
       - NetworkManager-wait-online
     ignore_errors: true
+# }}}
+
+- name: 29.禁用apt后台任务 # {{{
+  hosts: os.debian:!off
+  tags: common,apt
+  tasks:
+    - systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: false
+        daemon_reload: true
+      with_items:
+        - apt-daily.timer
+        - apt-daily-upgrade.timer
+
+    - systemd:
+        name: "{{ item }}"
+        masked: true
+      with_items:
+        - apt-daily.service
+        - apt-daily-upgrade.service
+
 # }}}
